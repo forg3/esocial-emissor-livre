@@ -1055,3 +1055,103 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   border-radius: var(--radius); padding: var(--sp-3); font-size: var(--fs-xs);
   font-family: var(--mono); max-height: 200px; overflow-y: auto;
 }
+
+/* Grade e Cards de Eventos Rigorosamente Uniformizados */
+.grade-eventos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.card-evento {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: 285px !important;
+  box-sizing: border-box !important;
+  padding: 16px !important;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.card-evento:hover {
+  border-color: var(--navy-2);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-evento-corpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-evento-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 28px;
+  margin-bottom: 8px;
+}
+
+.card-evento-titulo {
+  height: 40px;
+  margin: 0 0 6px 0;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-evento-desc {
+  height: 54px;
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-evento-rodape {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+.card-evento-prazo {
+  height: 38px;
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.card-evento-prazo-texto {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-evento-acao {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 32px;
+}
+

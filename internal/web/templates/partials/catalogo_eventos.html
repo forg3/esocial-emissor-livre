@@ -17,11 +17,11 @@
         <span class="badge neutral" style="font-size: 11px;">{{ len .Eventos }} eventos</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px;">
+      <div class="grade-eventos">
         {{ range .Eventos }}
-        <div class="card card-evento" style="display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius); transition: transform 120ms ease, box-shadow 120ms ease; border: 1px solid var(--border);">
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <div class="card card-evento">
+          <div class="card-evento-corpo">
+            <div class="card-evento-cabecalho">
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span style="font-size: 18px;">{{ iconeEvento .Codigo .Grupo }}</span>
                 <span class="mono" style="font-size: 15px; font-weight: 800; color: var(--navy);">{{ .Codigo }}</span>
@@ -34,22 +34,22 @@
               </span>
             </div>
 
-            <h4 style="margin: 0 0 6px; font-size: var(--fs-sm); color: var(--text); line-height: 1.4;">
+            <h4 class="card-evento-titulo" title="{{ .Nome }}">
               {{ .Nome }}
             </h4>
 
-            <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; margin: 0 0 10px;">
+            <p class="card-evento-desc" title="{{ .Descricao }}">
               {{ .Descricao }}
             </p>
           </div>
 
-          <div style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px;">
-            <div style="font-size: 11px; color: var(--text-2); margin-bottom: 10px; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
+          <div class="card-evento-rodape">
+            <div class="card-evento-prazo" title="Prazo: {{ .Prazo }}">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              <span><strong>Prazo:</strong> {{ .Prazo }}</span>
+              <span class="card-evento-prazo-texto"><strong>Prazo:</strong> {{ .Prazo }}</span>
             </div>
 
-            <div style="display: flex; justify-content: flex-end;">
+            <div class="card-evento-acao">
               {{ if eq .Codigo "S-2240" }}
                 <a href="/eventos/s2240" class="btn btn-primario btn-sm" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
                   <span>Emitir S-2240</span> &rarr;

@@ -39,24 +39,30 @@ Acesse a interface no navegador em `http://localhost:8080`.
 
 ---
 
+## Versão e Releases
+
+**Versão Atual:** `v1.0-alpha` (Release Pré-lançamento para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
+Download dos binários pré-compilados na aba [Releases](https://github.com/forg3/esocial-emissor-livre/releases).
+
+---
+
 ## O que faz
 
-- **Edição e Montagem Guiada**: Formulários rápidos para elaboração de eventos de Segurança e Saúde no Trabalho (S-2210, S-2220, S-2240) e tabelas iniciais.
+- **Cobertura Integral dos 36 Eventos Oficiais**: Catálogo visual estruturado por departamento (SESMT, Medicina Ocupacional, RH/DP, Folha, Jurídico e RPPS) e editor guiado com sincronização em tempo real com o XML S-1.3.
 - **Validação Estrutural Rígida**: Confere os arquivos XML diretamente contra os esquemas XSD oficiais do leiaute S-1.3 do eSocial antes de qualquer tentativa de envio.
-- **Importação e Conferência de XML**: Recebe arquivos XML gerados por terceiros (ex.: ASO de clínicas médicas) e realiza cruzamento de dados cadastrais (CPF, vínculo, datas) prevenindo autuações por erro material.
-- **Assinatura Digital Local**: Assina eventos utilizando certificado digital ICP-Brasil A1 diretamente na camada da aplicação, mantendo a chave privada segura.
+- **Importação e Conferência de XML/CSV**: Recebe arquivos XML (como ASO) e realiza importação de colaboradores em lote via CSV com modelo pronto para download.
+- **Assinatura Digital Local**: Assina eventos utilizando certificado digital ICP-Brasil A1 diretamente na máquina do usuário, mantendo a chave privada 100% segura.
 - **Transmissão Direta com WebServices Oficiais**: Envia lotes e consulta recibos nos ambientes de **Produção** e **Produção Restrita** (homologação) do eSocial.
 - **Auditoria de Eventos e Recibos**: Rastreamento do ciclo de vida dos eventos (`pronto` → `assinado` → `transmitido` → `aceito` ou `rejeitado`), registrando números de recibo e mensagens de erro governamentais.
 
 ---
 
-## O que ainda pode fazer (Roadmap)
+## O que ainda pode fazer (Pendências & Roadmap)
 
-- [ ] Cobertura completa de eventos da Folha de Pagamento (S-1200 a S-1299).
-- [ ] Módulo de importação em massa via planilhas (CSV/XLSX) para clínicas ocupacionais e contabilidades.
-- [ ] Exportação de relatórios de conformidade e conferência de débitos previdenciários (S-5001/S-5011).
-- [ ] Pacote executável único multiplataforma (desktop/CLI local) sem dependência externa de banco de dados.
-- [ ] Integração com múltiplos certificados digitais para escritórios contábeis que gerenciam diversas procurações eletrônicas.
+- [ ] **Publicação de Packages (GitHub Packages)**: Imagem de container no GitHub Container Registry (ghcr.io) e pacotes para distribuições Linux (.deb, .rpm) e instalador Windows.
+- [ ] **Pipeline de CI/CD para Releases**: Automação de compilação cruzada (GoReleaser / GitHub Actions) para geração contínua de executáveis compactados a cada tag.
+- [ ] **Módulo de Relatórios e Auditoria de Retorno**: Exportação de relatórios de conformidade e conferência de débitos previdenciários e FGTS (eventos de totalização S-5001/S-5011).
+- [ ] **Múltiplos Certificados e Procurações Eletrônicas**: Gestão de perfis multi-empresa com seleção dinâmica de certificado para escritórios contábeis.
 
 ---
 
