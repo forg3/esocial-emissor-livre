@@ -130,34 +130,43 @@ h1, h2, h3, .kpi .kpi-valor, .numero-grande { font-family: var(--font-display); 
   display: flex; flex-direction: column; gap: var(--sp-1);
 }
 .sidebar .logo {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
-  padding: 16px 12px;
+  padding: 16px 12px 14px;
   border-bottom: 1px solid var(--nav-linha);
-  margin-bottom: var(--sp-3);
-  text-align: center;
+  margin-bottom: var(--sp-2);
 }
 .sidebar .logo img {
-  width: 100%;
-  max-width: 185px;
+  width: 120px;
+  max-width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+  transition: transform 150ms ease;
 }
-.sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar .logo:hover img {
+  transform: scale(1.03);
+}
+.sidebar nav { display: flex; flex-direction: column; gap: 4px; }
 .sidebar .nav-secao { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .05em;
-  color: rgba(255, 255, 255, .55); padding: var(--sp-4) var(--sp-3) var(--sp-1); }
+  color: rgba(255, 255, 255, .55); padding: var(--sp-3) var(--sp-3) var(--sp-1); font-weight: 600; }
 .nav-item {
-  display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3);
+  display: flex; align-items: center; gap: 12px; padding: 0 var(--sp-3);
+  height: 40px; box-sizing: border-box;
   border-radius: var(--radius); color: var(--nav-texto); font-size: var(--fs-sm);
-  transition: background 150ms ease;
+  font-weight: 500;
+  transition: background 150ms ease, color 150ms ease;
 }
 .nav-item:hover { background: rgba(255, 255, 255, .08); text-decoration: none;
   color: var(--nav-texto-forte); }
-/* Item ativo: champagne como filete sobre o navy, sem preencher o botão inteiro. */
-.nav-item.ativo { background: rgba(255, 255, 255, .10); color: var(--nav-texto-forte); font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--ch-400); }
-.nav-item svg { flex: 0 0 auto; }
+/* Item ativo: champagne/teal como filete sobre o navy */
+.nav-item.ativo { background: rgba(255, 255, 255, .12); color: var(--nav-texto-forte); font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--teal); }
+.nav-item svg { width: 18px; height: 18px; flex: 0 0 18px; }
 /* O "Sair" e um <button> dentro de <form>: sem isto ele herda a aparencia de
    botao do navegador e destoa do resto da barra. */
 .nav-item-botao { width: 100%; border: 0; background: none; cursor: pointer;
@@ -269,7 +278,81 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--navy, #0B1426)
   background: var(--surface); color: var(--text); }
 .vazio { text-align: center; color: var(--text-2); padding: var(--sp-8); }
 .vazio svg { opacity: .4; margin-bottom: var(--sp-2); }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); align-items: stretch; }
+
+/* Card de Configuração e Formulários Alinhados */
+.card-config {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.status-caixa {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin: 12px 0 16px 0;
+  min-height: 80px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.status-caixa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.status-caixa-label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-2);
+  letter-spacing: 0.04em;
+}
+
+.status-caixa-detalhe {
+  font-size: var(--fs-xs);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* File Input Customizado */
+input[type="file"].campo-arquivo {
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+input[type="file"].campo-arquivo::file-selector-button {
+  padding: 6px 14px;
+  margin-right: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--navy);
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+input[type="file"].campo-arquivo::file-selector-button:hover {
+  background: var(--teal);
+  color: #FFFFFF;
+  border-color: var(--teal);
+}
+
 .muted { color: var(--text-2); font-size: var(--fs-sm); }
 .mono { font-family: var(--mono); font-size: var(--fs-xs); }
 .right { text-align: right; }
