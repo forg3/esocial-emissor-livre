@@ -22,14 +22,14 @@
         <div class="card card-evento">
           <div class="card-evento-corpo">
             <div class="card-evento-cabecalho">
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span style="font-size: 18px;">{{ iconeEvento .Codigo .Grupo }}</span>
-                <span class="mono" style="font-size: 15px; font-weight: 800; color: var(--navy);">{{ .Codigo }}</span>
+              <div style="display: flex; align-items: center; gap: 6px; min-width: 0;">
+                <span style="font-size: 18px; flex: none;">{{ iconeEvento .Codigo .Grupo }}</span>
+                <span class="mono" style="font-size: 15px; font-weight: 800; color: var(--navy); flex: none;">{{ .Codigo }}</span>
                 {{ if isObrigSST .Codigo }}
-                  <span class="badge ok" style="font-size: 10px; font-weight: 700;">SST Obrigatório</span>
+                  <span class="badge ok" style="font-size: 9px; font-weight: 700; padding: 1px 5px; flex: none;">SST</span>
                 {{ end }}
               </div>
-              <span class="badge {{ if eq .Categoria "Tabelas" }}neutral{{ else if eq .Categoria "Periódicos" }}info{{ else }}warn{{ end }}" style="font-size: 10px;">
+              <span class="badge {{ if eq .Categoria "Tabelas" }}neutral{{ else if eq .Categoria "Periódicos" }}info{{ else }}warn{{ end }}" style="font-size: 9px; padding: 1px 5px; flex: none;">
                 {{ .Categoria }}
               </span>
             </div>

@@ -1059,8 +1059,10 @@ a, button, summary, label, select, input { touch-action: manipulation; }
 /* Grade e Cards de Eventos Rigorosamente Uniformizados */
 .grade-eventos {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card-evento {
@@ -1068,12 +1070,15 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   flex-direction: column !important;
   justify-content: space-between !important;
   height: 285px !important;
+  min-width: 0 !important;
+  width: 100% !important;
   box-sizing: border-box !important;
   padding: 16px !important;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  overflow: hidden;
 }
 
 .card-evento:hover {
@@ -1086,14 +1091,18 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .card-evento-cabecalho {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 28px;
+  min-height: 28px;
   margin-bottom: 8px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .card-evento-titulo {
@@ -1108,6 +1117,7 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .card-evento-desc {
@@ -1121,12 +1131,14 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .card-evento-rodape {
   border-top: 1px solid var(--border);
   padding-top: 10px;
   margin-top: auto;
+  min-width: 0;
 }
 
 .card-evento-prazo {
@@ -1138,6 +1150,7 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   display: flex;
   align-items: flex-start;
   gap: 6px;
+  min-width: 0;
 }
 
 .card-evento-prazo-texto {
@@ -1146,6 +1159,7 @@ a, button, summary, label, select, input { touch-action: manipulation; }
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .card-evento-acao {

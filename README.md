@@ -18,20 +18,28 @@ O **eSocial Emissor Livre** é uma aplicação web autônoma desenvolvida em Go,
 
 ## Como usar
 
-### Pré-requisitos
-- Go 1.22 ou superior instalado.
-- Certificado digital ICP-Brasil modelo A1 (`.pfx` ou `.p12`).
-- PostgreSQL (opcional para persistência avançada de histórico e fila; suporta modo embarcado/local).
+### Modo 1: Execução Nativa Portátil (Sem Instalar Nada)
 
-### Execução Local
+Você **não precisa ter o Go instalado** e não precisa de banco de dados ou dependências externas. O aplicativo é distribuído como um binário nativo único e auto-contido:
+
+1. Acesse a página de [Releases](https://github.com/forg3/esocial-emissor-livre/releases/tag/v1.0-alpha).
+2. Baixe o pacote correspondente ao seu sistema operacional:
+   - **Windows (x86_64):** Extraia o arquivo `.zip` e execute `esocial-emissor-livre.exe`.
+   - **macOS Apple Silicon (M1/M2/M3/M4):** Baixe `esocial-emissor-livre-v1.0-alpha-darwin-arm64.tar.gz`, extraia e execute `./esocial-emissor-livre-darwin-arm64`.
+   - **macOS Intel (x86_64):** Baixe `esocial-emissor-livre-v1.0-alpha-darwin-amd64.tar.gz`, extraia e execute `./esocial-emissor-livre-darwin-amd64`.
+   - **Linux (x86_64):** Baixe `esocial-emissor-livre-v1.0-alpha-linux-amd64.tar.gz`, extraia e execute `./esocial-emissor-livre`.
+3. Abra seu navegador em `http://localhost:8080`.
+
+### Modo 2: A Partir do Código-Fonte (Para Desenvolvedores)
+
+Se desejar compilar diretamente:
 
 ```bash
 # Clone o repositório
 git clone https://github.com/forg3/esocial-emissor-livre.git
 cd esocial-emissor-livre
 
-# Baixe as dependências e inicie o serviço
-go mod tidy
+# Inicie o serviço diretamente
 go run cmd/server/main.go
 ```
 
@@ -42,7 +50,7 @@ Acesse a interface no navegador em `http://localhost:8080`.
 ## Versão e Releases
 
 **Versão Atual:** `v1.0-alpha` (Release Pré-lançamento para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
-Download dos binários pré-compilados na aba [Releases](https://github.com/forg3/esocial-emissor-livre/releases).
+Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/esocial-emissor-livre/releases/tag/v1.0-alpha).
 
 ---
 
