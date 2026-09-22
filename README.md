@@ -68,9 +68,8 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 
 ---
 
-## O que ainda pode fazer (Pendências & Roadmap)
-
-- [ ] **Publicação de Packages (GitHub Packages)**: Imagem de container no GitHub Container Registry (ghcr.io) e pacotes para distribuições Linux (.deb, .rpm) e instalador Windows.
+- [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.0-alpha`).
+- [ ] **Pacotes de Distribuição (.deb, .rpm e MSI)**: Instaladores nativos para distribuições Linux e instalador Windows.
 - [ ] **Pipeline de CI/CD para Releases**: Automação de compilação cruzada (GoReleaser / GitHub Actions) para geração contínua de executáveis compactados a cada tag.
 - [ ] **Módulo de Relatórios e Auditoria de Retorno**: Exportação de relatórios de conformidade e conferência de débitos previdenciários e FGTS (eventos de totalização S-5001/S-5011).
 - [ ] **Múltiplos Certificados e Procurações Eletrônicas**: Gestão de perfis multi-empresa com seleção dinâmica de certificado para escritórios contábeis.
