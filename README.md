@@ -1,7 +1,7 @@
 # Validador eSocial
 
 <p align="center">
-  <img src="internal/web/static/img/logo-icon.png" alt="Validador eSocial" width="120">
+  <img src="internal/web/static/img/validador-logo-oficial-cropped.png" alt="Validador eSocial" width="380">
 </p>
 
 [![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
@@ -53,7 +53,7 @@ Acesse a interface no navegador em `http://localhost:8000`.
 ## Versão e Releases
 
 **Versão Atual:** `v1.0-alpha` (Release Pré-lançamento para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
-Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/esocial-emissor-livre/releases/tag/v1.0-alpha).
+Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.0-alpha).
 
 ---
 

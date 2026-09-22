@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/forg3/esocial-emissor-livre/internal/crypto"
 	"github.com/forg3/esocial-emissor-livre/internal/data"
 	"github.com/forg3/esocial-emissor-livre/internal/esocial"
 	"github.com/forg3/esocial-emissor-livre/internal/storage"
@@ -401,6 +402,9 @@ func (s *Servidor) handleUploadCertificado(w http.ResponseWriter, r *http.Reques
 	cfg, _ := s.db.ObterConfiguracao()
 	cfg.TipoCertificado = r.FormValue("tipo_certificado")
 
+	var msgSucesso = "Configuração do certificado gravada com sucesso!"
+	var msgErro = ""
+
 	if cfg.TipoCertificado == "A1" {
 		arquivo, header, err := r.FormFile("arquivo_pfx")
 		if err == nil && header != nil {
@@ -414,39 +418,139 @@ func (s *Servidor) handleUploadCertificado(w http.ResponseWriter, r *http.Reques
 				_, _ = io.Copy(destFile, arquivo)
 				destFile.Close()
 				cfg.CertificadoPath = caminhoDest
-				cfg.CertificadoValidoAte = time.Now().AddDate(1, 0, 0) // Simulação de 1 ano de validade padrão
+
+				senha := r.FormValue("senha_a1")
+				if senha != "" {
+					cert, errCert := crypto.CarregarA1Arquivo(caminhoDest, senha)
+					if errCert == nil {
+						cfg.CertificadoValidoAte = cert.ValidoAte()
+						if cfg.RazaoSocial == "" && cert.RazaoSocial() != "" {
+							cfg.RazaoSocial = cert.RazaoSocial()
+						}
+						if cfg.CNPJ == "" && cert.CNPJ() != "" {
+							cfg.CNPJ = cert.CNPJ()
+						}
+						msgSucesso = fmt.Sprintf("Certificado A1 carregado e validado com sucesso! Titular: %s (Validade: %s)", cert.RazaoSocial(), cert.ValidoAte().Format("02/01/2006"))
+					} else {
+						msgErro = "Certificado salvo, porém a senha informada não conferiu: " + errCert.Error()
+					}
+				} else {
+					cfg.CertificadoValidoAte = time.Now().AddDate(1, 0, 0)
+				}
 			}
 		}
 	}
 
 	_ = s.db.SalvarConfiguracao(cfg)
 
-	s.render(w, r, "certificado", DadosViewConfiguracao{
+	dados := DadosViewConfiguracao{
 		Titulo:        "Certificado & Empresa",
 		MenuAtivo:     "configuracao",
 		Config:        cfg,
-		MensagemFlash: "Configuração do certificado gravada com sucesso!",
-	})
+		MensagemFlash: msgSucesso,
+	}
+	if msgErro != "" {
+		dados.MensagemFlash = msgErro
+		dados.FlashErro = true
+	}
+
+	s.render(w, r, "certificado", dados)
 }
 
 func (s *Servidor) handleTestarCertificado(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if cfg.TipoCertificado == "A1" && cfg.CertificadoPath != "" {
-		fmt.Fprintf(w, `<div class="flash flash-ok" style="font-size: 13px;">
-			<strong>✓ Certificado A1 Válido!</strong><br>
-			Arquivo: %s<br>
-			Assinatura digital ICP-Brasil operacional para transmissão SST.
-		</div>`, filepath.Base(cfg.CertificadoPath))
+	if cfg.TipoCertificado == "A1" {
+		if cfg.CertificadoPath == "" {
+			fmt.Fprint(w, `<div class="flash flash-err" style="font-size: 13px;">
+				<strong>Atenção:</strong> Nenhum arquivo de certificado A1 foi carregado ainda. Faça o upload do arquivo .pfx ou .p12 acima.
+			</div>`)
+			return
+		}
+		if _, err := os.Stat(cfg.CertificadoPath); os.IsNotExist(err) {
+			fmt.Fprintf(w, `<div class="flash flash-err" style="font-size: 13px;">
+				<strong>Arquivo não encontrado:</strong> O arquivo %s não foi localizado no disco local.
+			</div>`, filepath.Base(cfg.CertificadoPath))
+			return
+		}
+
+		senha := strings.TrimSpace(r.FormValue("senha_a1"))
+		if senha == "" {
+			fmt.Fprintf(w, `<div class="flash flash-warn" style="font-size: 13px; line-height: 1.5;">
+				<strong>Arquivo A1 Presente:</strong> %s<br>
+				Digite a senha do certificado no campo acima e clique em <em>Testar Validade</em> para validar a chave privada RSA e o teste criptográfico.
+			</div>`, filepath.Base(cfg.CertificadoPath))
+			return
+		}
+
+		cert, err := crypto.CarregarA1Arquivo(cfg.CertificadoPath, senha)
+		if err != nil {
+			fmt.Fprintf(w, `<div class="flash flash-err" style="font-size: 13px; line-height: 1.5;">
+				<strong>Falha na validação do Certificado A1:</strong> %s<br>
+				A senha informada está incorreta ou o arquivo está corrompido.
+			</div>`, err.Error())
+			return
+		}
+
+		cfg.CertificadoValidoAte = cert.ValidoAte()
+		if cfg.RazaoSocial == "" && cert.RazaoSocial() != "" {
+			cfg.RazaoSocial = cert.RazaoSocial()
+		}
+		if cfg.CNPJ == "" && cert.CNPJ() != "" {
+			cfg.CNPJ = cert.CNPJ()
+		}
+		_ = s.db.SalvarConfiguracao(cfg)
+
+		xmlTeste := []byte(`<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtMonit/v_S_01_03_00"><evtMonit Id="ID1000000000000000000000000001"><ideEmpregador><tpInsc>1</tpInsc><nrInsc>00000000000000</nrInsc></ideEmpregador></evtMonit></eSocial>`)
+		_, errSign := crypto.AssinarXML(xmlTeste, cert)
+		testeCripto := "✓ Assinatura XMLDSig SHA-256 executada com sucesso!"
+		if errSign != nil {
+			testeCripto = fmt.Sprintf("⚠️ Alerta na assinatura teste: %v", errSign)
+		}
+
+		diasRestantes := int(time.Until(cert.ValidoAte()).Hours() / 24)
+		emissor := "Autoridade Certificadora ICP-Brasil"
+		if cert.CertificadoFolha() != nil && cert.CertificadoFolha().Issuer.CommonName != "" {
+			emissor = cert.CertificadoFolha().Issuer.CommonName
+		}
+
+		fmt.Fprintf(w, `<div class="flash flash-ok" style="font-size: 13px; line-height: 1.6;">
+			<div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: var(--ok-text);">
+				✓ Certificado Digital A1 Operacional & Válido!
+			</div>
+			<div><strong>Titular:</strong> %s</div>
+			<div><strong>Documento Identificado:</strong> %s</div>
+			<div><strong>Emissor:</strong> %s</div>
+			<div><strong>Vigência:</strong> %s até %s (%d dias restantes)</div>
+			<div><strong>Criptografia:</strong> %s</div>
+			<div style="margin-top: 4px; font-weight: 600; color: var(--navy);">
+				Ambiente ativo: %s
+			</div>
+		</div>`,
+			cert.RazaoSocial(),
+			cert.CNPJ(),
+			emissor,
+			cert.ValidoDe().Format("02/01/2006"),
+			cert.ValidoAte().Format("02/01/2006"),
+			diasRestantes,
+			testeCripto,
+			map[int]string{1: "Produção Oficial (Governo Federal)", 2: "Produção Restrita (Testes / Homologação)"}[cfg.Ambiente],
+		)
 	} else if cfg.TipoCertificado == "A3" {
-		fmt.Fprint(w, `<div class="flash flash-ok" style="font-size: 13px;">
-			<strong>✓ Modo A3 Selecionado!</strong><br>
-			O driver PKCS#11 será invocado na hora de assinar o lote.
+		fmt.Fprint(w, `<div class="flash flash-ok" style="font-size: 13px; line-height: 1.6;">
+			<div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: var(--ok-text);">
+				✓ Modo Certificado A3 Selecionado!
+			</div>
+			<div><strong>Interface:</strong> Hardware Token USB / SmartCard (PKCS#11).</div>
+			<div><strong>Operação:</strong> O PIN de segurança será solicitado diretamente na transmissão dos lotes.</div>
+			<div style="margin-top: 4px; color: var(--text-2); font-size: 12px;">
+				Certifique-se de que os drivers do fabricante do token estejam instalados no seu sistema operacional.
+			</div>
 		</div>`)
 	} else {
 		fmt.Fprint(w, `<div class="flash flash-err" style="font-size: 13px;">
-			<strong>Atenção:</strong> Nenhum arquivo de certificado A1 foi carregado ainda.
+			<strong>Atenção:</strong> Nenhum tipo de certificado digital foi configurado ainda.
 		</div>`)
 	}
 }

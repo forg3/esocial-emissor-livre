@@ -3,7 +3,7 @@
   <!-- CABEÇALHO DO PAINEL -->
   <div class="toolbar">
     <div>
-      <h1 style="margin: 0; font-size: var(--fs-2xl);">Painel de Controle SST</h1>
+      <h1 style="margin: 0; font-size: var(--fs-2xl);">Painel de Controle eSocial</h1>
       <p class="muted" style="margin: 4px 0 0;">
         Ambiente: <strong>{{ if eq .Config.Ambiente 1 }}Produção Oficial (Governo Federal){{ else }}Produção Restrita (Testes / Homologação){{ end }}</strong>
         {{ if .Config.RazaoSocial }} • {{ .Config.RazaoSocial }}{{ end }}
@@ -14,9 +14,9 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
         <span>Fila de Transmissão</span>
       </a>
-      <a href="/eventos/s2240" class="btn btn-primario" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>Emitir S-2240</span>
+      <a href="/eventos" class="btn btn-primario" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path></svg>
+        <span>Catálogo Completo (36)</span>
       </a>
     </div>
   </div>
@@ -54,45 +54,251 @@
     </div>
   </div>
 
-  <!-- AÇÕES RÁPIDAS CORPORATIVAS -->
-  <div class="card" style="margin-bottom: var(--sp-5);">
-    <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); display: flex; align-items: center; gap: 8px;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      Ações Rápidas de Emissão SST
-    </h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px;">
-      <a href="/eventos/s2240" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
-        <div style="display: flex; flex-direction: column; text-align: left;">
-          <strong style="color: var(--navy);">S-2240 • Condições Ambientais</strong>
-          <span style="font-size: 11px; color: var(--text-2);">Agentes nocivos & Tabela 24</span>
-        </div>
-      </a>
+  <!-- SEÇÃO DE AÇÕES RÁPIDAS POR SETOR / DEPARTAMENTO (LAYOUT DO EVENTO RÁPIDO) -->
+  <div style="margin-bottom: var(--sp-5);">
+    <div class="toolbar" style="margin-bottom: var(--sp-3);">
+      <div>
+        <h2 style="margin: 0; font-size: var(--fs-lg); color: var(--navy); display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Ações Rápidas por Departamento Responsável
+        </h2>
+        <p class="muted" style="margin: 4px 0 0; font-size: var(--fs-xs);">
+          Emissão direta e validação preliminar dos eventos eSocial S-1.3 NT 07/2026 organizada por setor.
+        </p>
+      </div>
 
-      <a href="/eventos/s2210" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/eventos/s2210" hx-target="#conteudo" hx-push-url="true">
-        <div style="display: flex; flex-direction: column; text-align: left;">
-          <strong style="color: var(--navy);">S-2210 • Comunicação de CAT</strong>
-          <span style="font-size: 11px; color: var(--text-2);">Acidente de trabalho & CID</span>
-        </div>
+      <a href="/eventos" class="btn btn-outline btn-sm" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
+        <span>Ver Catálogo Geral (36)</span> &rarr;
       </a>
+    </div>
 
-      <a href="/eventos/s2220" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/eventos/s2220" hx-target="#conteudo" hx-push-url="true">
-        <div style="display: flex; flex-direction: column; text-align: left;">
-          <strong style="color: var(--navy);">S-2220 • Monitoramento da Saúde</strong>
-          <span style="font-size: 11px; color: var(--text-2);">Exames ocupacionais (ASO)</span>
-        </div>
-      </a>
+    <!-- 1. CAIXA SESMT -->
+    <div class="setor-card">
+      <div class="setor-card-header">
+        <h3 class="setor-card-titulo">
+          <span>🛡️</span> SESMT & Engenharia de Segurança
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">3 Eventos SST</span>
+      </div>
+      <div class="setor-grid-acoes">
+        <a href="/eventos/s2240" class="acao-rapida-btn" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2240 • Condições Ambientais</strong>
+          <span>Agentes nocivos & Tabela 24</span>
+        </a>
+        <a href="/eventos/novo/S-1005" class="acao-rapida-btn" hx-get="/eventos/novo/S-1005" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1005 • Estabelecimentos</strong>
+          <span>Obras & Unidades Operacionais</span>
+        </a>
+        <a href="/eventos/s2210" class="acao-rapida-btn" hx-get="/eventos/s2210" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2210 • Comunicação de CAT</strong>
+          <span>Acidente de trabalho & CID</span>
+        </a>
+        <a href="/colaboradores" class="acao-rapida-btn" hx-get="/colaboradores" hx-target="#conteudo" hx-push-url="true">
+          <strong>Importar Colaboradores</strong>
+          <span>Upload em lote via CSV</span>
+        </a>
+      </div>
+    </div>
 
-      <a href="/colaboradores" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/colaboradores" hx-target="#conteudo" hx-push-url="true">
-        <div style="display: flex; flex-direction: column; text-align: left;">
-          <strong style="color: var(--navy);">Importar Colaboradores</strong>
-          <span style="font-size: 11px; color: var(--text-2);">Upload em lote via CSV</span>
-        </div>
-      </a>
+    <!-- 2. CAIXA CLÍNICAS OCUPACIONAIS -->
+    <div class="setor-card">
+      <div class="setor-card-header">
+        <h3 class="setor-card-titulo">
+          <span>🩺</span> Clínicas de Medicina Ocupacional
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">1 Evento</span>
+      </div>
+      <div class="setor-grid-acoes">
+        <a href="/eventos/s2220" class="acao-rapida-btn" hx-get="/eventos/s2220" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2220 • Monitoramento da Saúde</strong>
+          <span>Exames ocupacionais & ASO</span>
+        </a>
+        <a href="/eventos/s2210" class="acao-rapida-btn" hx-get="/eventos/s2210" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2210 • CAT (Encaminhamento)</strong>
+          <span>Laudo e atestado médico da lesão</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. CAIXA RH / DP -->
+    <div class="setor-card">
+      <div class="setor-card-header">
+        <h3 class="setor-card-titulo">
+          <span>👥</span> Recursos Humanos & Departamento Pessoal
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">12 Eventos</span>
+      </div>
+      <div class="setor-grid-acoes">
+        <a href="/eventos/novo/S-2190" class="acao-rapida-btn" hx-get="/eventos/novo/S-2190" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2190 • Registro Preliminar</strong>
+          <span>Admissão simplificada de urgência</span>
+        </a>
+        <a href="/eventos/novo/S-2200" class="acao-rapida-btn" hx-get="/eventos/novo/S-2200" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2200 • Cadastramento Inicial</strong>
+          <span>Admissão formal e dados contratuais</span>
+        </a>
+        <a href="/eventos/novo/S-2205" class="acao-rapida-btn" hx-get="/eventos/novo/S-2205" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2205 • Alteração Cadastral</strong>
+          <span>Dados pessoais, estado civil e endereço</span>
+        </a>
+        <a href="/eventos/novo/S-2206" class="acao-rapida-btn" hx-get="/eventos/novo/S-2206" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2206 • Alteração Contratual</strong>
+          <span>Cargo, CBO, salário e jornada</span>
+        </a>
+        <a href="/eventos/novo/S-2230" class="acao-rapida-btn" hx-get="/eventos/novo/S-2230" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2230 • Afastamento Temporário</strong>
+          <span>Licenças, auxílio e atestados</span>
+        </a>
+        <a href="/eventos/novo/S-2231" class="acao-rapida-btn" hx-get="/eventos/novo/S-2231" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2231 • Cessão de Trabalhador</strong>
+          <span>Exercício em outro órgão público</span>
+        </a>
+        <a href="/eventos/novo/S-2298" class="acao-rapida-btn" hx-get="/eventos/novo/S-2298" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2298 • Reintegração</strong>
+          <span>Cumprimento de ordem judicial/anistia</span>
+        </a>
+        <a href="/eventos/novo/S-2299" class="acao-rapida-btn" hx-get="/eventos/novo/S-2299" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2299 • Desligamento</strong>
+          <span>Rescisão de contrato e verbas</span>
+        </a>
+        <a href="/eventos/novo/S-2300" class="acao-rapida-btn" hx-get="/eventos/novo/S-2300" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2300 • Início de TSVE</strong>
+          <span>Trabalhador sem vínculo / Estágio</span>
+        </a>
+        <a href="/eventos/novo/S-2306" class="acao-rapida-btn" hx-get="/eventos/novo/S-2306" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2306 • Alteração TSVE</strong>
+          <span>Modificação em contrato de estágio</span>
+        </a>
+        <a href="/eventos/novo/S-2399" class="acao-rapida-btn" hx-get="/eventos/novo/S-2399" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2399 • Término de TSVE</strong>
+          <span>Encerramento de estágio / avulso</span>
+        </a>
+        <a href="/eventos/novo/S-3000" class="acao-rapida-btn" hx-get="/eventos/novo/S-3000" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-3000 • Exclusão de Eventos</strong>
+          <span>Tornar sem efeito evento anterior</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4. CAIXA CONTABILIDADE, FINANCEIRO & FOLHA -->
+    <div class="setor-card">
+      <div class="setor-card-header">
+        <h3 class="setor-card-titulo">
+          <span>💰</span> Contabilidade, Financeiro & Folha de Pagamento
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">10 Eventos</span>
+      </div>
+      <div class="setor-grid-acoes">
+        <a href="/eventos/novo/S-1000" class="acao-rapida-btn" hx-get="/eventos/novo/S-1000" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1000 • Informações do Empregador</strong>
+          <span>Dados cadastrais & Classificação tributária</span>
+        </a>
+        <a href="/eventos/novo/S-1010" class="acao-rapida-btn" hx-get="/eventos/novo/S-1010" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1010 • Tabela de Rubricas</strong>
+          <span>Proventos, descontos e incidências</span>
+        </a>
+        <a href="/eventos/novo/S-1020" class="acao-rapida-btn" hx-get="/eventos/novo/S-1020" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1020 • Lotações Tributárias</strong>
+          <span>Classificação tributária e FPAS</span>
+        </a>
+        <a href="/eventos/novo/S-1200" class="acao-rapida-btn" hx-get="/eventos/novo/S-1200" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1200 • Remuneração</strong>
+          <span>Folha mensal e bases de cálculo</span>
+        </a>
+        <a href="/eventos/novo/S-1210" class="acao-rapida-btn" hx-get="/eventos/novo/S-1210" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1210 • Pagamentos</strong>
+          <span>Quitação de rendimentos & IRRF</span>
+        </a>
+        <a href="/eventos/novo/S-1260" class="acao-rapida-btn" hx-get="/eventos/novo/S-1260" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1260 • Comercialização Rural</strong>
+          <span>Produção rural pessoa física</span>
+        </a>
+        <a href="/eventos/novo/S-1270" class="acao-rapida-btn" hx-get="/eventos/novo/S-1270" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1270 • Avulsos Não Portuários</strong>
+          <span>Contratação e encargos sindicais</span>
+        </a>
+        <a href="/eventos/novo/S-1280" class="acao-rapida-btn" hx-get="/eventos/novo/S-1280" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1280 • Informações Complementares</strong>
+          <span>Desoneração da folha e isenções</span>
+        </a>
+        <a href="/eventos/novo/S-1298" class="acao-rapida-btn" hx-get="/eventos/novo/S-1298" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1298 • Reabertura de Periódicos</strong>
+          <span>Retificação de folha já fechada</span>
+        </a>
+        <a href="/eventos/novo/S-1299" class="acao-rapida-btn" hx-get="/eventos/novo/S-1299" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1299 • Fechamento de Periódicos</strong>
+          <span>Totalização e encerramento mensal</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5. CAIXA JURÍDICO -->
+    <div class="setor-card">
+      <div class="setor-card-header">
+        <h3 class="setor-card-titulo">
+          <span>⚖️</span> Jurídico & Contencioso
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">2 Eventos</span>
+      </div>
+      <div class="setor-grid-acoes">
+        <a href="/eventos/novo/S-1070" class="acao-rapida-btn" hx-get="/eventos/novo/S-1070" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1070 • Processos Judiciais/Admin</strong>
+          <span>Suspensão de exigibilidade tributária</span>
+        </a>
+        <a href="/eventos/novo/S-8200" class="acao-rapida-btn" hx-get="/eventos/novo/S-8200" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-8200 • Anotação Judicial</strong>
+          <span>Decisões de reclamatórias trabalhistas</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 6. CAIXA RPPS / SETOR PÚBLICO -->
+    <div class="setor-card">
+      <div class="setor-card-header">
+        <h3 class="setor-card-titulo">
+          <span>🏛️</span> Regime Próprio / Setor Público (RPPS)
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">8 Eventos</span>
+      </div>
+      <div class="setor-grid-acoes">
+        <a href="/eventos/novo/S-1202" class="acao-rapida-btn" hx-get="/eventos/novo/S-1202" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1202 • Remuneração RPPS</strong>
+          <span>Folha mensal de servidores estatutários</span>
+        </a>
+        <a href="/eventos/novo/S-1207" class="acao-rapida-btn" hx-get="/eventos/novo/S-1207" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-1207 • Benefícios RPPS</strong>
+          <span>Folha de aposentadorias e pensões</span>
+        </a>
+        <a href="/eventos/novo/S-2400" class="acao-rapida-btn" hx-get="/eventos/novo/S-2400" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2400 • Cadastro de Beneficiário</strong>
+          <span>Início de pensão ou aposentadoria RPPS</span>
+        </a>
+        <a href="/eventos/novo/S-2405" class="acao-rapida-btn" hx-get="/eventos/novo/S-2405" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2405 • Alteração Beneficiário</strong>
+          <span>Atualização cadastral do beneficiário</span>
+        </a>
+        <a href="/eventos/novo/S-2410" class="acao-rapida-btn" hx-get="/eventos/novo/S-2410" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2410 • Cadastro de Benefício</strong>
+          <span>Concessão de proventos no RPPS</span>
+        </a>
+        <a href="/eventos/novo/S-2416" class="acao-rapida-btn" hx-get="/eventos/novo/S-2416" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2416 • Alteração de Benefício</strong>
+          <span>Revisão ou reajuste de benefício RPPS</span>
+        </a>
+        <a href="/eventos/novo/S-2418" class="acao-rapida-btn" hx-get="/eventos/novo/S-2418" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2418 • Reativação de Benefício</strong>
+          <span>Restabelecimento de pagamento RPPS</span>
+        </a>
+        <a href="/eventos/novo/S-2420" class="acao-rapida-btn" hx-get="/eventos/novo/S-2420" hx-target="#conteudo" hx-push-url="true">
+          <strong>S-2420 • Término de Benefício</strong>
+          <span>Extinção de aposentadoria ou pensão</span>
+        </a>
+      </div>
     </div>
   </div>
 
   <!-- TABELA DE EVENTOS RECENTES -->
-  <div class="card">
+  <div class="card" style="margin-bottom: var(--sp-5);">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-3);">
       <h3 style="margin: 0; font-size: var(--fs-base);">Últimos Eventos Gerados</h3>
       <a href="/fila" class="muted" style="font-size: var(--fs-xs); font-weight: 600;" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">Ver todos na fila &rarr;</a>
@@ -154,115 +360,34 @@
         <line x1="12" y1="17" x2="12" y2="21"></line>
       </svg>
       <p style="margin: 8px 0 4px; font-weight: 600;">Nenhum evento gerado ainda.</p>
-      <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Cadastre seus colaboradores ou emita um evento do catálogo abaixo para começar.</p>
+      <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Selecione uma ação rápida acima ou consulte o catálogo completo para iniciar.</p>
     </div>
     {{ end }}
   </div>
 
-  <!-- SEÇÃO DE DESTAQUE: CATÁLOGO COMPLETO DE TODOS OS 36 EVENTOS S-1.3 POR DEPARTAMENTO -->
-  <div style="margin-top: var(--sp-6);">
-    <div class="toolbar" style="margin-bottom: var(--sp-3);">
-      <div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="badge info" style="font-weight: 800; font-size: 11px;">eSocial S-1.3 NT 07/2026</span>
-          <h2 style="margin: 0; font-size: var(--fs-xl); color: var(--navy);">Catálogo Geral de Obrigações (36 Eventos)</h2>
-        </div>
-        <p class="muted" style="margin: 4px 0 0;">
-          Estrutura completa organizada por departamento responsável com prazos legais e emissor direto.
-        </p>
-      </div>
-
-      <div style="display: flex; gap: 8px;">
-        <a href="/eventos" class="btn btn-outline btn-sm" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
-          Ver Catálogo Completo &rarr;
-        </a>
-      </div>
-    </div>
-
-    <!-- FILTROS RÁPIDOS POR DEPARTAMENTO NO DASHBOARD -->
-    <div class="card" style="margin-bottom: var(--sp-4); padding: var(--sp-3);">
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-          <div style="display: flex; gap: 8px; align-items: center; flex: 1; min-width: 280px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-2);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="search" id="filtro-busca-dashboard" name="q" placeholder="Pesquisar por código (ex: S-2240, S-1000) ou termo..." style="flex: 1; height: 36px; padding: 0 12px; font-size: var(--fs-sm); border: 1px solid var(--border); border-radius: var(--radius);"
-                   hx-get="/eventos/catalogo-filtro" hx-trigger="keyup changed delay:250ms, search" hx-target="#catalogo-dashboard-grid" hx-include="#filtro-grupo-dashboard">
-            <input type="hidden" id="filtro-grupo-dashboard" name="grupo" value="todos">
-          </div>
-          <span class="muted" style="font-size: var(--fs-xs);">36 Eventos Oficiais S-1.3</span>
-        </div>
-
-        <div class="filtros" style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button type="button" class="btn btn-outline btn-sm btn-primario" onclick="filtrarGrupoDash(this, 'todos')">
-            Todos (36)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'SESMT & Engenharia de Segurança')">
-            🛡️ SESMT & Segurança (3)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Clínicas de Medicina Ocupacional')">
-            🩺 Clínicas Ocupacionais (1)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Recursos Humanos & Departamento Pessoal')">
-            👥 RH & DP (12)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Contabilidade, Financeiro & Folha')">
-            💰 Folha & Contábil (10)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Jurídico')">
-            ⚖️ Jurídico (2)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Regime Próprio / Setor Público (RPPS)')">
-            🏛️ RPPS / Setor Público (8)
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- GRID DE CARDS DO CATÁLOGO NO DASHBOARD -->
-    <div id="catalogo-dashboard-grid">
-      {{ template "catalogo_eventos" . }}
-    </div>
-  </div>
-
-  <script>
-  function filtrarGrupoDash(btn, grupo) {
-    document.querySelectorAll('.filtros button').forEach(function(b) {
-      b.classList.remove('btn-primario');
-    });
-    btn.classList.add('btn-primario');
-    document.getElementById('filtro-grupo-dashboard').value = grupo;
-    
-    var q = document.getElementById('filtro-busca-dashboard').value;
-    htmx.ajax('GET', '/eventos/catalogo-filtro?grupo=' + encodeURIComponent(grupo) + '&q=' + encodeURIComponent(q), {
-      target: '#catalogo-dashboard-grid',
-      swap: 'innerHTML'
-    });
-  }
-  </script>
-
-  <!-- CARD INFORMATIVO DE CONFORMIDADE SST -->
-  <div class="grid-2" style="margin-top: var(--sp-4);">
+  <!-- CARD INFORMATIVO DE CONFORMIDADE E PRIVACIDADE -->
+  <div class="grid-2">
     <div class="card" style="border-left: 3px solid var(--ch-600);">
-      <h4 style="margin: 0 0 8px; font-size: var(--fs-sm); color: var(--navy);">eSocial S-1.3 • Eventos SST Obrigatórios</h4>
+      <h4 style="margin: 0 0 8px; font-size: var(--fs-sm); color: var(--navy);">eSocial S-1.3 • Conformidade Oficial NT 07/2026</h4>
       <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.6; margin: 0 0 8px;">
-        Emissor livre para atendimento completo às exigências legais da Portaria MTP nº 4.075 e regras vigentes do eSocial.
+        Validador e emissor autônomo com suporte integral aos 36 eventos governamentais e esquemas XSD oficiais.
       </p>
       <ul style="font-size: var(--fs-xs); color: var(--text-2); padding-left: 18px; margin: 0; line-height: 1.6;">
-        <li><strong>S-2210 (CAT):</strong> Prazo até o 1º dia útil seguinte ao acidente (ou imediatamente em caso de óbito).</li>
-        <li><strong>S-2220 (ASO):</strong> Prazo até o dia 15 do mês subsequente à emissão do atestado de saúde.</li>
-        <li><strong>S-2240 (Condições Ambientais):</strong> Registro de riscos nocivos e ausência de risco (código 09.01.001).</li>
+        <li><strong>Eventos SST:</strong> S-2210 (CAT), S-2220 (ASO) e S-2240 (Condições Ambientais).</li>
+        <li><strong>Folha e Periódicos:</strong> S-1200 (Remuneração), S-1210 (Pagamentos) e S-1299 (Fechamento).</li>
+        <li><strong>Validação Pré-Transmissão:</strong> Auditoria offline de regras e schemas governamentais antes do envio SOAP.</li>
       </ul>
     </div>
 
     <div class="card" style="border-left: 3px solid var(--info);">
-      <h4 style="margin: 0 0 8px; font-size: var(--fs-sm); color: var(--navy);">Segurança e Privacidade de Dados</h4>
+      <h4 style="margin: 0 0 8px; font-size: var(--fs-sm); color: var(--navy);">Segurança, Portabilidade & Privacidade Local</h4>
       <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.6; margin: 0 0 8px;">
-        Este software opera de forma 100% autônoma na sua máquina local:
+        Este software opera de forma 100% autônoma e local na sua máquina:
       </p>
       <ul style="font-size: var(--fs-xs); color: var(--text-2); padding-left: 18px; margin: 0; line-height: 1.6;">
-        <li>Nenhum dado de colaboradores ou empresa é enviado para servidores de terceiros.</li>
-        <li>O Certificado Digital A1 é mantido no armazenamento local criptografado.</li>
-        <li>A comunicação com o eSocial é estabelecida diretamente entre seu computador e o Serpro/Receita Federal.</li>
+        <li>Nenhum dado cadastral ou folha de pagamento é enviado para servidores intermediários.</li>
+        <li>Certificados A1/A3 permanecem isolados na sua estação local sem trânsito em nuvem.</li>
+        <li>A transmissão para o eSocial conecta-se diretamente aos servidores oficiais do Serpro / Receita Federal.</li>
       </ul>
     </div>
   </div>

@@ -115,7 +115,7 @@ func TestDashboardHTMXPartial(t *testing.T) {
 	if strings.Contains(body, "<!DOCTYPE html>") {
 		t.Errorf("resposta parcial HTMX não deveria incluir a tag <!DOCTYPE html>")
 	}
-	if !strings.Contains(body, "Painel de Controle SST") {
+	if !strings.Contains(body, "Painel de Controle") {
 		t.Errorf("resposta HTMX deve conter o conteúdo do dashboard")
 	}
 }

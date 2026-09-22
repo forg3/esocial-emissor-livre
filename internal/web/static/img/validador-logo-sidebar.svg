@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="600" viewBox="0 0 1800 600">
+  <defs>
+    <linearGradient id="paperTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EAF6FF"/>
+      <stop offset="1" stop-color="#C9E6F8"/>
+    </linearGradient>
+    <linearGradient id="paperFront" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F1F7FB"/>
+    </linearGradient>
+    <linearGradient id="blueSide" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#005CA9"/>
+      <stop offset="1" stop-color="#00447E"/>
+    </linearGradient>
+    <linearGradient id="tealTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17C7C8"/>
+      <stop offset="1" stop-color="#00A6B6"/>
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#003B67" flood-opacity="0.20"/>
+    </filter>
+    <filter id="badgeShadow" x="-40%" y="-40%" width="180%" height="190%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#007C86" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- ICON -->
+  <g transform="translate(70,75)" filter="url(#softShadow)">
+    <!-- Back document -->
+    <g transform="translate(-28,-20)">
+      <polygon points="86,36 258,86 216,106 44,56" fill="#0B4E86"/>
+      <polygon points="44,56 216,106 216,340 44,290" fill="#0A467A"/>
+      <polygon points="216,106 258,86 258,320 216,340" fill="#07365D"/>
+      <polygon points="44,56 86,36 258,86 216,106" fill="#146EA9"/>
+    </g>
+
+    <!-- Middle document -->
+    <g transform="translate(-12,-8)">
+      <polygon points="86,36 258,86 216,106 44,56" fill="#167EBC"/>
+      <polygon points="44,56 216,106 216,340 44,290" fill="#0D66A6"/>
+      <polygon points="216,106 258,86 258,320 216,340" fill="#084F82"/>
+      <polygon points="44,56 86,36 258,86 216,106" fill="#2B93CB"/>
+    </g>
+
+    <!-- Front document -->
+    <g>
+      <polygon points="86,36 258,86 216,106 44,56" fill="url(#paperTop)"/>
+      <polygon points="44,56 216,106 216,340 44,290" fill="url(#paperFront)"/>
+      <polygon points="216,106 258,86 258,320 216,340" fill="url(#blueSide)"/>
+
+      <!-- Document fold -->
+      <polygon points="184,76 216,106 184,97" fill="#D8EAF5"/>
+      <polygon points="184,76 184,97 216,106" fill="#B8D8EA"/>
+
+      <!-- Content lines -->
+      <g transform="translate(78,126) skewY(16)">
+        <rect x="0" y="0" width="88" height="14" rx="7" fill="#0B5D96"/>
+        <rect x="0" y="34" width="112" height="10" rx="5" fill="#8EB8D3"/>
+        <rect x="0" y="62" width="98" height="10" rx="5" fill="#8EB8D3"/>
+        <rect x="0" y="90" width="76" height="10" rx="5" fill="#B1CADB"/>
+      </g>
+
+      <!-- Check badge / cube -->
+      <g transform="translate(157,238)" filter="url(#badgeShadow)">
+        <polygon points="0,22 52,4 104,22 52,40" fill="url(#tealTop)"/>
+        <polygon points="0,22 52,40 52,94 0,76" fill="#008E9A"/>
+        <polygon points="52,40 104,22 104,76 52,94" fill="#007684"/>
+        <path d="M24 53 L44 70 L81 38" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- WORDMARK -->
+  <g transform="translate(575,160)">
+    <text x="0" y="155"
+          font-family="Inter, Arial, sans-serif"
+          font-size="148"
+          font-weight="700"
+          letter-spacing="-4"
+          fill="#FFFFFF">Validador</text>
+    <text x="3" y="300"
+          font-family="Inter, Arial, sans-serif"
+          font-size="124"
+          font-weight="500"
+          letter-spacing="-2"
+          fill="#17C7C8">eSocial</text>
+  </g>
+</svg>
