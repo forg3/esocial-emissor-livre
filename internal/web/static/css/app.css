@@ -14,34 +14,52 @@
   src: url("/static/fonts/geist-latin.woff2") format("woff2"); }
 
 :root {
-  /* marca */
-  --navy-deep: #0B1426;
-  --navy: #111C33;
-  --navy-2: #1C2B4A;
-  --ch-300: #EED9AE; --ch-400: #DEC084; --ch-600: #B99B5A; --ch-700: #8A6D2B; --ch-800: #6F5620;
-  --silver: #E8E6E1;
+  /* Marca e Identidade Oficial Validador eSocial */
+  --navy-deep: #061A30;
+  --navy: #0A2E52;
+  --navy-2: #0E3D6E;
+  --navy-light: #16538C;
 
-  /* superfícies e texto (tema claro) */
-  --bg: #F8FAFC;
+  /* Ciano / Teal oficial */
+  --teal-300: #7FE5EC;
+  --teal-400: #17C7C8;
+  --teal-500: #00A6B6;
+  --teal-600: #008E9A;
+  --teal-700: #007684;
+  --teal-800: #005662;
+  --teal-soft: #E6F8FA;
+
+  /* Aliases para compatibilidade de componentes existentes */
+  --ch-300: #7FE5EC;
+  --ch-400: #17C7C8;
+  --ch-600: #00A6B6;
+  --ch-700: #007684;
+  --ch-800: #005662;
+  --silver: #E1EDF5;
+
+  /* superfícies e texto (tema claro limpo e data-dense) */
+  --bg: #F4F8FB;
   --surface: #FFFFFF;
-  --surface-2: #F1F5F9;
-  --border: #E2E8F0;
-  --text: #0F172A;
-  --text-2: #5B6B80;   /* Gray 500 do book (#64748B) dá 4,3:1 sobre --surface-2; este dá 5,0:1 */
+  --surface-2: #EDF4F9;
+  --surface-ice: #E8F3FA;
+  --border: #D2E3EF;
+  --text: #0A2E52;
+  --text-2: #486581;
 
-  /* ação */
-  --primary: #111C33;
-  --primary-hover: #1C2B4A;
-  --primary-texto: #EED9AE;
-  --link: #6F5620;
+  /* ação e botões */
+  --primary: #0A2E52;
+  --primary-hover: #00A6B6;
+  --primary-texto: #FFFFFF;
+  --link: #007684;
+  --accent: #00A6B6;
+  --accent-hover: #17C7C8;
 
-  /* estados: a cor pura serve a bordas e pontos; texto usa a variante -text
-     (#F59E0B sobre branco tem 2,1:1) */
+  /* estados operacionais regulamentares */
   --ok: #10B981;      --ok-soft: #D1FAE5;    --ok-text: #065F46;
   --warn: #F59E0B;    --warn-soft: #FEF3C7;  --warn-text: #92400E;
   --err: #EF4444;     --err-soft: #FEE2E2;   --err-text: #991B1B;   --err-solid: #B91C1C;
-  --info: #3B82F6;    --info-soft: #DBEAFE;  --info-text: #1E40AF;
-  --neutral-soft: #F1F5F9;
+  --info: #00A6B6;    --info-soft: #E0F7F9;  --info-text: #006D77;
+  --neutral-soft: #EDF4F9;
 
   /* densidade dashboard */
   --sidebar-w: 240px;
