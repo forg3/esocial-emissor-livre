@@ -272,6 +272,10 @@ func (d *DB) SalvarEvento(e *Evento) error {
 	defer d.mu.Unlock()
 
 	agora := time.Now().Format(time.RFC3339)
+	var colabID any
+	if e.ColaboradorID != "" {
+		colabID = e.ColaboradorID
+	}
 	_, err := d.conn.Exec(`
 		INSERT INTO evento (id, tipo, colaborador_id, ambiente, status, xml_gerado, xml_assinado, protocolo, recibo, mensagem_retorno, criado_em, atualizado_em)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -283,7 +287,7 @@ func (d *DB) SalvarEvento(e *Evento) error {
 			recibo = excluded.recibo,
 			mensagem_retorno = excluded.mensagem_retorno,
 			atualizado_em = excluded.atualizado_em
-	`, e.ID, e.Tipo, e.ColaboradorID, e.Ambiente, e.Status, e.XMLGerado, e.XMLAssinado, e.Protocolo, e.Recibo, e.MensagemRetorno, agora, agora)
+	`, e.ID, e.Tipo, colabID, e.Ambiente, e.Status, e.XMLGerado, e.XMLAssinado, e.Protocolo, e.Recibo, e.MensagemRetorno, agora, agora)
 	return err
 }
 

@@ -374,3 +374,122 @@ func TestAPIsBuscaRiscosECBOs(t *testing.T) {
 		t.Errorf("busca por 'eletricista' deveria retornar itens de CBO")
 	}
 }
+
+func TestCatalogoEventosECategorias(t *testing.T) {
+	srv, _, cleanup := prepararServidorTeste(t)
+	defer cleanup()
+
+	handler := srv.Rotas()
+
+	// 1. GET /eventos (Catálogo completo)
+	req := httptest.NewRequest("GET", "/eventos", nil)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("GET /eventos falhou: %d", rec.Code)
+	}
+
+	body := rec.Body.String()
+	if !strings.Contains(body, "Catálogo Oficial de Eventos") {
+		t.Errorf("resposta não contém título do catálogo")
+	}
+	if !strings.Contains(body, "SESMT") {
+		t.Errorf("resposta não contém o grupo SESMT")
+	}
+	if !strings.Contains(body, "S-1000") || !strings.Contains(body, "S-2240") || !strings.Contains(body, "S-1200") {
+		t.Errorf("catálogo não listou eventos esperados (S-1000, S-2240, S-1200)")
+	}
+
+	// 2. Filtro por Grupo via HTMX
+	reqFiltro := httptest.NewRequest("GET", "/eventos/catalogo-filtro?grupo=SESMT", nil)
+	recFiltro := httptest.NewRecorder()
+	handler.ServeHTTP(recFiltro, reqFiltro)
+
+	if recFiltro.Code != http.StatusOK {
+		t.Fatalf("GET /eventos/catalogo-filtro falhou: %d", recFiltro.Code)
+	}
+	filtroBody := recFiltro.Body.String()
+	if !strings.Contains(filtroBody, "S-2240") {
+		t.Errorf("filtro do SESMT deveria conter S-2240")
+	}
+
+	// 3. Filtro por Busca textual
+	reqBusca := httptest.NewRequest("GET", "/eventos/catalogo-filtro?q=S-1010", nil)
+	recBusca := httptest.NewRecorder()
+	handler.ServeHTTP(recBusca, reqBusca)
+
+	if recBusca.Code != http.StatusOK {
+		t.Fatalf("GET /eventos/catalogo-filtro com busca falhou: %d", recBusca.Code)
+	}
+	if !strings.Contains(recBusca.Body.String(), "S-1010") {
+		t.Errorf("busca por S-1010 falhou em retornar o evento")
+	}
+}
+
+func TestEditorGenerico(t *testing.T) {
+	srv, db, cleanup := prepararServidorTeste(t)
+	defer cleanup()
+
+	handler := srv.Rotas()
+
+	// 1. Abertura do editor genérico para S-1000
+	reqNovo := httptest.NewRequest("GET", "/eventos/novo/S-1000", nil)
+	recNovo := httptest.NewRecorder()
+	handler.ServeHTTP(recNovo, reqNovo)
+
+	if recNovo.Code != http.StatusOK {
+		t.Fatalf("GET /eventos/novo/S-1000 falhou: %d", recNovo.Code)
+	}
+
+	body := recNovo.Body.String()
+	if !strings.Contains(body, "S-1000") {
+		t.Errorf("editor não contém o código S-1000")
+	}
+	if !strings.Contains(body, "evtInfoEmpregador") {
+		t.Errorf("editor genérico não pré-carregou o XML do S-1000")
+	}
+
+	// 2. Salva evento genérico
+	xmlConteudo := `<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_03_00">
+  <evtInfoEmpregador Id="ID1000000000000002026092212000000001">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>1.0.0</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678000190</nrInsc></ideEmpregador>
+    <infoEmpregador><inclusao><idePeriodo><iniValid>2026-01</iniValid></idePeriodo><infoCadastro><classTrib>01</classTrib></infoCadastro></inclusao></infoEmpregador>
+  </evtInfoEmpregador>
+</eSocial>`
+
+	form := url.Values{}
+	form.Set("codigo_evento", "S-1000")
+	form.Set("xml_conteudo", xmlConteudo)
+
+	reqSalvar := httptest.NewRequest("POST", "/eventos/salvar-generico", strings.NewReader(form.Encode()))
+	reqSalvar.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	recSalvar := httptest.NewRecorder()
+	handler.ServeHTTP(recSalvar, reqSalvar)
+
+	if recSalvar.Code != http.StatusOK {
+		t.Fatalf("POST /eventos/salvar-generico falhou: %d", recSalvar.Code)
+	}
+
+	// Verifica se foi gravado na fila
+	eventos, err := db.ListarEventos()
+	if err != nil || len(eventos) == 0 {
+		t.Fatalf("evento genérico S-1000 não foi salvo no banco: %v", err)
+	}
+
+	encontrado := false
+	for _, e := range eventos {
+		if e.Tipo == "S-1000" {
+			encontrado = true
+			if e.Status != "pronto" {
+				t.Errorf("status esperado 'pronto', obtido '%s'", e.Status)
+			}
+		}
+	}
+	if !encontrado {
+		t.Errorf("evento S-1000 não encontrado na lista de eventos gravados")
+	}
+}
+

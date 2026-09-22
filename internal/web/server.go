@@ -126,6 +126,35 @@ func (s *Servidor) carregarTemplates() error {
 				return status
 			}
 		},
+		"iconeEvento": func(codigo, grupo string) string {
+			switch {
+			case codigo == "S-2240":
+				return "⚠️"
+			case codigo == "S-2210":
+				return "🚨"
+			case codigo == "S-2220":
+				return "🩺"
+			case codigo == "S-1005":
+				return "🛡️"
+			case strings.Contains(grupo, "SESMT"):
+				return "🛡️"
+			case strings.Contains(grupo, "Clínica"):
+				return "🩺"
+			case strings.Contains(grupo, "RH"):
+				return "👥"
+			case strings.Contains(grupo, "Folha") || strings.Contains(grupo, "Contabilidade"):
+				return "💰"
+			case strings.Contains(grupo, "Jurídico"):
+				return "⚖️"
+			case strings.Contains(grupo, "RPPS"):
+				return "🏛️"
+			default:
+				return "📄"
+			}
+		},
+		"isObrigSST": func(codigo string) bool {
+			return codigo == "S-2240" || codigo == "S-2220" || codigo == "S-2210" || codigo == "S-1005"
+		},
 	}
 
 	paginas := []string{
@@ -1072,6 +1101,28 @@ func (s *Servidor) handleNovoEventoGenerico(w http.ResponseWriter, r *http.Reque
 	hojeMes := time.Now().Format("2006-01")
 
 	xmlPreenchido := evt.TemplateXML
+	// Substituições formato maiúsculo
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{ID}}", idEvt)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{IND_RETIF}}", "1")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{TP_AMB}}", strconv.Itoa(cfg.Ambiente))
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{PROC_EMI}}", "1")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{VER_PROC}}", "1.0.0")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{TP_INSC}}", "1")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{NR_INSC}}", cfg.CNPJ)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{CPF_TRAB}}", "00000000000")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{CPF_BENEF}}", "00000000000")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{MATRICULA}}", "MAT-001")
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_INICIO}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_ADM}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_ACID}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_ASO}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_ALTERACAO}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_DESLIG}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{DT_TERMINO}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{INI_VALID}}", hojeMes)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{PER_APUR}}", hojeMes)
+
+	// Substituições formato dot-notation
 	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.ID}}", idEvt)
 	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.CNPJ}}", cfg.CNPJ)
 	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.Ambiente}}", strconv.Itoa(cfg.Ambiente))
