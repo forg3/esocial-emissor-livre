@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ if .Titulo }}{{ .Titulo }} | {{ end }}eSocial Emissor Livre</title>
+  <title>{{ if .Titulo }}{{ .Titulo }} | {{ end }}Validador eSocial</title>
+  <link rel="icon" type="image/png" href="/static/img/favicon.png">
   <link rel="stylesheet" href="/static/css/app.css">
   <script src="/static/js/htmx.min.js"></script>
 </head>
@@ -11,9 +12,12 @@
   <div class="shell">
     <!-- BARRA LATERAL -->
     <aside class="sidebar">
-      <a href="/" class="logo" hx-get="/" hx-target="#conteudo" hx-push-url="true" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 3px; border-bottom: 1px solid rgba(255,255,255,0.08); text-decoration: none;">
-        <span style="font-size: 15px; font-weight: 800; letter-spacing: 0.04em; color: #FFFFFF;">eSocial Emissor Livre</span>
-        <span style="font-size: 10px; color: var(--ch-400); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">Software Aberto &middot; FOSS</span>
+      <a href="/" class="logo" hx-get="/" hx-target="#conteudo" hx-push-url="true" style="padding: 14px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); text-decoration: none;">
+        <img src="/static/img/logo-icon.png" alt="Validador eSocial" style="height: 38px; width: auto; object-fit: contain; flex: none;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 15px; font-weight: 800; letter-spacing: 0.03em; color: #FFFFFF;">Validador eSocial</span>
+          <span style="font-size: 10px; color: var(--ch-400); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">Conformidade &middot; FOSS</span>
+        </div>
       </a>
 
       <nav>
@@ -130,7 +134,7 @@
             <span>Voltar</span>
           </button>
           <div class="breadcrumb" style="display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm);">
-            <a href="/" hx-get="/" hx-target="#conteudo" hx-push-url="true" style="color: var(--text-2); text-decoration: none; font-weight: 600; transition: color 150ms ease;" onmouseover="this.style.color='var(--ch-700)'" onmouseout="this.style.color='var(--text-2)'">eSocial Emissor Livre</a>
+            <a href="/" hx-get="/" hx-target="#conteudo" hx-push-url="true" style="color: var(--text-2); text-decoration: none; font-weight: 600; transition: color 150ms ease;" onmouseover="this.style.color='var(--ch-700)'" onmouseout="this.style.color='var(--text-2)'">Validador eSocial</a>
             <span style="color: var(--text-2); opacity: 0.5;">/</span>
             <strong>{{ if .Titulo }}{{ .Titulo }}{{ else }}Painel{{ end }}</strong>
           </div>

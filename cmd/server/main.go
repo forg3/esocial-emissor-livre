@@ -7,8 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -16,9 +18,25 @@ import (
 	"github.com/forg3/esocial-emissor-livre/internal/web"
 )
 
+func abrirNavegador(url string) {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	case "darwin":
+		cmd = exec.Command("open", url)
+	default:
+		cmd = exec.Command("xdg-open", url)
+	}
+	if err := cmd.Start(); err != nil {
+		log.Printf("Aviso: abertura automática do navegador não suportada neste ambiente: %v", err)
+	}
+}
+
 func main() {
-	porta := flag.Int("porta", 8080, "Porta HTTP do servidor web")
+	porta := flag.Int("porta", 8000, "Porta HTTP do servidor web")
 	dadosDir := flag.String("dados", "./dados", "Diretório de dados e banco SQLite local")
+	semNavegador := flag.Bool("sem-navegador", false, "Não abrir o navegador automaticamente")
 	flag.Parse()
 
 	dbPath := filepath.Join(*dadosDir, "esocial.db")
@@ -41,13 +59,23 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
+	urlAcesso := fmt.Sprintf("http://localhost:%d", *porta)
+
 	go func() {
 		log.Printf("=======================================================")
-		log.Printf("  eSocial Emissor Livre - Servidor Web Ativo")
-		log.Printf("  Interface: http://localhost:%d", *porta)
+		log.Printf("  Validador eSocial - Servidor Web Ativo")
+		log.Printf("  Interface: %s", urlAcesso)
 		log.Printf("  Banco de dados: %s", dbPath)
 		log.Printf("  Pressione Ctrl+C para encerrar com segurança.")
 		log.Printf("=======================================================")
+
+		if !*semNavegador {
+			go func() {
+				time.Sleep(350 * time.Millisecond)
+				abrirNavegador(urlAcesso)
+			}()
+		}
+
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Falha crítica no servidor HTTP: %v", err)
 		}

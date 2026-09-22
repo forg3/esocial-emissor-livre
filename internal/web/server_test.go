@@ -83,8 +83,8 @@ func TestDashboard(t *testing.T) {
 	}
 
 	body := rec.Body.String()
-	if !strings.Contains(body, "eSocial Emissor Livre") {
-		t.Errorf("dashboard não contém a marca eSocial Emissor Livre")
+	if !strings.Contains(body, "Validador eSocial") {
+		t.Errorf("dashboard não contém a marca Validador eSocial")
 	}
 	if !strings.Contains(body, "Painel de Controle") {
 		t.Errorf("dashboard não contém o título do painel")

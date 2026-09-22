@@ -1,11 +1,14 @@
-# eSocial Emissor Livre
+# Validador eSocial
+
+<p align="center">
+  <img src="internal/web/static/img/logo-icon.png" alt="Validador eSocial" width="120">
+</p>
 
 [![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
 [![FOSS](https://img.shields.io/badge/FOSS-Free%20%26%20Open%20Source-green.svg)](https://en.wikipedia.org/wiki/Free_and_open-source_software)
 [![Open Source](https://img.shields.io/badge/Open%20Source-%E2%99%A5-orange.svg)](https://opensource.org/)
 [![Go](https://img.shields.io/badge/Go-1.22+-00ADD8.svg?logo=go&logoColor=white)](https://golang.org/)
 [![HTMX](https://img.shields.io/badge/HTMX-2.0+-336699.svg)](https://htmx.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4+-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![eSocial](https://img.shields.io/badge/eSocial-Leiaute%20S--1.3-005CA9.svg)](https://www.gov.br/esocial/pt-br/documentacao-tecnica)
 
 Software web livre, leve e direto para elaboração, validação estrutural (XSD), assinatura digital (XMLDSig A1), transmissão via webservice oficial e auditoria de recibos dos eventos do **eSocial** (versão S-1.3).
@@ -14,21 +17,21 @@ Software web livre, leve e direto para elaboração, validação estrutural (XSD
 
 ## O que é
 
-O **eSocial Emissor Livre** é uma aplicação web autônoma desenvolvida em Go, Tailwind CSS e HTMX, concebida para que empresas, contadores, clínicas de SST e engenheiros de segurança possam manipular e transmitir eventos do eSocial diretamente ao governo federal (gov.br), sem a necessidade de softwares proprietários caros, plataformas engessadas ou assinaturas corporativas complexas.
+O **Validador eSocial** é uma aplicação web autônoma e portátil desenvolvida em Go e HTMX, concebida para que empresas, contadores, clínicas de SST e engenheiros de segurança possam manipular, validar e transmitir eventos do eSocial diretamente ao governo federal (gov.br), sem a necessidade de softwares proprietários caros, plataformas engessadas ou assinaturas corporativas complexas.
 
 ## Como usar
 
 ### Modo 1: Execução Nativa Portátil (Sem Instalar Nada)
 
-Você **não precisa ter o Go instalado** e não precisa de banco de dados ou dependências externas. O aplicativo é distribuído como um binário nativo único e auto-contido:
+Você **não precisa ter o Go instalado** e não precisa de banco de dados ou dependências externas. O aplicativo é distribuído como um binário nativo único e auto-contido. Ao ser iniciado, **abre automaticamente o seu navegador** no painel local:
 
-1. Acesse a página de [Releases](https://github.com/forg3/esocial-emissor-livre/releases/tag/v1.0-alpha).
+1. Acesse a página de [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.0-alpha).
 2. Baixe o pacote correspondente ao seu sistema operacional:
-   - **Windows (x86_64):** Extraia o arquivo `.zip` e execute `esocial-emissor-livre.exe`.
-   - **macOS Apple Silicon (M1/M2/M3/M4):** Baixe `esocial-emissor-livre-v1.0-alpha-darwin-arm64.tar.gz`, extraia e execute `./esocial-emissor-livre-darwin-arm64`.
-   - **macOS Intel (x86_64):** Baixe `esocial-emissor-livre-v1.0-alpha-darwin-amd64.tar.gz`, extraia e execute `./esocial-emissor-livre-darwin-amd64`.
-   - **Linux (x86_64):** Baixe `esocial-emissor-livre-v1.0-alpha-linux-amd64.tar.gz`, extraia e execute `./esocial-emissor-livre`.
-3. Abra seu navegador em `http://localhost:8080`.
+   - **Windows (x86_64):** Extraia o arquivo `.zip` e execute `validador-esocial.exe`.
+   - **macOS Apple Silicon (M1 / M2 / M3 / M4 / M5 / M6+):** Baixe `validador-esocial-v1.0-alpha-darwin-arm64.tar.gz`, extraia e execute `./validador-esocial-darwin-arm64`.
+   - **macOS Intel (x86_64):** Baixe `validador-esocial-v1.0-alpha-darwin-amd64.tar.gz`, extraia e execute `./validador-esocial-darwin-amd64`.
+   - **Linux (x86_64):** Baixe `validador-esocial-v1.0-alpha-linux-amd64.tar.gz`, extraia e execute `./validador-esocial`.
+3. O navegador será iniciado automaticamente em `http://localhost:8000`.
 
 ### Modo 2: A Partir do Código-Fonte (Para Desenvolvedores)
 
@@ -36,14 +39,14 @@ Se desejar compilar diretamente:
 
 ```bash
 # Clone o repositório
-git clone https://github.com/forg3/esocial-emissor-livre.git
-cd esocial-emissor-livre
+git clone https://github.com/forg3/validador-esocial.git
+cd validador-esocial
 
-# Inicie o serviço diretamente
+# Inicie o serviço diretamente (porta padrão 8000)
 go run cmd/server/main.go
 ```
 
-Acesse a interface no navegador em `http://localhost:8080`.
+Acesse a interface no navegador em `http://localhost:8000`.
 
 ---
 
