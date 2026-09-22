@@ -1,0 +1,113 @@
+{{ define "content" }}
+<div class="tela-editor-generico">
+  <div class="toolbar">
+    <div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">{{ iconeEvento .EventoInfo.Codigo .EventoInfo.Grupo }}</span>
+        <span class="badge info" style="font-weight: 800; font-size: 13px;">{{ .EventoInfo.Codigo }}</span>
+        <h1 style="margin: 0; font-size: var(--fs-2xl);">{{ .EventoInfo.Nome }}</h1>
+      </div>
+      <p class="muted" style="margin: 4px 0 0;">
+        Grupo: <strong>{{ .EventoInfo.Grupo }}</strong> • Categoria: <strong>{{ .EventoInfo.Categoria }}</strong>
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <a href="/eventos" class="btn btn-outline" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
+        &larr; Voltar ao Catálogo
+      </a>
+      <a href="/fila" class="btn btn-outline" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">
+        Fila de Transmissão
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD DE ORIENTAÇÃO LEGAL E PRAZO -->
+  <div class="card" style="margin-bottom: var(--sp-4); border-left: 3px solid var(--ch-600); background: var(--surface-2);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+      <div>
+        <h4 style="margin: 0 0 4px; font-size: var(--fs-sm); color: var(--navy);">Instruções Regulamentares e Prazo</h4>
+        <p style="font-size: var(--fs-xs); color: var(--text-2); margin: 0 0 6px; line-height: 1.5;">
+          {{ .EventoInfo.Descricao }}
+        </p>
+        <div style="font-size: var(--fs-xs); color: var(--text);">
+          📅 <strong>Prazo Oficial de Entrega:</strong> {{ .EventoInfo.Prazo }}
+        </div>
+      </div>
+      <div style="font-size: var(--fs-xs); color: var(--text-2); text-align: right;">
+        <div>Empregador: <strong>{{ if .Config.RazaoSocial }}{{ .Config.RazaoSocial }}{{ else }}Não configurado{{ end }}</strong></div>
+        <div class="mono">CNPJ: {{ if .Config.CNPJ }}{{ formatarCNPJ .Config.CNPJ }}{{ else }}--{{ end }}</div>
+        <div>Ambiente: <strong>{{ if eq .Config.Ambiente 1 }}1 - Produção Oficial{{ else }}2 - Produção Restrita{{ end }}</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO DE EMISSÃO -->
+  <form action="/eventos/salvar-generico" method="POST" hx-post="/eventos/salvar-generico" hx-target="#conteudo">
+    <input type="hidden" name="codigo_evento" value="{{ .EventoInfo.Codigo }}">
+
+    <!-- SELEÇÃO OPCIONAL DE TRABALHADOR -->
+    {{ if .Colaboradores }}
+    <div class="card" style="margin-bottom: var(--sp-4);">
+      <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+        Vincular Trabalhador (Opcional conforme o tipo de evento)
+      </h3>
+      <div class="form-grid" style="margin-top: var(--sp-3);">
+        <div class="campo" style="grid-column: span 2;">
+          <label for="colaborador_id">Colaborador</label>
+          <select id="colaborador_id" name="colaborador_id" onchange="atualizarColaboradorGenerico(this)">
+            <option value="">-- Nenhum colaborador (Evento de Empregador / Tabela / Avulso) --</option>
+            {{ range .Colaboradores }}
+            <option value="{{ .ID }}" data-cpf="{{ .CPF }}" data-nome="{{ .Nome }}">
+              {{ .Nome }} — CPF: {{ formatarCPF .CPF }}
+            </option>
+            {{ end }}
+          </select>
+          <span class="ajuda">Para eventos de tabela ou fechamento (S-1000, S-1005, S-1299), a seleção de trabalhador é dispensada.</span>
+        </div>
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- EDITOR XML COM SCHEMA S-1.3 -->
+    <div class="card" style="margin-bottom: var(--sp-4);">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+        <h3 style="margin: 0; font-size: var(--fs-base); color: var(--navy); display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          Estrutura do Documento XML (Leiaute S-1.3)
+        </h3>
+        <span class="muted" style="font-size: var(--fs-xs);">Edite diretamente ou utilize o modelo padrão</span>
+      </div>
+
+      <div class="campo" style="margin-top: var(--sp-3);">
+        <textarea id="xml_conteudo" name="xml_conteudo" class="xml-viewer" style="height: 380px; font-size: 12px;" required>{{ .XMLTemplatePreenchido }}</textarea>
+        <span class="ajuda">O XML gerado inclui as tags oficiais de identificação do evento, empregador e trabalhador.</span>
+      </div>
+    </div>
+
+    <!-- BARRA DE AÇÕES -->
+    <div class="form-acoes" style="justify-content: flex-end; gap: 8px;">
+      <a href="/eventos" class="btn btn-outline" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">Cancelar</a>
+      <button type="submit" class="btn btn-primario" style="height: 42px; padding: 0 24px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        Salvar e Enfileirar Evento {{ .EventoInfo.Codigo }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function atualizarColaboradorGenerico(sel) {
+  var opt = sel.options[sel.selectedIndex];
+  if (opt && opt.dataset && opt.dataset.cpf) {
+    var cpf = opt.dataset.cpf;
+    var ta = document.getElementById('xml_conteudo');
+    if (ta && cpf) {
+      // Substitui dinamicamente cpfTrab se existir
+      ta.value = ta.value.replace(/<cpfTrab>.*?<\/cpfTrab>/g, '<cpfTrab>' + cpf + '</cpfTrab>');
+      ta.value = ta.value.replace(/<cpfBenef>.*?<\/cpfBenef>/g, '<cpfBenef>' + cpf + '</cpfBenef>');
+    }
+  }
+}
+</script>
+{{ end }}

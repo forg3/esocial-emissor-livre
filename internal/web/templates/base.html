@@ -37,6 +37,14 @@
           <span>Dashboard</span>
         </a>
 
+        <a href="/eventos" class="nav-item {{ if eq .MenuAtivo "catalogo" }}ativo{{ end }}" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+            <path d="M6 6h10"></path><path d="M6 10h10"></path>
+          </svg>
+          <span>Catálogo (36 Eventos)</span>
+        </a>
+
         <div class="nav-secao">Configuração</div>
         <a href="/configuracao" class="nav-item {{ if eq .MenuAtivo "configuracao" }}ativo{{ end }}" hx-get="/configuracao" hx-target="#conteudo" hx-push-url="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

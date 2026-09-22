@@ -1,0 +1,90 @@
+{{ define "content" }}
+<div class="tela-menu-eventos">
+  <div class="toolbar">
+    <div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="badge info" style="font-weight: 700; font-size: 11px;">eSocial S-1.3</span>
+        <h1 style="margin: 0; font-size: var(--fs-2xl);">Catálogo Oficial de Eventos (36 Eventos)</h1>
+      </div>
+      <p class="muted" style="margin: 4px 0 0;">
+        Estrutura completa de obrigações organizada por departamento responsável: SESMT, Medicina Ocupacional, RH, Folha, Jurídico e RPPS.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <a href="/fila" class="btn btn-outline" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+        <span>Fila de Transmissão</span>
+      </a>
+      <a href="/eventos/s2240" class="btn btn-primario" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Emitir S-2240 SST</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- FILTROS E BUSCA -->
+  <div class="card" style="margin-bottom: var(--sp-5); padding: var(--sp-3);">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px; align-items: center; flex: 1; min-width: 280px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-2);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="search" id="filtro-busca-evento" name="q" placeholder="Buscar por código (ex: S-2240, S-1000) ou nome do evento..." style="flex: 1; height: 36px; padding: 0 12px; font-size: var(--fs-sm); border: 1px solid var(--border); border-radius: var(--radius);"
+                 hx-get="/eventos/catalogo-filtro" hx-trigger="keyup changed delay:250ms, search" hx-target="#catalogo-eventos-grid" hx-include="#filtro-grupo-ativo">
+          <input type="hidden" id="filtro-grupo-ativo" name="grupo" value="todos">
+        </div>
+
+        <div class="muted" style="font-size: var(--fs-xs);">
+          Base oficial: <strong>Leiaute S-1.3 NT 07/2026</strong>
+        </div>
+      </div>
+
+      <!-- BOTÕES DE GRUPO -->
+      <div class="filtros" style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-outline btn-sm btn-primario" onclick="filtrarGrupo(this, 'todos')">
+          Todos (36)
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupo(this, 'SESMT & Engenharia de Segurança')">
+          🛡️ SESMT & Segurança (3)
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupo(this, 'Clínicas de Medicina Ocupacional')">
+          🩺 Clínicas Ocupacionais (1)
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupo(this, 'Recursos Humanos & Departamento Pessoal')">
+          👥 RH & DP (12)
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupo(this, 'Contabilidade, Financeiro & Folha')">
+          💰 Folha & Contábil (10)
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupo(this, 'Jurídico')">
+          ⚖️ Jurídico (2)
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupo(this, 'Regime Próprio / Setor Público (RPPS)')">
+          🏛️ RPPS / Setor Público (8)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID COM OS CARDS DOS EVENTOS -->
+  <div id="catalogo-eventos-grid">
+    {{ template "catalogo_eventos" . }}
+  </div>
+</div>
+
+<script>
+function filtrarGrupo(btn, grupo) {
+  document.querySelectorAll('.filtros button').forEach(function(b) {
+    b.classList.remove('btn-primario');
+  });
+  btn.classList.add('btn-primario');
+  document.getElementById('filtro-grupo-ativo').value = grupo;
+  
+  var q = document.getElementById('filtro-busca-evento').value;
+  htmx.ajax('GET', '/eventos/catalogo-filtro?grupo=' + encodeURIComponent(grupo) + '&q=' + encodeURIComponent(q), {
+    target: '#catalogo-eventos-grid',
+    swap: 'innerHTML'
+  });
+}
+</script>
+{{ end }}

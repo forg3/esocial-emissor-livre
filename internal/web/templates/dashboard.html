@@ -154,10 +154,91 @@
         <line x1="12" y1="17" x2="12" y2="21"></line>
       </svg>
       <p style="margin: 8px 0 4px; font-weight: 600;">Nenhum evento gerado ainda.</p>
-      <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Cadastre seus colaboradores ou emita um evento S-2240, S-2210 ou S-2220 para começar.</p>
+      <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Cadastre seus colaboradores ou emita um evento do catálogo abaixo para começar.</p>
     </div>
     {{ end }}
   </div>
+
+  <!-- SEÇÃO DE DESTAQUE: CATÁLOGO COMPLETO DE TODOS OS 36 EVENTOS S-1.3 POR DEPARTAMENTO -->
+  <div style="margin-top: var(--sp-6);">
+    <div class="toolbar" style="margin-bottom: var(--sp-3);">
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="badge info" style="font-weight: 800; font-size: 11px;">eSocial S-1.3 NT 07/2026</span>
+          <h2 style="margin: 0; font-size: var(--fs-xl); color: var(--navy);">Catálogo Geral de Obrigações (36 Eventos)</h2>
+        </div>
+        <p class="muted" style="margin: 4px 0 0;">
+          Estrutura completa organizada por departamento responsável com prazos legais e emissor direto.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <a href="/eventos" class="btn btn-outline btn-sm" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
+          Ver Catálogo Completo &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- FILTROS RÁPIDOS POR DEPARTAMENTO NO DASHBOARD -->
+    <div class="card" style="margin-bottom: var(--sp-4); padding: var(--sp-3);">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <div style="display: flex; gap: 8px; align-items: center; flex: 1; min-width: 280px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-2);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="search" id="filtro-busca-dashboard" name="q" placeholder="Pesquisar por código (ex: S-2240, S-1000) ou termo..." style="flex: 1; height: 36px; padding: 0 12px; font-size: var(--fs-sm); border: 1px solid var(--border); border-radius: var(--radius);"
+                   hx-get="/eventos/catalogo-filtro" hx-trigger="keyup changed delay:250ms, search" hx-target="#catalogo-dashboard-grid" hx-include="#filtro-grupo-dashboard">
+            <input type="hidden" id="filtro-grupo-dashboard" name="grupo" value="todos">
+          </div>
+          <span class="muted" style="font-size: var(--fs-xs);">36 Eventos Oficiais S-1.3</span>
+        </div>
+
+        <div class="filtros" style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-outline btn-sm btn-primario" onclick="filtrarGrupoDash(this, 'todos')">
+            Todos (36)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'SESMT & Engenharia de Segurança')">
+            🛡️ SESMT & Segurança (3)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Clínicas de Medicina Ocupacional')">
+            🩺 Clínicas Ocupacionais (1)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Recursos Humanos & Departamento Pessoal')">
+            👥 RH & DP (12)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Contabilidade, Financeiro & Folha')">
+            💰 Folha & Contábil (10)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Jurídico')">
+            ⚖️ Jurídico (2)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="filtrarGrupoDash(this, 'Regime Próprio / Setor Público (RPPS)')">
+            🏛️ RPPS / Setor Público (8)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID DE CARDS DO CATÁLOGO NO DASHBOARD -->
+    <div id="catalogo-dashboard-grid">
+      {{ template "catalogo_eventos" . }}
+    </div>
+  </div>
+
+  <script>
+  function filtrarGrupoDash(btn, grupo) {
+    document.querySelectorAll('.filtros button').forEach(function(b) {
+      b.classList.remove('btn-primario');
+    });
+    btn.classList.add('btn-primario');
+    document.getElementById('filtro-grupo-dashboard').value = grupo;
+    
+    var q = document.getElementById('filtro-busca-dashboard').value;
+    htmx.ajax('GET', '/eventos/catalogo-filtro?grupo=' + encodeURIComponent(grupo) + '&q=' + encodeURIComponent(q), {
+      target: '#catalogo-dashboard-grid',
+      swap: 'innerHTML'
+    });
+  }
+  </script>
 
   <!-- CARD INFORMATIVO DE CONFORMIDADE SST -->
   <div class="grid-2" style="margin-top: var(--sp-4);">

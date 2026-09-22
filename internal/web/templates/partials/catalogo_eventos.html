@@ -1,0 +1,87 @@
+{{ define "catalogo_eventos" }}
+<div class="catalogo-container">
+  {{ if .Grupos }}
+    {{ range .Grupos }}
+    <div class="grupo-secao" style="margin-bottom: var(--sp-6);">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: var(--sp-3);">
+        <h3 style="margin: 0; font-size: var(--fs-lg); color: var(--navy); display: flex; align-items: center; gap: 8px;">
+          {{ if or (eq .Nome "SESMT") (eq .Nome "SESMT & Engenharia de Segurança") }}🛡️
+          {{ else if or (eq .Nome "Clínica Ocupacional") (eq .Nome "Clínicas de Medicina Ocupacional") }}🩺
+          {{ else if or (eq .Nome "RH / DP") (eq .Nome "Recursos Humanos & Departamento Pessoal") }}👥
+          {{ else if or (eq .Nome "Contabilidade e Folha") (eq .Nome "Contabilidade, Financeiro & Folha") }}💰
+          {{ else if eq .Nome "Jurídico" }}⚖️
+          {{ else if or (eq .Nome "RPPS / Setor Público") (eq .Nome "Regime Próprio / Setor Público (RPPS)") }}🏛️
+          {{ end }}
+          {{ .Nome }}
+        </h3>
+        <span class="badge neutral" style="font-size: 11px;">{{ len .Eventos }} eventos</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px;">
+        {{ range .Eventos }}
+        <div class="card card-evento" style="display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius); transition: transform 120ms ease, box-shadow 120ms ease; border: 1px solid var(--border);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 18px;">{{ iconeEvento .Codigo .Grupo }}</span>
+                <span class="mono" style="font-size: 15px; font-weight: 800; color: var(--navy);">{{ .Codigo }}</span>
+                {{ if isObrigSST .Codigo }}
+                  <span class="badge ok" style="font-size: 10px; font-weight: 700;">SST Obrigatório</span>
+                {{ end }}
+              </div>
+              <span class="badge {{ if eq .Categoria "Tabelas" }}neutral{{ else if eq .Categoria "Periódicos" }}info{{ else }}warn{{ end }}" style="font-size: 10px;">
+                {{ .Categoria }}
+              </span>
+            </div>
+
+            <h4 style="margin: 0 0 6px; font-size: var(--fs-sm); color: var(--text); line-height: 1.4;">
+              {{ .Nome }}
+            </h4>
+
+            <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; margin: 0 0 10px;">
+              {{ .Descricao }}
+            </p>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px;">
+            <div style="font-size: 11px; color: var(--text-2); margin-bottom: 10px; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span><strong>Prazo:</strong> {{ .Prazo }}</span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              {{ if eq .Codigo "S-2240" }}
+                <a href="/eventos/s2240" class="btn btn-primario btn-sm" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+                  <span>Emitir S-2240</span> &rarr;
+                </a>
+              {{ else if eq .Codigo "S-2210" }}
+                <a href="/eventos/s2210" class="btn btn-primario btn-sm" hx-get="/eventos/s2210" hx-target="#conteudo" hx-push-url="true">
+                  <span>Emitir CAT</span> &rarr;
+                </a>
+              {{ else if eq .Codigo "S-2220" }}
+                <a href="/eventos/s2220" class="btn btn-primario btn-sm" hx-get="/eventos/s2220" hx-target="#conteudo" hx-push-url="true">
+                  <span>Emitir ASO</span> &rarr;
+                </a>
+              {{ else }}
+                <a href="/eventos/novo/{{ .Codigo }}" class="btn btn-outline btn-sm" hx-get="/eventos/novo/{{ .Codigo }}" hx-target="#conteudo" hx-push-url="true" style="color: var(--navy); font-weight: 600;">
+                  <span>Emitir {{ .Codigo }}</span> &rarr;
+                </a>
+              {{ end }}
+            </div>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+  {{ else }}
+    <div class="vazio">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <p style="margin: 8px 0 4px; font-weight: 600;">Nenhum evento encontrado no catálogo.</p>
+      <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Tente outro termo de busca ou selecione outro grupo de responsabilidade.</p>
+    </div>
+  {{ end }}
+</div>
+{{ end }}

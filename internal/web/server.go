@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/forg3/esocial-emissor-livre/internal/data"
+	"github.com/forg3/esocial-emissor-livre/internal/esocial"
 	"github.com/forg3/esocial-emissor-livre/internal/storage"
 )
 
@@ -135,6 +136,8 @@ func (s *Servidor) carregarTemplates() error {
 		"evento_s2210",
 		"evento_s2220",
 		"fila",
+		"menu_eventos",
+		"editor_generico",
 	}
 
 	for _, pag := range paginas {
@@ -148,6 +151,7 @@ func (s *Servidor) carregarTemplates() error {
 			"templates/partials/resultado_riscos.html",
 			"templates/partials/resultado_cbos.html",
 			"templates/partials/detalhes_evento.html",
+			"templates/partials/catalogo_eventos.html",
 		}
 
 		parsed, err := t.ParseFS(templatesFS, arquivos...)
@@ -189,16 +193,19 @@ func (s *Servidor) Rotas() http.Handler {
 	mux.HandleFunc("GET /colaboradores/modelo-csv", s.handleDownloadModeloCSV)
 	mux.HandleFunc("POST /colaboradores/importar-csv", s.handleImportarCSV)
 
-	// 4. Eventos SST
+	// 4. Catálogo de Eventos S-1.3 e Editores
+	mux.HandleFunc("GET /eventos", s.handleMenuEventos)
+	mux.HandleFunc("GET /eventos/catalogo-filtro", s.handleCatalogoFiltro)
+	mux.HandleFunc("GET /eventos/novo/{codigo}", s.handleNovoEventoGenerico)
+	mux.HandleFunc("POST /eventos/salvar-generico", s.handleSalvarEventoGenerico)
 	mux.HandleFunc("GET /eventos/s2240", s.handleEditorS2240)
 	mux.HandleFunc("POST /eventos/s2240", s.handleSalvarS2240)
-
 	mux.HandleFunc("GET /eventos/s2210", s.handleEditorS2210)
 	mux.HandleFunc("POST /eventos/s2210", s.handleSalvarS2210)
-
 	mux.HandleFunc("GET /eventos/s2220", s.handleEditorS2220)
 	mux.HandleFunc("POST /eventos/s2220", s.handleSalvarS2220)
 	mux.HandleFunc("POST /eventos/s2220/importar-xml", s.handleImportarXMLASO)
+	mux.HandleFunc("GET /eventos/{codigo}", s.handleVerEventoCatalogo)
 
 	// 5. Central de Transmissão / Fila
 	mux.HandleFunc("GET /fila", s.handleFila)
@@ -248,12 +255,41 @@ func (s *Servidor) render(w http.ResponseWriter, r *http.Request, nomePagina str
 // HANDLERS: DASHBOARD
 // -------------------------------------------------------------
 
+// GrupoCatalogoView estrutura um grupo de responsabilidade e seus eventos para renderização.
+type GrupoCatalogoView struct {
+	Nome    string
+	Eventos []esocial.EventoCatalogo
+}
+
+// obterGruposCatalogo organiza os eventos em grupos ordenados conforme filtros.
+func (s *Servidor) obterGruposCatalogo(grupoFiltro, busca string) []GrupoCatalogoView {
+	filtrados := esocial.FiltrarCatalogo(grupoFiltro, busca)
+	gruposOficiais := esocial.ObterGruposCatalogo()
+
+	mapa := make(map[esocial.GrupoResponsabilidade][]esocial.EventoCatalogo)
+	for _, evt := range filtrados {
+		mapa[evt.Grupo] = append(mapa[evt.Grupo], evt)
+	}
+
+	var resultado []GrupoCatalogoView
+	for _, grp := range gruposOficiais {
+		if evts, ok := mapa[grp]; ok && len(evts) > 0 {
+			resultado = append(resultado, GrupoCatalogoView{
+				Nome:    string(grp),
+				Eventos: evts,
+			})
+		}
+	}
+	return resultado
+}
+
 type DadosViewDashboard struct {
 	Titulo          string
 	MenuAtivo       string
 	Config          *storage.Configuracao
 	KPI             *storage.ResumoKPI
 	EventosRecentes []storage.Evento
+	Grupos          []GrupoCatalogoView
 	MensagemFlash   string
 	FlashErro       bool
 }
@@ -271,12 +307,15 @@ func (s *Servidor) handleDashboard(w http.ResponseWriter, r *http.Request) {
 		recentes = recentes[:8]
 	}
 
+	grupos := s.obterGruposCatalogo("todos", "")
+
 	s.render(w, r, "dashboard", DadosViewDashboard{
 		Titulo:          "Dashboard",
 		MenuAtivo:       "dashboard",
 		Config:          cfg,
 		KPI:             kpi,
 		EventosRecentes: recentes,
+		Grupos:          grupos,
 	})
 }
 
@@ -940,6 +979,168 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 
 	_ = s.db.SalvarEvento(evento)
 	s.handleFilaComFlash(w, r, fmt.Sprintf("XML de ASO importado com sucesso para %s (ID: %s)!", colabNome, idEvento), false)
+}
+
+// -------------------------------------------------------------
+// HANDLERS: CATÁLOGO DE EVENTOS (36 EVENTOS) & EDITOR GENÉRICO
+// -------------------------------------------------------------
+
+type DadosViewMenuEventos struct {
+	Titulo        string
+	MenuAtivo     string
+	Config        *storage.Configuracao
+	Grupos        []GrupoCatalogoView
+	MensagemFlash string
+	FlashErro     bool
+}
+
+func (s *Servidor) handleMenuEventos(w http.ResponseWriter, r *http.Request) {
+	s.handleMenuEventosComFlash(w, r, "", false)
+}
+
+func (s *Servidor) handleMenuEventosComFlash(w http.ResponseWriter, r *http.Request, msg string, errFlash bool) {
+	cfg, _ := s.db.ObterConfiguracao()
+	grupos := s.obterGruposCatalogo("todos", "")
+
+	s.render(w, r, "menu_eventos", DadosViewMenuEventos{
+		Titulo:        "Catálogo de Eventos (36)",
+		MenuAtivo:     "catalogo",
+		Config:        cfg,
+		Grupos:        grupos,
+		MensagemFlash: msg,
+		FlashErro:     errFlash,
+	})
+}
+
+func (s *Servidor) handleCatalogoFiltro(w http.ResponseWriter, r *http.Request) {
+	grupo := r.URL.Query().Get("grupo")
+	q := r.URL.Query().Get("q")
+	grupos := s.obterGruposCatalogo(grupo, q)
+
+	tmpl := s.templates["menu_eventos"]
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	_ = tmpl.ExecuteTemplate(w, "catalogo_eventos", struct {
+		Grupos []GrupoCatalogoView
+	}{
+		Grupos: grupos,
+	})
+}
+
+func (s *Servidor) handleVerEventoCatalogo(w http.ResponseWriter, r *http.Request) {
+	codigo := r.PathValue("codigo")
+	codNorm := strings.ToUpper(codigo)
+	switch codNorm {
+	case "S-2240", "S2240":
+		s.handleEditorS2240(w, r)
+		return
+	case "S-2210", "S2210":
+		s.handleEditorS2210(w, r)
+		return
+	case "S-2220", "S2220":
+		s.handleEditorS2220(w, r)
+		return
+	default:
+		s.handleNovoEventoGenerico(w, r)
+		return
+	}
+}
+
+type DadosViewEditorGenerico struct {
+	Titulo                string
+	MenuAtivo             string
+	Config                *storage.Configuracao
+	EventoInfo            *esocial.EventoCatalogo
+	Colaboradores         []storage.Colaborador
+	XMLTemplatePreenchido string
+	MensagemFlash         string
+	FlashErro             bool
+}
+
+func (s *Servidor) handleNovoEventoGenerico(w http.ResponseWriter, r *http.Request) {
+	codigo := r.PathValue("codigo")
+	evt := esocial.ObterEventoCatalogo(codigo)
+	if evt == nil {
+		s.handleMenuEventosComFlash(w, r, "Evento não localizado no catálogo: "+codigo, true)
+		return
+	}
+
+	cfg, _ := s.db.ObterConfiguracao()
+	colabs, _ := s.db.ListarColaboradores()
+
+	idEvt := GerarIDEvento(cfg.CNPJ)
+	hoje := time.Now().Format("2006-01-02")
+	hojeMes := time.Now().Format("2006-01")
+
+	xmlPreenchido := evt.TemplateXML
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.ID}}", idEvt)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.CNPJ}}", cfg.CNPJ)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.Ambiente}}", strconv.Itoa(cfg.Ambiente))
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.Hoje}}", hoje)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.HojeMes}}", hojeMes)
+	xmlPreenchido = strings.ReplaceAll(xmlPreenchido, "{{.CPF}}", "00000000000")
+
+	s.render(w, r, "editor_generico", DadosViewEditorGenerico{
+		Titulo:                fmt.Sprintf("Emitir %s • %s", evt.Codigo, evt.Nome),
+		MenuAtivo:             "catalogo",
+		Config:                cfg,
+		EventoInfo:            evt,
+		Colaboradores:         colabs,
+		XMLTemplatePreenchido: xmlPreenchido,
+	})
+}
+
+func (s *Servidor) handleSalvarEventoGenerico(w http.ResponseWriter, r *http.Request) {
+	cfg, _ := s.db.ObterConfiguracao()
+	codigo := r.FormValue("codigo_evento")
+	xmlConteudo := strings.TrimSpace(r.FormValue("xml_conteudo"))
+	colabID := r.FormValue("colaborador_id")
+
+	if xmlConteudo == "" {
+		s.handleNovoEventoGenerico(w, r)
+		return
+	}
+
+	var parsed struct {
+		XMLName xml.Name
+	}
+	if err := xml.Unmarshal([]byte(xmlConteudo), &parsed); err != nil {
+		evt := esocial.ObterEventoCatalogo(codigo)
+		colabs, _ := s.db.ListarColaboradores()
+		s.render(w, r, "editor_generico", DadosViewEditorGenerico{
+			Titulo:                fmt.Sprintf("Emitir %s", codigo),
+			MenuAtivo:             "catalogo",
+			Config:                cfg,
+			EventoInfo:            evt,
+			Colaboradores:         colabs,
+			XMLTemplatePreenchido: xmlConteudo,
+			MensagemFlash:         "Erro de sintaxe XML: " + err.Error(),
+			FlashErro:             true,
+		})
+		return
+	}
+
+	idEvento := GerarIDEvento(cfg.CNPJ)
+	if strings.Contains(xmlConteudo, "Id=\"") {
+		i := strings.Index(xmlConteudo, "Id=\"") + 4
+		f := strings.Index(xmlConteudo[i:], "\"")
+		if f > 0 {
+			idEvento = xmlConteudo[i : i+f]
+		}
+	}
+
+	evento := &storage.Evento{
+		ID:            idEvento,
+		Tipo:          codigo,
+		ColaboradorID: colabID,
+		Ambiente:      cfg.Ambiente,
+		Status:        "pronto",
+		XMLGerado:     xmlConteudo,
+		CriadoEm:      time.Now(),
+		AtualizadoEm:  time.Now(),
+	}
+
+	_ = s.db.SalvarEvento(evento)
+	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s (%s) enfileirado com sucesso para validação e transmissão!", codigo, idEvento), false)
 }
 
 // -------------------------------------------------------------

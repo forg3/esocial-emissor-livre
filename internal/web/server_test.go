@@ -79,7 +79,7 @@ func TestDashboard(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusOK {
-		t.Errorf("esperado status 200 no dashboard, obtido: %d", rec.Code)
+		t.Errorf("esperado status 200 no dashboard, obtido: %d - erro: %s", rec.Code, rec.Body.String())
 	}
 
 	body := rec.Body.String()
