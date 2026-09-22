@@ -1,4 +1,4 @@
-/* Canteiro Prime — design system corporativo (data-dense dashboard)
+/* eSocial Emissor Livre — design system corporativo (data-dense dashboard)
    Tokens → componentes. Light-first com dark mode automático.
 
    Marca: navy + champagne. Champagne é luz sobre navy, nunca tinta sobre branco
@@ -6,8 +6,8 @@
    superfícies escuras (barra lateral, modo escuro). Por isso `--primary` não é uma
    cor fixa: é o tom de ação DO TEMA, com `--primary-texto` e `--link` ao lado. */
 
-/* Fontes locais: no canteiro sem sinal a fonte remota não carrega e o fallback
-   trocava a tipografia da marca. Variáveis (100–900), subconjunto latin. */
+/* Fontes locais: sem sinal a fonte remota não carrega e o fallback
+   trocava a tipografia. Variáveis (100–900), subconjunto latin. */
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
   src: url("/static/fonts/inter-latin.woff2") format("woff2"); }
 @font-face { font-family: "Geist"; font-style: normal; font-weight: 100 900; font-display: swap;
@@ -296,8 +296,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--navy, #0B1426)
 }
 
 /* ---------------------------------------------------------------- offline / app
-   A barra fica fixa no rodapé porque no canteiro o celular é usado com uma mão
-   só e o polegar não alcança o topo da tela. */
+   A barra fica fixa no rodapé para uso confortável em dispositivos móveis. */
 .barra-offline{
   position:fixed; left:0; right:0; bottom:0; z-index:60;
   padding:.7rem 1rem; text-align:center;
@@ -450,9 +449,7 @@ p.ajuda{ font-size: var(--fs-xs); color: var(--text-2); margin: var(--sp-3) 0 0;
 .barra-acoes{ display: flex; gap: var(--sp-3); flex-wrap: wrap;
   position: sticky; bottom: 0; z-index: 5; }
 
-/* Marca. A logo substitui o ícone genérico: quem abre o sistema no canteiro
-   precisa reconhecer de quem é o documento que está assinando. */
-/* 24px sumia ao lado do texto. A marca precisa ser reconhecida antes do nome. */
+/* Identificação visual e tipografia institucional. */
 .logo{ display: flex; align-items: center; gap: var(--sp-2); }
 .logo img{ width: auto; flex: none; }
 
@@ -689,10 +686,8 @@ p.ajuda{ font-size: var(--fs-xs); color: var(--text-2); margin: var(--sp-3) 0 0;
 .risco-item .ajuda { display: block; margin: 0; }
 
 /* ----------------------------------------------------------------- marca
-   Símbolo inline (macro `_marca.html`): três planos chapados, sem gradiente nem
-   sombra. Sobre navy usa os tons champagne; sobre claro, navy com topos vazados
-   (a versão que sobrevive à fotocópia). O wordmark tem mesmo peso e tamanho nas
-   duas palavras: CANTEIRO em champagne, PRIME em prata. */
+   Símbolo inline: planos chapados sem gradiente.
+   Tipografia com proporções equilibradas e contraste regulamentar. */
 .marca-simbolo { display: block; flex: none; }
 .marca-simbolo .t { fill: var(--ch-300); }
 .marca-simbolo .e { fill: var(--ch-400); }
@@ -977,7 +972,7 @@ a, button, summary, label, select, input { touch-action: manipulation; }
 .manual .toc > ul > li { font-weight: 600; } .manual .toc ul ul li { font-weight: 400; }
 @media print { .nao-imprimir { display: none !important; } .manual h2 { break-after: avoid; } .manual table { break-inside: avoid; } }
 
-/* ---------- Modais, Drawers, Abas e Busca Dropdown (Canteiro Prime) ---------- */
+/* ---------- Modais, Drawers, Abas e Busca Dropdown (eSocial Emissor Livre) ---------- */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(11, 20, 38, 0.55);
   backdrop-filter: blur(2px); z-index: 1000;

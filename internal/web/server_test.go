@@ -54,8 +54,8 @@ func TestRotasEstaticas(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Errorf("esperado status 200 para app.css, obtido: %d", rec.Code)
 	}
-	if !strings.Contains(rec.Body.String(), "Canteiro Prime") {
-		t.Errorf("app.css não contém menção ao design system Canteiro Prime")
+	if !strings.Contains(rec.Body.String(), "--navy") {
+		t.Errorf("app.css não contém tokens de design esperados")
 	}
 
 	// Testa JS (HTMX)
@@ -83,10 +83,10 @@ func TestDashboard(t *testing.T) {
 	}
 
 	body := rec.Body.String()
-	if !strings.Contains(body, "CANTEIRO PRIME") {
-		t.Errorf("dashboard não contém a marca Canteiro Prime")
+	if !strings.Contains(body, "eSocial Emissor Livre") {
+		t.Errorf("dashboard não contém a marca eSocial Emissor Livre")
 	}
-	if !strings.Contains(body, "Painel de Controle SST") {
+	if !strings.Contains(body, "Painel de Controle") {
 		t.Errorf("dashboard não contém o título do painel")
 	}
 	if !strings.Contains(body, "kpi-grid") {
@@ -137,7 +137,7 @@ func TestConfiguracao(t *testing.T) {
 
 	// 2. POST /configuracao (salvar empresa)
 	form := url.Values{}
-	form.Set("razao_social", "Construtora Canteiro Prime Ltda")
+	form.Set("razao_social", "Empresa Modelo eSocial Ltda")
 	form.Set("cnpj", "12.345.678/0001-90")
 	form.Set("ambiente", "2")
 
@@ -150,7 +150,7 @@ func TestConfiguracao(t *testing.T) {
 		t.Errorf("POST /configuracao falhou: %d", recPost.Code)
 	}
 
-	if !strings.Contains(recPost.Body.String(), "Construtora Canteiro Prime Ltda") {
+	if !strings.Contains(recPost.Body.String(), "Empresa Modelo eSocial Ltda") {
 		t.Errorf("razão social não foi refletida na resposta")
 	}
 

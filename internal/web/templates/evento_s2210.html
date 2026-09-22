@@ -12,6 +12,10 @@
     </div>
 
     <div style="display: flex; gap: 8px;">
+      <a href="/eventos" class="btn btn-outline" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true" title="Voltar ao Catálogo">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        <span>Voltar</span>
+      </a>
       <a href="/colaboradores" class="btn btn-outline" hx-get="/colaboradores" hx-target="#conteudo" hx-push-url="true">Ver Colaboradores</a>
       <a href="/fila" class="btn btn-outline" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">Fila de Transmissão</a>
     </div>
@@ -103,7 +107,7 @@
 
         <div class="campo" style="grid-column: span 2;">
           <label for="desc_local">Local e Descrição da Ocorrência <span class="req">*</span></label>
-          <textarea id="desc_local" name="desc_local" rows="2" placeholder="Descreva o local exato, atividade executada e situação geradora..." required>Canteiro de obras / oficina durante manuseio de ferramenta/equipamento.</textarea>
+          <textarea id="desc_local" name="desc_local" rows="2" placeholder="Descreva o local exato, atividade executada e situação geradora..." required>Setor operacional / oficina durante manuseio de ferramenta/equipamento.</textarea>
         </div>
       </div>
     </div>

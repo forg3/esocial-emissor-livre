@@ -1,113 +1,576 @@
 {{ define "content" }}
 <div class="tela-editor-generico">
-  <div class="toolbar">
-    <div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 20px;">{{ iconeEvento .EventoInfo.Codigo .EventoInfo.Grupo }}</span>
-        <span class="badge info" style="font-weight: 800; font-size: 13px;">{{ .EventoInfo.Codigo }}</span>
-        <h1 style="margin: 0; font-size: var(--fs-2xl);">{{ .EventoInfo.Nome }}</h1>
+  <!-- TOOLBAR COM BOTÃO VOLTAR -->
+  <div class="toolbar" style="margin-bottom: var(--sp-4);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="/eventos" class="btn btn-outline btn-sm" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true" title="Voltar ao Catálogo Geral">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        <span>Voltar ao Catálogo</span>
+      </a>
+
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">{{ iconeEvento .EventoInfo.Codigo .EventoInfo.Grupo }}</span>
+          <span class="badge info" style="font-weight: 800; font-size: 13px;">{{ .EventoInfo.Codigo }}</span>
+          <h1 style="margin: 0; font-size: var(--fs-xl); color: var(--navy);">{{ .EventoInfo.Nome }}</h1>
+          {{ if isObrigSST .EventoInfo.Codigo }}
+            <span class="badge ok" style="font-size: 10px;">SST Obrigatório</span>
+          {{ end }}
+        </div>
+        <p class="muted" style="margin: 3px 0 0; font-size: var(--fs-xs);">
+          Área / Responsabilidade: <strong>{{ .EventoInfo.Grupo }}</strong> • Categoria: <strong>{{ .EventoInfo.Categoria }}</strong> • Perfil: <strong>{{ .EventoInfo.Responsavel }}</strong>
+        </p>
       </div>
-      <p class="muted" style="margin: 4px 0 0;">
-        Grupo: <strong>{{ .EventoInfo.Grupo }}</strong> • Categoria: <strong>{{ .EventoInfo.Categoria }}</strong>
-      </p>
     </div>
 
     <div style="display: flex; gap: 8px;">
-      <a href="/eventos" class="btn btn-outline" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
-        &larr; Voltar ao Catálogo
-      </a>
-      <a href="/fila" class="btn btn-outline" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">
-        Fila de Transmissão
+      <a href="/fila" class="btn btn-outline btn-sm" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+        <span>Fila de Transmissão</span>
       </a>
     </div>
   </div>
 
-  <!-- CARD DE ORIENTAÇÃO LEGAL E PRAZO -->
-  <div class="card" style="margin-bottom: var(--sp-4); border-left: 3px solid var(--ch-600); background: var(--surface-2);">
+  <!-- CARD DE ORIENTAÇÃO REGULAMENTAR -->
+  <div class="card" style="margin-bottom: var(--sp-4); border-left: 3px solid var(--ch-600); background: var(--surface-2); padding: var(--sp-3);">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
-      <div>
-        <h4 style="margin: 0 0 4px; font-size: var(--fs-sm); color: var(--navy);">Instruções Regulamentares e Prazo</h4>
+      <div style="flex: 1; min-width: 300px;">
+        <h4 style="margin: 0 0 4px; font-size: var(--fs-sm); color: var(--navy); display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Finalidade e Regra Legal do Evento
+        </h4>
         <p style="font-size: var(--fs-xs); color: var(--text-2); margin: 0 0 6px; line-height: 1.5;">
           {{ .EventoInfo.Descricao }}
         </p>
         <div style="font-size: var(--fs-xs); color: var(--text);">
-          📅 <strong>Prazo Oficial de Entrega:</strong> {{ .EventoInfo.Prazo }}
+          📅 <strong>Prazo Regulamentar Oficial (MOS S-1.3):</strong> {{ .EventoInfo.Prazo }}
         </div>
       </div>
+
       <div style="font-size: var(--fs-xs); color: var(--text-2); text-align: right;">
         <div>Empregador: <strong>{{ if .Config.RazaoSocial }}{{ .Config.RazaoSocial }}{{ else }}Não configurado{{ end }}</strong></div>
         <div class="mono">CNPJ: {{ if .Config.CNPJ }}{{ formatarCNPJ .Config.CNPJ }}{{ else }}--{{ end }}</div>
-        <div>Ambiente: <strong>{{ if eq .Config.Ambiente 1 }}1 - Produção Oficial{{ else }}2 - Produção Restrita{{ end }}</strong></div>
+        <div>Ambiente: <strong>{{ if eq .Config.Ambiente 1 }}1 - Produção Oficial{{ else }}2 - Produção Restrita (Testes){{ end }}</strong></div>
       </div>
     </div>
   </div>
 
-  <!-- FORMULÁRIO DE EMISSÃO -->
-  <form action="/eventos/salvar-generico" method="POST" hx-post="/eventos/salvar-generico" hx-target="#conteudo">
+  <!-- ABAS DE EDIÇÃO: FORMULÁRIO GUIADO VS XML DIRETO -->
+  <div style="display: flex; gap: 4px; margin-bottom: var(--sp-3); border-bottom: 2px solid var(--border);">
+    <button type="button" id="tab-btn-form" class="btn btn-sm btn-primario" onclick="alternarAbaEditor('form')" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+      📝 Formulário Estruturado Guiado
+    </button>
+    <button type="button" id="tab-btn-xml" class="btn btn-sm btn-outline" onclick="alternarAbaEditor('xml')" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+      💻 Documento XML Oficial S-1.3
+    </button>
+  </div>
+
+  <form id="form-evento-generico" action="/eventos/salvar-generico" method="POST" hx-post="/eventos/salvar-generico" hx-target="#conteudo">
     <input type="hidden" name="codigo_evento" value="{{ .EventoInfo.Codigo }}">
 
-    <!-- SELEÇÃO OPCIONAL DE TRABALHADOR -->
-    {{ if .Colaboradores }}
-    <div class="card" style="margin-bottom: var(--sp-4);">
-      <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-        Vincular Trabalhador (Opcional conforme o tipo de evento)
-      </h3>
-      <div class="form-grid" style="margin-top: var(--sp-3);">
-        <div class="campo" style="grid-column: span 2;">
-          <label for="colaborador_id">Colaborador</label>
-          <select id="colaborador_id" name="colaborador_id" onchange="atualizarColaboradorGenerico(this)">
-            <option value="">-- Nenhum colaborador (Evento de Empregador / Tabela / Avulso) --</option>
-            {{ range .Colaboradores }}
-            <option value="{{ .ID }}" data-cpf="{{ .CPF }}" data-nome="{{ .Nome }}">
-              {{ .Nome }} — CPF: {{ formatarCPF .CPF }}
-            </option>
-            {{ end }}
-          </select>
-          <span class="ajuda">Para eventos de tabela ou fechamento (S-1000, S-1005, S-1299), a seleção de trabalhador é dispensada.</span>
+    <!-- CONTEÚDO DA ABA 1: FORMULÁRIO GUIADO -->
+    <div id="aba-formulario">
+      <!-- BLOCO 1: IDENTIFICAÇÃO DO EVENTO E OPERAÇÃO -->
+      <div class="card" style="margin-bottom: var(--sp-4);">
+        <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          1. Identificação da Operação & Empregador
+        </h3>
+
+        <div class="form-grid" style="margin-top: var(--sp-3);">
+          <div class="campo">
+            <label for="ind_retif">Tipo de Operação <span class="req">*</span></label>
+            <select id="ind_retif" name="ind_retif" onchange="sincronizarCamposXML()">
+              <option value="1" selected>1 - Arquivo Original (Inclusão)</option>
+              <option value="2">2 - Arquivo de Retificação</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="nr_recibo">Número do Recibo Anterior (Se Retificação)</label>
+            <input type="text" id="nr_recibo" name="nr_recibo" placeholder="Ex: 1.2.0000000000000000000" onkeyup="sincronizarCamposXML()">
+            <span class="ajuda">Obrigatório somente se retificando evento anterior aceito.</span>
+          </div>
+
+          <div class="campo">
+            <label for="tp_amb">Ambiente de Destino</label>
+            <select id="tp_amb" name="tp_amb" onchange="sincronizarCamposXML()">
+              <option value="2" {{ if ne .Config.Ambiente 1 }}selected{{ end }}>2 - Produção Restrita (Testes / Homologação)</option>
+              <option value="1" {{ if eq .Config.Ambiente 1 }}selected{{ end }}>1 - Produção Oficial (Validade Jurídica)</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="nr_insc">CNPJ do Empregador / Declarante</label>
+            <input type="text" id="nr_insc" name="nr_insc" value="{{ .Config.CNPJ }}" class="mono" readonly style="background: var(--surface-2);">
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO 2: VÍNCULO COM TRABALHADOR (SE APLICÁVEL AO EVENTO) -->
+      {{ if ne .EventoInfo.Categoria "Tabelas" }}
+      <div class="card" style="margin-bottom: var(--sp-4);">
+        <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          2. Identificação do Trabalhador / Vínculo
+        </h3>
+
+        <div class="form-grid" style="margin-top: var(--sp-3);">
+          <div class="campo" style="grid-column: span 2;">
+            <label for="colaborador_id">Selecionar Colaborador da Base Local</label>
+            <select id="colaborador_id" name="colaborador_id" onchange="selecionarColaboradorForm(this)">
+              <option value="">-- Selecione o colaborador para autopreencher dados --</option>
+              {{ range .Colaboradores }}
+              <option value="{{ .ID }}" data-cpf="{{ .CPF }}" data-matricula="{{ .Matricula }}" data-nome="{{ .Nome }}" data-cargo="{{ .Cargo }}" data-cbo="{{ .CBO }}" data-setor="{{ .Setor }}">
+                {{ .Nome }} — CPF: {{ formatarCPF .CPF }} {{ if .Matricula }}(Matrícula: {{ .Matricula }}){{ end }}
+              </option>
+              {{ end }}
+            </select>
+            <span class="ajuda">Preenche automaticamente os campos de CPF, Matrícula e Dados Contratuais abaixo.</span>
+          </div>
+
+          <div class="campo">
+            <label for="cpf_trab">CPF do Trabalhador <span class="req">*</span></label>
+            <input type="text" id="cpf_trab" name="cpf_trab" class="mono" placeholder="Somente dígitos" onkeyup="sincronizarCamposXML()">
+          </div>
+
+          <div class="campo">
+            <label for="matricula_trab">Matrícula do Empregado</label>
+            <input type="text" id="matricula_trab" name="matricula_trab" class="mono" placeholder="Ex: MAT-001" onkeyup="sincronizarCamposXML()">
+          </div>
+
+          <div class="campo">
+            <label for="cod_categ">Categoria do Trabalhador (Tabela 01)</label>
+            <select id="cod_categ" name="cod_categ" onchange="sincronizarCamposXML()">
+              <option value="101" selected>101 - Empregado - Geral, inclusive o com contrato a termo</option>
+              <option value="102">102 - Empregado - Trabalhador rural</option>
+              <option value="103">103 - Empregado - Aprendiz</option>
+              <option value="701">701 - Contribuinte individual - Autônomo em geral</option>
+              <option value="721">721 - Contribuinte individual - Diretor não empregado com FGTS</option>
+              <option value="901">901 - Estagiário</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="dt_evento">Data de Referência / Ocorrência</label>
+            <input type="date" id="dt_evento" name="dt_evento" value="" onchange="sincronizarCamposXML()">
+          </div>
+        </div>
+      </div>
+      {{ end }}
+
+      <!-- BLOCO 3: CAMPOS ESPECÍFICOS DO EVENTO SELECIONADO -->
+      <div class="card" style="margin-bottom: var(--sp-4);">
+        <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          3. Dados Específicos do Evento ({{ .EventoInfo.Codigo }})
+        </h3>
+
+        <div class="form-grid" style="margin-top: var(--sp-3);">
+          <!-- VARIANTES CONFORME O TIPO DO EVENTO -->
+          {{ if eq .EventoInfo.Codigo "S-1000" }}
+            <div class="campo">
+              <label for="class_trib">Classificação Tributária (Tabela 08)</label>
+              <select id="class_trib" name="class_trib" onchange="sincronizarCamposXML()">
+                <option value="01">01 - Empresa enquadrada no Simples Nacional</option>
+                <option value="02">02 - Simples Nacional com tributação previdenciária substituída</option>
+                <option value="03">03 - Simples Nacional - Atividades concomitantes</option>
+                <option value="99" selected>99 - Pessoas Jurídicas em Geral (Lucro Presumido / Real)</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="ind_des_folha">Desoneração da Folha (CPRB)</label>
+              <select id="ind_des_folha" name="ind_des_folha" onchange="sincronizarCamposXML()">
+                <option value="0" selected>0 - Não aplicável</option>
+                <option value="1">1 - Empresa enquadrada nos termos da Lei 12.546/2011</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="ini_valid">Mês de Início de Validade (AAAA-MM)</label>
+              <input type="month" id="ini_valid" name="ini_valid" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="ind_opt_reg_eletron">Registro Eletrônico de Empregados</label>
+              <select id="ind_opt_reg_eletron" name="ind_opt_reg_eletron" onchange="sincronizarCamposXML()">
+                <option value="1" selected>1 - Optou pelo registro eletrônico</option>
+                <option value="0">0 - Não optou</option>
+              </select>
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-1005" }}
+            <div class="campo">
+              <label for="tp_insc_estab">Tipo de Estabelecimento / Inscrição</label>
+              <select id="tp_insc_estab" name="tp_insc_estab" onchange="sincronizarCamposXML()">
+                <option value="1" selected>1 - CNPJ</option>
+                <option value="4">4 - CNO (Cadastro Nacional de Obras)</option>
+                <option value="3">3 - CAEPF</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="nr_insc_estab">Número de Inscrição (CNO ou CNPJ)</label>
+              <input type="text" id="nr_insc_estab" name="nr_insc_estab" placeholder="Ex: CNO da Obra ou CNPJ filial" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="cnae_prep">CNAE Preponderante</label>
+              <input type="text" id="cnae_prep" name="cnae_prep" placeholder="Ex: 4120400" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="aliq_rat">Alíquota RAT / FAP</label>
+              <input type="text" id="aliq_rat" name="aliq_rat" placeholder="Ex: 1, 2 ou 3" onkeyup="sincronizarCamposXML()">
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-1010" }}
+            <div class="campo">
+              <label for="cod_rubrica">Código da Rubrica na Folha</label>
+              <input type="text" id="cod_rubrica" name="cod_rubrica" placeholder="Ex: RUB-001" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="dsc_rubrica">Nome / Descrição da Rubrica</label>
+              <input type="text" id="dsc_rubrica" name="dsc_rubrica" placeholder="Ex: Salário Base Mensal" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="tp_rubrica">Tipo da Rubrica</label>
+              <select id="tp_rubrica" name="tp_rubrica" onchange="sincronizarCamposXML()">
+                <option value="1" selected>1 - Vencimento / Provento</option>
+                <option value="2">2 - Desconto</option>
+                <option value="3">3 - Informativa</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="nat_rubr">Natureza da Rubrica (Tabela 03)</label>
+              <input type="text" id="nat_rubr" name="nat_rubr" placeholder="Ex: 1000 - Salário / Vencimento" onkeyup="sincronizarCamposXML()">
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-1020" }}
+            <div class="campo">
+              <label for="cod_lotacao">Código da Lotação Tributária</label>
+              <input type="text" id="cod_lotacao" name="cod_lotacao" placeholder="Ex: LOT-001" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="fpas">Código FPAS (Tabela 04)</label>
+              <input type="text" id="fpas" name="fpas" placeholder="Ex: 507" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="cod_tercs">Código de Terceiros / Outras Entidades</label>
+              <input type="text" id="cod_tercs" name="cod_tercs" placeholder="Ex: 0079" onkeyup="sincronizarCamposXML()">
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-1070" }}
+            <div class="campo">
+              <label for="tp_proc">Tipo de Processo</label>
+              <select id="tp_proc" name="tp_proc" onchange="sincronizarCamposXML()">
+                <option value="1">1 - Administrativo</option>
+                <option value="2" selected>2 - Judicial</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="nr_proc">Número do Processo</label>
+              <input type="text" id="nr_proc" name="nr_proc" placeholder="Ex: 0001234-56.2026.5.09.0001" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="materia_proc">Matéria / Conteúdo do Processo</label>
+              <input type="text" id="materia_proc" name="materia_proc" placeholder="Ex: Não incidência de contribuição sobre terço de férias" onkeyup="sincronizarCamposXML()">
+            </div>
+
+          {{ else if or (eq .EventoInfo.Codigo "S-2200") (eq .EventoInfo.Codigo "S-2190") }}
+            <div class="campo">
+              <label for="dt_adm">Data de Admissão do Trabalhador <span class="req">*</span></label>
+              <input type="date" id="dt_adm" name="dt_adm" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="cargo_nome">Cargo / Função Contratual</label>
+              <input type="text" id="cargo_nome" name="cargo_nome" placeholder="Ex: Oficial de Obras / Eletricista" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="cbo_codigo">Código CBO da Ocupação</label>
+              <input type="text" id="cbo_codigo" name="cbo_codigo" placeholder="Ex: 7152-10" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="vr_sal_fx">Salário Base Contratual (R$)</label>
+              <input type="number" step="0.01" id="vr_sal_fx" name="vr_sal_fx" placeholder="Ex: 2850.00" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="und_sal_fixo">Unidade de Pagamento</label>
+              <select id="und_sal_fixo" name="und_sal_fixo" onchange="sincronizarCamposXML()">
+                <option value="5" selected>5 - Por Mês</option>
+                <option value="1">1 - Por Hora</option>
+                <option value="2">2 - Por Dia</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="tp_reg_trab">Regime Trabalhista</label>
+              <select id="tp_reg_trab" name="tp_reg_trab" onchange="sincronizarCamposXML()">
+                <option value="1" selected>1 - CLT (Consolidação das Leis do Trabalho)</option>
+                <option value="2">2 - Estatutário</option>
+              </select>
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-2230" }}
+            <div class="campo">
+              <label for="dt_ini_afast">Data de Início do Afastamento <span class="req">*</span></label>
+              <input type="date" id="dt_ini_afast" name="dt_ini_afast" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="dt_term_afast">Data de Término / Previsão</label>
+              <input type="date" id="dt_term_afast" name="dt_term_afast" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="cod_mot_afast">Motivo do Afastamento (Tabela 18)</label>
+              <select id="cod_mot_afast" name="cod_mot_afast" onchange="sincronizarCamposXML()">
+                <option value="01">01 - Acidente / Doença do trabalho</option>
+                <option value="03" selected>03 - Doença não relacionada ao trabalho</option>
+                <option value="11">11 - Licença Maternidade</option>
+                <option value="15">15 - Férias</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="cod_cid">Código CID-10 do Diagnóstico</label>
+              <input type="text" id="cod_cid" name="cod_cid" placeholder="Ex: M54.5" onkeyup="sincronizarCamposXML()">
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-2299" }}
+            <div class="campo">
+              <label for="dt_deslig">Data do Desligamento / Rescisão <span class="req">*</span></label>
+              <input type="date" id="dt_deslig" name="dt_deslig" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="mtv_deslig">Motivo do Desligamento (Tabela 19)</label>
+              <select id="mtv_deslig" name="mtv_deslig" onchange="sincronizarCamposXML()">
+                <option value="01">01 - Rescisão com justa causa por iniciativa do empregador</option>
+                <option value="02" selected>02 - Rescisão sem justa causa por iniciativa do empregador</option>
+                <option value="03">03 - Pedido de demissão pelo empregado</option>
+                <option value="04">04 - Rescisão por término do contrato a termo</option>
+                <option value="09">09 - Falecimento do empregado</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="tp_aviso">Tipo de Aviso Prévio</label>
+              <select id="tp_aviso" name="tp_aviso" onchange="sincronizarCamposXML()">
+                <option value="1">1 - Trabalhado</option>
+                <option value="2" selected>2 - Indenizado</option>
+                <option value="3">3 - Dispensado</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="dt_ult_dia">Último Dia Efetivamente Trabalhado</label>
+              <input type="date" id="dt_ult_dia" name="dt_ult_dia" onchange="sincronizarCamposXML()">
+            </div>
+
+          {{ else if or (eq .EventoInfo.Codigo "S-1200") (eq .EventoInfo.Codigo "S-1210") }}
+            <div class="campo">
+              <label for="per_apur">Competência / Período de Apuração (AAAA-MM) <span class="req">*</span></label>
+              <input type="month" id="per_apur" name="per_apur" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="vr_remun">Valor Bruto da Remuneração / Proventos (R$)</label>
+              <input type="number" step="0.01" id="vr_remun" name="vr_remun" placeholder="Ex: 3500.00" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="vr_desc">Valor Total de Descontos (R$)</label>
+              <input type="number" step="0.01" id="vr_desc" name="vr_desc" placeholder="Ex: 420.00" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="dt_pgto">Data Efetiva do Pagamento</label>
+              <input type="date" id="dt_pgto" name="dt_pgto" onchange="sincronizarCamposXML()">
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-1299" }}
+            <div class="campo">
+              <label for="per_apur_fech">Competência de Fechamento (AAAA-MM) <span class="req">*</span></label>
+              <input type="month" id="per_apur_fech" name="per_apur_fech" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="ind_apuracao">Indicativo de Período</label>
+              <select id="ind_apuracao" name="ind_apuracao" onchange="sincronizarCamposXML()">
+                <option value="1" selected>1 - Mensal (Folha Regular)</option>
+                <option value="2">2 - Anual (13º Salário)</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="ind_folha">Possui Informações de Remuneração?</label>
+              <select id="ind_folha" name="ind_folha" onchange="sincronizarCamposXML()">
+                <option value="S" selected>S - Sim, há movimento de folha de pagamento</option>
+                <option value="N">N - Não há remuneração na competência</option>
+              </select>
+            </div>
+
+          {{ else if eq .EventoInfo.Codigo "S-3000" }}
+            <div class="campo">
+              <label for="tp_evento_excl">Tipo do Evento a Excluir <span class="req">*</span></label>
+              <input type="text" id="tp_evento_excl" name="tp_evento_excl" placeholder="Ex: S-1200, S-2200, S-2240" onkeyup="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="nr_rec_evt_excl">Número do Recibo do Evento a ser Cancelado <span class="req">*</span></label>
+              <input type="text" id="nr_rec_evt_excl" name="nr_rec_evt_excl" placeholder="Ex: 1.2.0000000000000000000" onkeyup="sincronizarCamposXML()">
+            </div>
+
+          {{ else }}
+            <!-- CAMPOS GENÉRICOS DE METADADOS PARA DEMAIS EVENTOS -->
+            <div class="campo">
+              <label for="campo_ref_data">Data Principal de Referência</label>
+              <input type="date" id="campo_ref_data" name="campo_ref_data" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo">
+              <label for="campo_ref_periodo">Competência (AAAA-MM)</label>
+              <input type="month" id="campo_ref_periodo" name="campo_ref_periodo" onchange="sincronizarCamposXML()">
+            </div>
+            <div class="campo" style="grid-column: span 2;">
+              <label for="campo_observacao">Observações / Detalhes Complementares</label>
+              <input type="text" id="campo_observacao" name="campo_observacao" placeholder="Informações de suporte ao evento..." onkeyup="sincronizarCamposXML()">
+            </div>
+          {{ end }}
         </div>
       </div>
     </div>
-    {{ end }}
 
-    <!-- EDITOR XML COM SCHEMA S-1.3 -->
-    <div class="card" style="margin-bottom: var(--sp-4);">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-        <h3 style="margin: 0; font-size: var(--fs-base); color: var(--navy); display: flex; align-items: center; gap: 8px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          Estrutura do Documento XML (Leiaute S-1.3)
-        </h3>
-        <span class="muted" style="font-size: var(--fs-xs);">Edite diretamente ou utilize o modelo padrão</span>
-      </div>
+    <!-- CONTEÚDO DA ABA 2: EDITOR E VISUALIZADOR XML -->
+    <div id="aba-xml" style="display: none;">
+      <div class="card" style="margin-bottom: var(--sp-4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+          <h3 style="margin: 0; font-size: var(--fs-base); color: var(--navy); display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Estrutura Completa do Documento XML (Leiaute Oficial S-1.3)
+          </h3>
+          <span class="muted" style="font-size: var(--fs-xs);">Sincronizado automaticamente com os campos do formulário</span>
+        </div>
 
-      <div class="campo" style="margin-top: var(--sp-3);">
-        <textarea id="xml_conteudo" name="xml_conteudo" class="xml-viewer" style="height: 380px; font-size: 12px;" required>{{ .XMLTemplatePreenchido }}</textarea>
-        <span class="ajuda">O XML gerado inclui as tags oficiais de identificação do evento, empregador e trabalhador.</span>
+        <div class="campo" style="margin-top: var(--sp-3);">
+          <textarea id="xml_conteudo" name="xml_conteudo" class="xml-viewer" style="height: 420px; font-size: 12px; font-family: var(--mono); line-height: 1.45;" required>{{ .XMLTemplatePreenchido }}</textarea>
+          <span class="ajuda">Você pode alterar o XML livremente ou preencher pelos campos guiados da aba anterior.</span>
+        </div>
       </div>
     </div>
 
-    <!-- BARRA DE AÇÕES -->
-    <div class="form-acoes" style="justify-content: flex-end; gap: 8px;">
-      <a href="/eventos" class="btn btn-outline" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">Cancelar</a>
-      <button type="submit" class="btn btn-primario" style="height: 42px; padding: 0 24px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-        Salvar e Enfileirar Evento {{ .EventoInfo.Codigo }}
-      </button>
+    <!-- BARRA DE AÇÕES INFERIOR -->
+    <div class="form-acoes" style="justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: var(--sp-4);">
+      <div style="display: flex; gap: 8px;">
+        <a href="/eventos" class="btn btn-outline" hx-get="/eventos" hx-target="#conteudo" hx-push-url="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Voltar ao Catálogo</span>
+        </a>
+        <button type="button" class="btn btn-outline" onclick="alternarAbaEditor()">
+          <span>Alternar Modo Form / XML</span>
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button type="submit" class="btn btn-primario" style="height: 42px; padding: 0 24px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span>Salvar e Enfileirar Evento {{ .EventoInfo.Codigo }}</span>
+        </button>
+      </div>
     </div>
   </form>
 </div>
 
 <script>
-function atualizarColaboradorGenerico(sel) {
+// Controle de Abas
+function alternarAbaEditor(alvo) {
+  var abaForm = document.getElementById('aba-formulario');
+  var abaXml = document.getElementById('aba-xml');
+  var btnForm = document.getElementById('tab-btn-form');
+  var btnXml = document.getElementById('tab-btn-xml');
+
+  if (!alvo) {
+    alvo = (abaForm.style.display === 'none') ? 'form' : 'xml';
+  }
+
+  if (alvo === 'xml') {
+    sincronizarCamposXML();
+    abaForm.style.display = 'none';
+    abaXml.style.display = 'block';
+    btnForm.classList.remove('btn-primario');
+    btnForm.classList.add('btn-outline');
+    btnXml.classList.remove('btn-outline');
+    btnXml.classList.add('btn-primario');
+  } else {
+    abaForm.style.display = 'block';
+    abaXml.style.display = 'none';
+    btnXml.classList.remove('btn-primario');
+    btnXml.classList.add('btn-outline');
+    btnForm.classList.remove('btn-outline');
+    btnForm.classList.add('btn-primario');
+  }
+}
+
+// Seleção de Colaborador e preenchimento dos campos do formulário
+function selecionarColaboradorForm(sel) {
   var opt = sel.options[sel.selectedIndex];
-  if (opt && opt.dataset && opt.dataset.cpf) {
-    var cpf = opt.dataset.cpf;
-    var ta = document.getElementById('xml_conteudo');
-    if (ta && cpf) {
-      // Substitui dinamicamente cpfTrab se existir
-      ta.value = ta.value.replace(/<cpfTrab>.*?<\/cpfTrab>/g, '<cpfTrab>' + cpf + '</cpfTrab>');
-      ta.value = ta.value.replace(/<cpfBenef>.*?<\/cpfBenef>/g, '<cpfBenef>' + cpf + '</cpfBenef>');
+  if (opt && opt.dataset) {
+    if (opt.dataset.cpf && document.getElementById('cpf_trab')) {
+      document.getElementById('cpf_trab').value = opt.dataset.cpf;
+    }
+    if (opt.dataset.matricula && document.getElementById('matricula_trab')) {
+      document.getElementById('matricula_trab').value = opt.dataset.matricula;
+    }
+    if (opt.dataset.cargo && document.getElementById('cargo_nome')) {
+      document.getElementById('cargo_nome').value = opt.dataset.cargo;
+    }
+    if (opt.dataset.cbo && document.getElementById('cbo_codigo')) {
+      document.getElementById('cbo_codigo').value = opt.dataset.cbo;
+    }
+    sincronizarCamposXML();
+  }
+}
+
+// Sincronização automática entre os campos do formulário guiado e o XML
+function sincronizarCamposXML() {
+  var ta = document.getElementById('xml_conteudo');
+  if (!ta) return;
+  var xml = ta.value;
+
+  function substituirTag(tag, valor) {
+    if (!valor) return;
+    var regex = new RegExp('(<' + tag + '>)(.*?)(<\\/' + tag + '>)', 'g');
+    if (regex.test(xml)) {
+      xml = xml.replace(regex, '$1' + valor + '$3');
     }
   }
+
+  // Identificação da Operação
+  var indRetif = document.getElementById('ind_retif');
+  if (indRetif) substituirTag('indRetif', indRetif.value);
+
+  var nrRecibo = document.getElementById('nr_recibo');
+  if (nrRecibo && nrRecibo.value) substituirTag('nrRecibo', nrRecibo.value);
+
+  var tpAmb = document.getElementById('tp_amb');
+  if (tpAmb) substituirTag('tpAmb', tpAmb.value);
+
+  // Trabalhador
+  var cpfTrab = document.getElementById('cpf_trab');
+  if (cpfTrab && cpfTrab.value) {
+    substituirTag('cpfTrab', cpfTrab.value);
+    substituirTag('cpfBenef', cpfTrab.value);
+  }
+
+  var matricula = document.getElementById('matricula_trab');
+  if (matricula && matricula.value) substituirTag('matricula', matricula.value);
+
+  var codCateg = document.getElementById('cod_categ');
+  if (codCateg) substituirTag('codCateg', codCateg.value);
+
+  // Datas
+  var dtAdm = document.getElementById('dt_adm');
+  if (dtAdm && dtAdm.value) substituirTag('dtAdm', dtAdm.value);
+
+  var dtAfast = document.getElementById('dt_ini_afast');
+  if (dtAfast && dtAfast.value) substituirTag('dtIniAfast', dtAfast.value);
+
+  var dtDeslig = document.getElementById('dt_deslig');
+  if (dtDeslig && dtDeslig.value) substituirTag('dtDeslig', dtDeslig.value);
+
+  var dtPgto = document.getElementById('dt_pgto');
+  if (dtPgto && dtPgto.value) substituirTag('dtPgto', dtPgto.value);
+
+  var perApur = document.getElementById('per_apur') || document.getElementById('per_apur_fech');
+  if (perApur && perApur.value) substituirTag('perApur', perApur.value);
+
+  // Classificação Tributária
+  var classTrib = document.getElementById('class_trib');
+  if (classTrib) substituirTag('classTrib', classTrib.value);
+
+  ta.value = xml;
 }
 </script>
 {{ end }}

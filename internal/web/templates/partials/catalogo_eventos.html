@@ -63,7 +63,7 @@
                   <span>Emitir ASO</span> &rarr;
                 </a>
               {{ else }}
-                <a href="/eventos/novo/{{ .Codigo }}" class="btn btn-outline btn-sm" hx-get="/eventos/novo/{{ .Codigo }}" hx-target="#conteudo" hx-push-url="true" style="color: var(--navy); font-weight: 600;">
+                <a href="/eventos/novo/{{ .Codigo }}" class="btn btn-primario btn-sm" hx-get="/eventos/novo/{{ .Codigo }}" hx-target="#conteudo" hx-push-url="true">
                   <span>Emitir {{ .Codigo }}</span> &rarr;
                 </a>
               {{ end }}
