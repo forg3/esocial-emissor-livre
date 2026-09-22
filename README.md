@@ -62,7 +62,7 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 - **Cobertura Integral dos 36 Eventos Oficiais**: Catálogo visual estruturado por departamento (SESMT, Medicina Ocupacional, RH/DP, Folha, Jurídico e RPPS) e editor guiado com sincronização em tempo real com o XML S-1.3.
 - **Validação Estrutural Rígida**: Confere os arquivos XML diretamente contra os esquemas XSD oficiais do leiaute S-1.3 do eSocial antes de qualquer tentativa de envio.
 - **Importação e Conferência de XML/CSV**: Recebe arquivos XML (como ASO) e realiza importação de colaboradores em lote via CSV com modelo pronto para download.
-- **Assinatura Digital Local**: Assina eventos utilizando certificado digital ICP-Brasil A1 diretamente na máquina do usuário, mantendo a chave privada 100% segura.
+- **Assinatura Digital Local (A1)**: Assina eventos utilizando exclusivamente certificado digital ICP-Brasil **A1** (`.pfx` / `.p12`) diretamente na máquina do usuário, mantendo a chave privada 100% segura.
 - **Transmissão Direta com WebServices Oficiais**: Envia lotes e consulta recibos nos ambientes de **Produção** e **Produção Restrita** (homologação) do eSocial.
 - **Auditoria de Eventos e Recibos**: Rastreamento do ciclo de vida dos eventos (`pronto` → `assinado` → `transmitido` → `aceito` ou `rejeitado`), registrando números de recibo e mensagens de erro governamentais.
 
@@ -71,6 +71,7 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 - [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.0-alpha`).
 - [ ] **Pacotes de Distribuição (.deb, .rpm e MSI)**: Instaladores nativos para distribuições Linux e instalador Windows.
 - [ ] **Pipeline de CI/CD para Releases**: Automação de compilação cruzada (GoReleaser / GitHub Actions) para geração contínua de executáveis compactados a cada tag.
+- [ ] **Suporte a Certificados A3 (Tokens USB e Smartcards via PKCS#11)**: Integração nativa com drivers de hardware para leitura de dispositivos A3.
 - [ ] **Módulo de Relatórios e Auditoria de Retorno**: Exportação de relatórios de conformidade e conferência de débitos previdenciários e FGTS (eventos de totalização S-5001/S-5011).
 - [ ] **Múltiplos Certificados e Procurações Eletrônicas**: Gestão de perfis multi-empresa com seleção dinâmica de certificado para escritórios contábeis.
 
@@ -78,6 +79,7 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 
 ## O que não faz
 
+- **Não suporta certificados A3 no momento**: Dispositivos físicos (cartões inteligentes e tokens USB via PKCS#11) não são suportados na versão atual. A aplicação aceita estritamente certificados em arquivo **A1** (`.pfx` / `.p12`).
 - **Não é um ERP de Folha de Pagamento**: Não calcula holerites, encargos sindicais complexos, horas extras ou rescisões trabalhistas. O software opera sobre os dados brutos necessários para a geração do evento.
 - **Não armazena chaves privadas em nuvem**: Em implantações corporativas multiusuário, o sistema não transfere certificados A1 para repositórios desprotegidos.
 - **Não substitui a responsabilidade técnica legal**: O preenchimento e a validação de laudos (LTCAT, PGR, PCMSO) e CATs continuam sendo atribuições formais dos profissionais habilitados (Médicos do Trabalho, Engenheiros e Técnicos de Segurança, e Contadores).
