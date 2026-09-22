@@ -28,3 +28,6 @@
 *.swo
 *~
 .DS_Store
+
+# Planejamento e dados locais de marketing (nunca versionar)
+/marketing/
