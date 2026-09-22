@@ -1,0 +1,122 @@
+{{ define "detalhes_evento" }}
+<div id="modal-detalhes-evento" class="modal-overlay">
+  <div class="modal-caixa modal-caixa-lg">
+    <div class="modal-cabecalho">
+      <div>
+        <span class="badge info" style="font-weight: 700;">{{ .Evento.Tipo }}</span>
+        <strong style="margin-left: 8px; font-size: var(--fs-base);" class="mono">{{ .Evento.ID }}</strong>
+      </div>
+      <button type="button" class="btn btn-outline btn-sm" onclick="fecharModalDetalhes()">&times;</button>
+    </div>
+
+    <div class="modal-corpo">
+      <div class="abas">
+        <button type="button" class="aba-item ativa" onclick="trocarAba(this, 'aba-retorno')">
+          Resposta do Governo / Auditoria
+        </button>
+        <button type="button" class="aba-item" onclick="trocarAba(this, 'aba-xml')">
+          Conteúdo XML
+        </button>
+        <button type="button" class="aba-item" onclick="trocarAba(this, 'aba-trabalhador')">
+          Dados do Trabalhador
+        </button>
+      </div>
+
+      <!-- ABA 1: RESPOSTA DO GOVERNO / AUDITORIA -->
+      <div id="aba-retorno" class="aba-painel">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px;">
+          <div class="kpi">
+            <div class="kpi-label">Status Atual</div>
+            <div class="kpi-valor" style="font-size: var(--fs-lg); margin-top: 4px;">
+              <span class="badge {{ statusBadgeClass .Evento.Status }}">{{ statusDescricao .Evento.Status }}</span>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Protocolo de Envio</div>
+            <div class="kpi-valor mono" style="font-size: var(--fs-xs); word-break: break-all; margin-top: 6px;">
+              {{ if .Evento.Protocolo }}{{ .Evento.Protocolo }}{{ else }}<span class="muted">Pendente</span>{{ end }}
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Recibo Oficial</div>
+            <div class="kpi-valor mono" style="font-size: var(--fs-xs); word-break: break-all; margin-top: 6px; color: var(--ok-text);">
+              {{ if .Evento.Recibo }}{{ .Evento.Recibo }}{{ else }}<span class="muted">Pendente</span>{{ end }}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; color: var(--text-2);">Mensagem de Retorno do eSocial</label>
+          <div class="log-box" style="margin-top: 4px;">
+            {{ if .Evento.MensagemRetorno }}
+              {{ .Evento.MensagemRetorno }}
+            {{ else }}
+              Nenhuma mensagem registrada. O evento ainda não foi transmitido ou processado.
+            {{ end }}
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; font-size: var(--fs-xs); color: var(--text-2);">
+          Ambiente: <strong>{{ if eq .Evento.Ambiente 1 }}Produção Oficial{{ else }}Produção Restrita{{ end }}</strong> •
+          Criado em: <strong>{{ formatarData .Evento.CriadoEm }}</strong> •
+          Última atualização: <strong>{{ formatarData .Evento.AtualizadoEm }}</strong>
+        </div>
+      </div>
+
+      <!-- ABA 2: XML GERADO & ASSINADO -->
+      <div id="aba-xml" class="aba-painel" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: var(--fs-xs); color: var(--text-2);">
+            {{ if .Evento.XMLAssinado }}XML Assinado com Envelope XMLDSig{{ else }}XML Gerado (Sem Assinatura){{ end }}
+          </span>
+          <button type="button" class="btn btn-outline btn-sm" onclick="copiarXML()">Copiar XML</button>
+        </div>
+        <textarea id="texto-xml" class="xml-viewer" readonly style="width: 100%; height: 320px;">{{ if .Evento.XMLAssinado }}{{ .Evento.XMLAssinado }}{{ else }}{{ .Evento.XMLGerado }}{{ end }}</textarea>
+      </div>
+
+      <!-- ABA 3: TRABALHADOR -->
+      <div id="aba-trabalhador" class="aba-painel" style="display: none;">
+        <div style="font-size: var(--fs-sm); line-height: 1.8;">
+          <div><strong>Colaborador:</strong> {{ .Evento.ColaboradorNome }}</div>
+          <div><strong>CPF:</strong> <span class="mono">{{ formatarCPF .Evento.ColaboradorCPF }}</span></div>
+          <div><strong>Identificador Local:</strong> <span class="mono">{{ .Evento.ColaboradorID }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-rodape">
+      <a href="/fila/{{ .Evento.ID }}/xml" class="btn btn-outline" download="{{ .Evento.ID }}.xml">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Baixar Arquivo XML
+      </a>
+      <button type="button" class="btn btn-primario" onclick="fecharModalDetalhes()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function fecharModalDetalhes() {
+  var el = document.getElementById('modal-detalhes-evento');
+  if (el) el.remove();
+}
+
+function trocarAba(btn, idAba) {
+  var paineis = document.querySelectorAll('.aba-painel');
+  paineis.forEach(function(p) { p.style.display = 'none'; });
+  var botoes = document.querySelectorAll('.aba-item');
+  botoes.forEach(function(b) { b.classList.remove('ativa'); });
+  btn.classList.add('ativa');
+  var ativo = document.getElementById(idAba);
+  if (ativo) ativo.style.display = 'block';
+}
+
+function copiarXML() {
+  var ta = document.getElementById('texto-xml');
+  if (ta) {
+    ta.select();
+    navigator.clipboard.writeText(ta.value);
+    alert('XML copiado para a área de transferência!');
+  }
+}
+</script>
+{{ end }}

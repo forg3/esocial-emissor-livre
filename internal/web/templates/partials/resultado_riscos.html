@@ -1,0 +1,17 @@
+{{ define "resultado_riscos" }}
+{{ if .Riscos }}
+<div class="busca-dropdown">
+  {{ range .Riscos }}
+  <div class="busca-item" onclick="selecionarRisco('{{ .Codigo }}', '{{ .Nome }}')">
+    <span class="busca-item-cod">{{ .Codigo }}</span>
+    <span style="font-weight: 500;">{{ .Nome }}</span>
+    <span class="badge neutral" style="font-size: 10px; margin-left: 6px;">{{ .Classificacao }}</span>
+  </div>
+  {{ end }}
+</div>
+{{ else }}
+<div class="busca-dropdown" style="padding: 10px; font-size: 12px; color: var(--text-2); text-align: center;">
+  Nenhum agente nocivo encontrado para o termo pesquisado na Tabela 24.
+</div>
+{{ end }}
+{{ end }}

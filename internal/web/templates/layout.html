@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .Titulo }}{{ .Titulo }} | {{ end }}eSocial Emissor Livre • CanteiroPrime</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script src="/static/js/htmx.min.js"></script>
+</head>
+<body hx-boost="false">
+  <div class="shell">
+    <!-- BARRA LATERAL (CANTEIRO PRIME STYLE) -->
+    <aside class="sidebar">
+      <a href="/" class="logo" hx-get="/" hx-target="#conteudo" hx-push-url="true">
+        <!-- Ícone Marca Canteiro Prime com Geometria Champagne -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="#0B1426"/>
+          <path d="M18 6L30 13V23L18 30L6 23V13L18 6Z" stroke="#DEC084" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M18 11V25M12 14.5L24 21.5M12 21.5L24 14.5" stroke="#EED9AE" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="3" fill="#DEC084"/>
+        </svg>
+        <div class="marca-nome" style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <span style="font-weight: 700; letter-spacing: 0.08em; color: #FFFFFF; font-size: 13px;">CANTEIRO PRIME</span>
+          <span style="font-size: 11px; color: var(--ch-400); font-weight: 500; letter-spacing: 0.03em;">eSocial Emissor SST</span>
+        </div>
+      </a>
+
+      <nav>
+        <div class="nav-secao">Visão Geral</div>
+        <a href="/" class="nav-item {{ if eq .MenuAtivo "dashboard" }}ativo{{ end }}" hx-get="/" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+            <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+            <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+
+        <div class="nav-secao">Configuração</div>
+        <a href="/configuracao" class="nav-item {{ if eq .MenuAtivo "configuracao" }}ativo{{ end }}" hx-get="/configuracao" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <span>Certificado & Empresa</span>
+        </a>
+
+        <div class="nav-secao">Gestão Operacional</div>
+        <a href="/colaboradores" class="nav-item {{ if eq .MenuAtivo "colaboradores" }}ativo{{ end }}" hx-get="/colaboradores" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Colaboradores</span>
+        </a>
+
+        <div class="nav-secao">Eventos SST</div>
+        <a href="/eventos/s2240" class="nav-item {{ if eq .MenuAtivo "s2240" }}ativo{{ end }}" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>S-2240 • Cond. Ambientais</span>
+        </a>
+
+        <a href="/eventos/s2210" class="nav-item {{ if eq .MenuAtivo "s2210" }}ativo{{ end }}" hx-get="/eventos/s2210" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>S-2210 • CAT Acidente</span>
+        </a>
+
+        <a href="/eventos/s2220" class="nav-item {{ if eq .MenuAtivo "s2220" }}ativo{{ end }}" hx-get="/eventos/s2220" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
+            <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
+            <circle cx="20" cy="10" r="2"></circle>
+          </svg>
+          <span>S-2220 • ASO Saúde</span>
+        </a>
+
+        <div class="nav-secao">Transmissão</div>
+        <a href="/fila" class="nav-item {{ if eq .MenuAtivo "fila" }}ativo{{ end }}" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m22 2-7 20-4-9-9-4Z"></path>
+            <path d="M22 2 11 13"></path>
+          </svg>
+          <span>Central de Transmissão</span>
+        </a>
+      </nav>
+
+      <!-- RODAPÉ DA BARRA LATERAL -->
+      <div class="sidebar-rodape">
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; font-weight: 600;">Ambiente</span>
+            {{ if eq .Config.Ambiente 1 }}
+              <span class="badge ok" style="font-size: 10px;">Produção</span>
+            {{ else }}
+              <span class="badge warn" style="font-size: 10px;">Restrita (Testes)</span>
+            {{ end }}
+          </div>
+          <div style="font-size: 11px; color: var(--ch-300); display: flex; align-items: center; gap: 4px;">
+            {{ if .Config.CertificadoPath }}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Certificado A1 Configurado</span>
+            {{ else }}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+              <span style="color: var(--warn);">Certificado Pendente</span>
+            {{ end }}
+          </div>
+          <div style="font-size: 10px; color: rgba(255,255,255,0.4); text-align: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
+            100% Local • Portátil • Offline
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main">
+      <header class="header">
+        <div class="breadcrumb">
+          <span>eSocial Emissor Livre</span> /
+          <strong>{{ if .Titulo }}{{ .Titulo }}{{ else }}Painel{{ end }}</strong>
+        </div>
+
+        <div class="usuario">
+          <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <strong style="font-size: 13px;">{{ if .Config.RazaoSocial }}{{ .Config.RazaoSocial }}{{ else }}Empresa Não Cadastrada{{ end }}</strong>
+            <span class="perfil mono" style="font-size: 11px;">CNPJ: {{ if .Config.CNPJ }}{{ formatarCNPJ .Config.CNPJ }}{{ else }}--{{ end }}</span>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <a href="/eventos/s2240" class="btn btn-primario btn-sm" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Novo Evento</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- FLASH TOASTS -->
+      <div id="flash">
+        {{ if .MensagemFlash }}
+          <div class="flash {{ if .FlashErro }}flash-err{{ else }}flash-ok{{ end }}" onclick="this.remove()">
+            {{ .MensagemFlash }}
+          </div>
+        {{ end }}
+      </div>
+
+      <!-- CORPO DINÂMICO CARREGADO VIA HTMX OU SERVIDOR -->
+      <div id="conteudo" class="content">
+        {{ template "content" . }}
+      </div>
+    </main>
+  </div>
+
+  <!-- CONTAINER PARA MODAIS GLOBAIS -->
+  <div id="modal-container"></div>
+</body>
+</html>

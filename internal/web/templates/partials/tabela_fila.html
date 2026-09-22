@@ -1,0 +1,117 @@
+{{ define "tabela_fila" }}
+{{ if .Eventos }}
+<div class="tabela-wrap">
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th>ID do Evento</th>
+        <th>Tipo</th>
+        <th>Colaborador</th>
+        <th>Status eSocial</th>
+        <th>Protocolo de Envio</th>
+        <th>Recibo de Entrega</th>
+        <th class="acoes">Ações Operacionais</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .Eventos }}
+      <tr id="linha-evento-{{ .ID }}">
+        <td class="mono" style="font-size: 11px; font-weight: 600;">
+          <a href="#" style="color: inherit;" hx-get="/fila/{{ .ID }}/detalhes" hx-target="#modal-container" title="Clique para ver detalhes do XML e logs">
+            {{ .ID }}
+          </a>
+        </td>
+        <td>
+          <span class="badge info" style="font-weight: 700;">{{ .Tipo }}</span>
+        </td>
+        <td>
+          <strong>{{ .ColaboradorNome }}</strong>
+          <div class="muted mono" style="font-size: 11px;">CPF: {{ formatarCPF .ColaboradorCPF }}</div>
+        </td>
+        <td>
+          <span class="badge {{ statusBadgeClass .Status }}">
+            {{ statusDescricao .Status }}
+          </span>
+        </td>
+        <td class="mono" style="font-size: 11px;">
+          {{ if .Protocolo }}
+            <span style="color: var(--info-text);">{{ .Protocolo }}</span>
+          {{ else }}
+            <span class="muted">--</span>
+          {{ end }}
+        </td>
+        <td class="mono" style="font-size: 11px;">
+          {{ if .Recibo }}
+            <strong style="color: var(--ok-text);">{{ .Recibo }}</strong>
+          {{ else }}
+            <span class="muted">--</span>
+          {{ end }}
+        </td>
+        <td class="acoes" style="display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap;">
+          <!-- 1. VALIDAR XSD -->
+          <button type="button" class="btn btn-outline btn-sm" title="Validar XSD oficial"
+                  hx-post="/fila/{{ .ID }}/validar" hx-target="#conteudo">
+            Validar
+          </button>
+
+          <!-- 2. ASSINAR (SE PRONTO OU REJEITADO) -->
+          {{ if or (eq .Status "pronto") (eq .Status "rejeitado") }}
+          <button type="button" class="btn btn-outline btn-sm" style="color: var(--info-text); border-color: var(--info);"
+                  title="Assinar com Certificado Digital"
+                  hx-post="/fila/{{ .ID }}/assinar" hx-target="#conteudo">
+            Assinar
+          </button>
+          {{ end }}
+
+          <!-- 3. TRANSMITIR (SE ASSINADO) -->
+          {{ if eq .Status "assinado" }}
+          <button type="button" class="btn btn-primario btn-sm" title="Transmitir ao eSocial"
+                  hx-post="/fila/{{ .ID }}/transmitir" hx-target="#conteudo">
+            Transmitir
+          </button>
+          {{ end }}
+
+          <!-- 4. CONSULTAR RECIBO (SE TRANSMITIDO) -->
+          {{ if eq .Status "transmitido" }}
+          <button type="button" class="btn btn-outline btn-sm" style="color: var(--ok-text); border-color: var(--ok);"
+                  title="Consultar Recibo eSocial"
+                  hx-post="/fila/{{ .ID }}/recibo" hx-target="#conteudo">
+            Consultar Recibo
+          </button>
+          {{ end }}
+
+          <!-- 5. BAIXAR XML -->
+          <a href="/fila/{{ .ID }}/xml" class="btn btn-outline btn-sm" title="Baixar XML gerado" download="{{ .ID }}.xml">
+            XML
+          </a>
+
+          <!-- 6. VER LOGS / DETALHES -->
+          <button type="button" class="btn btn-outline btn-sm" title="Ver logs e resposta oficial"
+                  hx-get="/fila/{{ .ID }}/detalhes" hx-target="#modal-container">
+            Logs
+          </button>
+
+          <!-- 7. EXCLUIR -->
+          <button type="button" class="btn btn-danger btn-sm" title="Excluir evento"
+                  hx-delete="/fila/{{ .ID }}"
+                  hx-confirm="Confirma a exclusão deste evento da fila?"
+                  hx-target="#conteudo">
+            &times;
+          </button>
+        </td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
+{{ else }}
+<div class="vazio">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="m22 2-7 20-4-9-9-4Z"></path>
+    <path d="M22 2 11 13"></path>
+  </svg>
+  <p style="margin: 8px 0 4px; font-weight: 600;">Nenhum evento nesta categoria.</p>
+  <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Gere eventos S-2240, S-2210 ou S-2220 para que apareçam na fila de transmissão.</p>
+</div>
+{{ end }}
+{{ end }}

@@ -1,0 +1,189 @@
+{{ define "content" }}
+<div class="dashboard">
+  <!-- CABEÇALHO DO PAINEL -->
+  <div class="toolbar">
+    <div>
+      <h1 style="margin: 0; font-size: var(--fs-2xl);">Painel de Controle SST</h1>
+      <p class="muted" style="margin: 4px 0 0;">
+        Ambiente: <strong>{{ if eq .Config.Ambiente 1 }}Produção Oficial (Governo Federal){{ else }}Produção Restrita (Testes / Homologação){{ end }}</strong>
+        {{ if .Config.RazaoSocial }} • {{ .Config.RazaoSocial }}{{ end }}
+      </p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <a href="/fila" class="btn btn-outline" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+        <span>Fila de Transmissão</span>
+      </a>
+      <a href="/eventos/s2240" class="btn btn-primario" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Emitir S-2240</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- INDICADORES KPI -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Colaboradores</div>
+      <div class="kpi-valor">{{ .KPI.TotalColaboradores }}</div>
+      <div class="kpi-detalhe">Cadastrados no banco local</div>
+    </div>
+
+    <div class="kpi {{ if gt .KPI.EventosProntos 0 }}kpi-warn{{ end }}">
+      <div class="kpi-label">Prontos p/ Assinar</div>
+      <div class="kpi-valor">{{ .KPI.EventosProntos }}</div>
+      <div class="kpi-detalhe">Aguardando certificação</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">Assinados</div>
+      <div class="kpi-valor" style="color: var(--info-text);">{{ .KPI.EventosAssinados }}</div>
+      <div class="kpi-detalhe">Prontos para transmissão</div>
+    </div>
+
+    <div class="kpi kpi-ok">
+      <div class="kpi-label">Transmitidos & Aceitos</div>
+      <div class="kpi-valor" style="color: var(--ok-text);">{{ .KPI.EventosAceitos }}</div>
+      <div class="kpi-detalhe">Com recibo do eSocial</div>
+    </div>
+
+    <div class="kpi {{ if gt .KPI.EventosRejeitados 0 }}kpi-err{{ end }}">
+      <div class="kpi-label">Rejeitados / Erros</div>
+      <div class="kpi-valor" style="{{ if gt .KPI.EventosRejeitados 0 }}color: var(--err-text);{{ end }}">{{ .KPI.EventosRejeitados }}</div>
+      <div class="kpi-detalhe">Necessitam ajuste</div>
+    </div>
+  </div>
+
+  <!-- AÇÕES RÁPIDAS CORPORATIVAS -->
+  <div class="card" style="margin-bottom: var(--sp-5);">
+    <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      Ações Rápidas de Emissão SST
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px;">
+      <a href="/eventos/s2240" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/eventos/s2240" hx-target="#conteudo" hx-push-url="true">
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <strong style="color: var(--navy);">S-2240 • Condições Ambientais</strong>
+          <span style="font-size: 11px; color: var(--text-2);">Agentes nocivos & Tabela 24</span>
+        </div>
+      </a>
+
+      <a href="/eventos/s2210" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/eventos/s2210" hx-target="#conteudo" hx-push-url="true">
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <strong style="color: var(--navy);">S-2210 • Comunicação de CAT</strong>
+          <span style="font-size: 11px; color: var(--text-2);">Acidente de trabalho & CID</span>
+        </div>
+      </a>
+
+      <a href="/eventos/s2220" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/eventos/s2220" hx-target="#conteudo" hx-push-url="true">
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <strong style="color: var(--navy);">S-2220 • Monitoramento da Saúde</strong>
+          <span style="font-size: 11px; color: var(--text-2);">Exames ocupacionais (ASO)</span>
+        </div>
+      </a>
+
+      <a href="/colaboradores" class="btn btn-outline" style="justify-content: flex-start; height: 50px; padding: 0 16px;" hx-get="/colaboradores" hx-target="#conteudo" hx-push-url="true">
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <strong style="color: var(--navy);">Importar Colaboradores</strong>
+          <span style="font-size: 11px; color: var(--text-2);">Upload em lote via CSV</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- TABELA DE EVENTOS RECENTES -->
+  <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-3);">
+      <h3 style="margin: 0; font-size: var(--fs-base);">Últimos Eventos Gerados</h3>
+      <a href="/fila" class="muted" style="font-size: var(--fs-xs); font-weight: 600;" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">Ver todos na fila &rarr;</a>
+    </div>
+
+    {{ if .EventosRecentes }}
+    <div class="tabela-wrap">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Evento / ID</th>
+            <th>Tipo</th>
+            <th>Colaborador</th>
+            <th>Data Registro</th>
+            <th>Status</th>
+            <th>Recibo / Protocolo</th>
+            <th class="acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ range .EventosRecentes }}
+          <tr>
+            <td class="mono" style="font-size: 11px; font-weight: 600;">{{ .ID }}</td>
+            <td>
+              <span class="badge info" style="font-weight: 700;">{{ .Tipo }}</span>
+            </td>
+            <td>
+              <strong>{{ .ColaboradorNome }}</strong>
+              <div class="muted mono" style="font-size: 11px;">CPF: {{ formatarCPF .ColaboradorCPF }}</div>
+            </td>
+            <td>{{ formatarData .CriadoEm }}</td>
+            <td>
+              <span class="badge {{ statusBadgeClass .Status }}">
+                {{ statusDescricao .Status }}
+              </span>
+            </td>
+            <td class="mono" style="font-size: 11px;">
+              {{ if .Recibo }}
+                <span title="Recibo eSocial" style="color: var(--ok-text); font-weight: 600;">{{ .Recibo }}</span>
+              {{ else if .Protocolo }}
+                <span title="Protocolo de Envio" style="color: var(--info-text);">{{ .Protocolo }}</span>
+              {{ else }}
+                <span class="muted">--</span>
+              {{ end }}
+            </td>
+            <td class="acoes">
+              <a href="/fila" class="btn btn-outline btn-sm" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">Abrir na Fila</a>
+            </td>
+          </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+    {{ else }}
+    <div class="vazio">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      <p style="margin: 8px 0 4px; font-weight: 600;">Nenhum evento gerado ainda.</p>
+      <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Cadastre seus colaboradores ou emita um evento S-2240, S-2210 ou S-2220 para começar.</p>
+    </div>
+    {{ end }}
+  </div>
+
+  <!-- CARD INFORMATIVO DE CONFORMIDADE SST -->
+  <div class="grid-2" style="margin-top: var(--sp-4);">
+    <div class="card" style="border-left: 3px solid var(--ch-600);">
+      <h4 style="margin: 0 0 8px; font-size: var(--fs-sm); color: var(--navy);">eSocial S-1.3 • Eventos SST Obrigatórios</h4>
+      <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.6; margin: 0 0 8px;">
+        Emissor livre para atendimento completo às exigências legais da Portaria MTP nº 4.075 e regras vigentes do eSocial.
+      </p>
+      <ul style="font-size: var(--fs-xs); color: var(--text-2); padding-left: 18px; margin: 0; line-height: 1.6;">
+        <li><strong>S-2210 (CAT):</strong> Prazo até o 1º dia útil seguinte ao acidente (ou imediatamente em caso de óbito).</li>
+        <li><strong>S-2220 (ASO):</strong> Prazo até o dia 15 do mês subsequente à emissão do atestado de saúde.</li>
+        <li><strong>S-2240 (Condições Ambientais):</strong> Registro de riscos nocivos e ausência de risco (código 09.01.001).</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--info);">
+      <h4 style="margin: 0 0 8px; font-size: var(--fs-sm); color: var(--navy);">Segurança e Privacidade de Dados</h4>
+      <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.6; margin: 0 0 8px;">
+        Este software opera de forma 100% autônoma na sua máquina local:
+      </p>
+      <ul style="font-size: var(--fs-xs); color: var(--text-2); padding-left: 18px; margin: 0; line-height: 1.6;">
+        <li>Nenhum dado de colaboradores ou empresa é enviado para servidores de terceiros.</li>
+        <li>O Certificado Digital A1 é mantido no armazenamento local criptografado.</li>
+        <li>A comunicação com o eSocial é estabelecida diretamente entre seu computador e o Serpro/Receita Federal.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{{ end }}

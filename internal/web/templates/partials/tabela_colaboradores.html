@@ -1,0 +1,65 @@
+{{ define "tabela_colaboradores" }}
+{{ if .Colaboradores }}
+<div class="tabela-wrap">
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th>Nome do Trabalhador</th>
+        <th>CPF</th>
+        <th>Matrícula</th>
+        <th>Cargo & CBO</th>
+        <th>Setor</th>
+        <th>Data Admissão</th>
+        <th class="acoes">Ações SST</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .Colaboradores }}
+      <tr>
+        <td>
+          <strong style="color: var(--navy);">{{ .Nome }}</strong>
+          <span class="badge {{ if eq .Status "ativo" }}ok{{ else }}neutral{{ end }}" style="font-size: 10px; margin-left: 6px;">{{ .Status }}</span>
+        </td>
+        <td class="mono" style="font-size: 12px;">{{ formatarCPF .CPF }}</td>
+        <td class="mono" style="font-size: 12px;">{{ .Matricula }}</td>
+        <td>
+          <div>{{ .Cargo }}</div>
+          <span class="muted mono" style="font-size: 11px;">CBO: {{ .CBO }}</span>
+        </td>
+        <td>{{ if .Setor }}{{ .Setor }}{{ else }}<span class="muted">--</span>{{ end }}</td>
+        <td>{{ formatarDataSimples .DataAdmissao }}</td>
+        <td class="acoes" style="display: flex; gap: 4px; justify-content: flex-end;">
+          <a href="/eventos/s2240?colaborador_id={{ .ID }}" class="btn btn-outline btn-sm" title="Emitir S-2240 (Condições Ambientais)" hx-get="/eventos/s2240?colaborador_id={{ .ID }}" hx-target="#conteudo" hx-push-url="true">
+            S-2240
+          </a>
+          <a href="/eventos/s2210?colaborador_id={{ .ID }}" class="btn btn-outline btn-sm" title="Emitir S-2210 (CAT)" hx-get="/eventos/s2210?colaborador_id={{ .ID }}" hx-target="#conteudo" hx-push-url="true">
+            CAT
+          </a>
+          <a href="/eventos/s2220?colaborador_id={{ .ID }}" class="btn btn-outline btn-sm" title="Emitir S-2220 (ASO)" hx-get="/eventos/s2220?colaborador_id={{ .ID }}" hx-target="#conteudo" hx-push-url="true">
+            ASO
+          </a>
+          <button type="button" class="btn btn-danger btn-sm" title="Excluir Colaborador"
+                  hx-delete="/colaboradores/{{ .ID }}"
+                  hx-confirm="Confirma a exclusão do colaborador {{ .Nome }}? Os eventos vinculados permanecerão arquivados."
+                  hx-target="#conteudo">
+            &times;
+          </button>
+        </td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
+{{ else }}
+<div class="vazio">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+    <circle cx="9" cy="7" r="4"></circle>
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+  </svg>
+  <p style="margin: 8px 0 4px; font-weight: 600;">Nenhum colaborador encontrado.</p>
+  <p class="muted" style="font-size: var(--fs-xs); margin: 0;">Cadastre um colaborador manualmente ou importe via arquivo CSV.</p>
+</div>
+{{ end }}
+{{ end }}

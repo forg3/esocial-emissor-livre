@@ -1,0 +1,16 @@
+{{ define "resultado_cbos" }}
+{{ if .CBOs }}
+<div class="busca-dropdown">
+  {{ range .CBOs }}
+  <div class="busca-item" onclick="selecionarCBO('{{ .Codigo }}', '{{ .Titulo }}')">
+    <span class="busca-item-cod">{{ .Codigo }}</span>
+    <span style="font-weight: 500;">{{ .Titulo }}</span>
+  </div>
+  {{ end }}
+</div>
+{{ else }}
+<div class="busca-dropdown" style="padding: 10px; font-size: 12px; color: var(--text-2); text-align: center;">
+  Nenhum CBO encontrado para o termo pesquisado.
+</div>
+{{ end }}
+{{ end }}

@@ -1,0 +1,30 @@
+# Binários e builds
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Dados locais e banco SQLite
+/dados/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+
+# Certificados locais e segredos (NUNCA versionar)
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+
+# Arquivos temporários e IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store

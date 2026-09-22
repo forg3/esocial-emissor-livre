@@ -1,0 +1,64 @@
+{{ define "content" }}
+<div class="tela-fila">
+  <div class="toolbar">
+    <div>
+      <h1 style="margin: 0; font-size: var(--fs-2xl);">Central de Transmissão eSocial</h1>
+      <p class="muted" style="margin: 4px 0 0;">
+        Fila de envio, assinatura digital com certificado e consulta de recibos oficiais de entrega SST.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button type="button" class="btn btn-outline" hx-post="/fila/lote/assinar" hx-target="#conteudo" hx-confirm="Deseja assinar todos os eventos em status 'pronto' utilizando o certificado digital configurado?">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>Assinar Prontos em Lote</span>
+      </button>
+
+      <button type="button" class="btn btn-primario" hx-post="/fila/lote/transmitir" hx-target="#conteudo" hx-confirm="Confirma a transmissão do lote de eventos assinados para o ambiente do eSocial?">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+        <span>Transmitir Lote ao eSocial</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTROS POR STATUS -->
+  <div class="card" style="margin-bottom: var(--sp-4); padding: var(--sp-3);">
+    <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+      <div class="filtros">
+        <span class="muted" style="font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase;">Filtrar:</span>
+        <button type="button" class="btn btn-outline btn-sm {{ if or (eq .FiltroStatus "") (eq .FiltroStatus "todos") }}btn-primario{{ end }}"
+                hx-get="/fila/tabela?status=todos" hx-target="#tabela-fila">
+          Todos ({{ .TotalGeral }})
+        </button>
+        <button type="button" class="btn btn-outline btn-sm {{ if eq .FiltroStatus "pronto" }}btn-primario{{ end }}"
+                hx-get="/fila/tabela?status=pronto" hx-target="#tabela-fila">
+          Prontos ({{ .TotalProntos }})
+        </button>
+        <button type="button" class="btn btn-outline btn-sm {{ if eq .FiltroStatus "assinado" }}btn-primario{{ end }}"
+                hx-get="/fila/tabela?status=assinado" hx-target="#tabela-fila">
+          Assinados ({{ .TotalAssinados }})
+        </button>
+        <button type="button" class="btn btn-outline btn-sm {{ if eq .FiltroStatus "aceito" }}btn-primario{{ end }}"
+                hx-get="/fila/tabela?status=aceito" hx-target="#tabela-fila">
+          Aceitos ({{ .TotalAceitos }})
+        </button>
+        <button type="button" class="btn btn-outline btn-sm {{ if eq .FiltroStatus "rejeitado" }}btn-primario{{ end }}"
+                hx-get="/fila/tabela?status=rejeitado" hx-target="#tabela-fila">
+          Rejeitados ({{ .TotalRejeitados }})
+        </button>
+      </div>
+
+      <div class="muted" style="font-size: var(--fs-xs);">
+        Ambiente: <strong>{{ if eq .Config.Ambiente 1 }}1 - Produção Oficial{{ else }}2 - Produção Restrita{{ end }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA DE EVENTOS DA FILA -->
+  <div class="card">
+    <div id="tabela-fila">
+      {{ template "tabela_fila" . }}
+    </div>
+  </div>
+</div>
+{{ end }}

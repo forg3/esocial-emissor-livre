@@ -1,0 +1,136 @@
+{{ define "content" }}
+<div class="tela-colaboradores">
+  <div class="toolbar">
+    <div>
+      <h1 style="margin: 0; font-size: var(--fs-2xl);">Colaboradores</h1>
+      <p class="muted" style="margin: 4px 0 0;">Gestão dos trabalhadores ativos para geração e vinculação dos eventos SST.</p>
+    </div>
+
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <a href="/colaboradores/modelo-csv" class="btn btn-outline" download="modelo_colaboradores_esocial.csv">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Baixar Modelo CSV</span>
+      </a>
+
+      <button type="button" class="btn btn-outline" onclick="document.getElementById('modal-importar-csv').removeAttribute('hidden')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Importar CSV</span>
+      </button>
+
+      <button type="button" class="btn btn-primario" onclick="document.getElementById('modal-novo-colaborador').removeAttribute('hidden')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Novo Colaborador</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTROS E BUSCA -->
+  <div class="card" style="margin-bottom: var(--sp-4); padding: var(--sp-3);">
+    <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+      <div style="display: flex; gap: 8px; align-items: center; flex: 1; min-width: 260px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-2);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" name="q" placeholder="Buscar por nome, CPF ou matrícula..." style="flex: 1; height: 36px; padding: 0 12px; font-size: var(--fs-sm); border: 1px solid var(--border); border-radius: var(--radius);"
+               hx-get="/colaboradores/tabela" hx-trigger="keyup changed delay:250ms, search" hx-target="#tabela-colaboradores">
+      </div>
+      <div class="muted" style="font-size: var(--fs-xs);">
+        Total de registros: <strong>{{ len .Colaboradores }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA DE COLABORADORES -->
+  <div class="card">
+    <div id="tabela-colaboradores">
+      {{ template "tabela_colaboradores" . }}
+    </div>
+  </div>
+
+  <!-- MODAL: NOVO COLABORADOR -->
+  <div id="modal-novo-colaborador" class="modal-overlay" hidden>
+    <div class="modal-caixa modal-caixa-lg">
+      <div class="modal-cabecalho">
+        <h3>Cadastrar Novo Colaborador</h3>
+        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('modal-novo-colaborador').setAttribute('hidden', 'true')">&times;</button>
+      </div>
+      <form action="/colaboradores" method="POST" hx-post="/colaboradores" hx-target="#conteudo">
+        <div class="modal-corpo">
+          <div class="form-grid">
+            <div class="campo" style="grid-column: span 2;">
+              <label for="nome">Nome Completo do Trabalhador <span class="req">*</span></label>
+              <input type="text" id="nome" name="nome" placeholder="Ex: João da Silva Santos" required>
+            </div>
+
+            <div class="campo">
+              <label for="cpf">CPF (apenas números) <span class="req">*</span></label>
+              <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+              <span class="ajuda">11 dígitos cadastrados no CPF da Receita.</span>
+            </div>
+
+            <div class="campo">
+              <label for="matricula">Matrícula no Empregador <span class="req">*</span></label>
+              <input type="text" id="matricula" name="matricula" placeholder="Ex: MAT-1042" required>
+            </div>
+
+            <div class="campo">
+              <label for="cargo">Cargo / Função <span class="req">*</span></label>
+              <input type="text" id="cargo" name="cargo" placeholder="Ex: Soldador de Estruturas Metálicas" required>
+            </div>
+
+            <div class="campo busca-container">
+              <label for="cbo">CBO (Código Brasileiro de Ocupações) <span class="req">*</span></label>
+              <input type="text" id="cbo" name="cbo" placeholder="Ex: 951105 ou digite o nome do cargo..." required
+                     hx-get="/api/cbos/busca" hx-trigger="keyup changed delay:300ms" hx-target="#cbo-sugestoes">
+              <div id="cbo-sugestoes"></div>
+            </div>
+
+            <div class="campo">
+              <label for="data_admissao">Data de Admissão <span class="req">*</span></label>
+              <input type="date" id="data_admissao" name="data_admissao" required>
+            </div>
+
+            <div class="campo">
+              <label for="setor">Setor / Departamento</label>
+              <input type="text" id="setor" name="setor" placeholder="Ex: Canteiro de Obras / Manutenção">
+            </div>
+          </div>
+        </div>
+        <div class="modal-rodape">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('modal-novo-colaborador').setAttribute('hidden', 'true')">Cancelar</button>
+          <button type="submit" class="btn btn-primario">Salvar Colaborador</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: IMPORTAR CSV -->
+  <div id="modal-importar-csv" class="modal-overlay" hidden>
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h3>Importação em Lote via CSV</h3>
+        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('modal-importar-csv').setAttribute('hidden', 'true')">&times;</button>
+      </div>
+      <form action="/colaboradores/importar-csv" method="POST" enctype="multipart/form-data" hx-post="/colaboradores/importar-csv" hx-target="#conteudo">
+        <div class="modal-corpo">
+          <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; margin: 0;">
+            O arquivo CSV deve conter o cabeçalho obrigatório:<br>
+            <code class="mono" style="background: var(--surface-2); padding: 4px 6px; border-radius: 4px; display: block; margin-top: 6px;">nome,cpf,matricula,cargo,cbo,data_admissao,setor</code>
+          </p>
+
+          <div class="campo" style="margin-top: 12px;">
+            <label for="arquivo_csv">Selecione o arquivo CSV (.csv)</label>
+            <input type="file" id="arquivo_csv" name="arquivo_csv" accept=".csv" required>
+          </div>
+
+          <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-size: var(--fs-xs); color: var(--text-2);">
+            <strong>Dica:</strong> Baixe o modelo pronto clicando em <a href="/colaboradores/modelo-csv" download="modelo_colaboradores_esocial.csv">Baixar Modelo CSV</a> para evitar inconsistências de formatação.
+          </div>
+        </div>
+        <div class="modal-rodape">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('modal-importar-csv').setAttribute('hidden', 'true')">Fechar</button>
+          <button type="submit" class="btn btn-primario">Processar Importação</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{{ end }}

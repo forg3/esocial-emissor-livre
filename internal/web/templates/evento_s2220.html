@@ -1,0 +1,189 @@
+{{ define "content" }}
+<div class="tela-evento-s2220">
+  <div class="toolbar">
+    <div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="badge info" style="font-size: 11px; font-weight: 700;">S-2220</span>
+        <h1 style="margin: 0; font-size: var(--fs-2xl);">Monitoramento da Saúde do Trabalhador (ASO)</h1>
+      </div>
+      <p class="muted" style="margin: 4px 0 0;">
+        Registro do Atestado de Saúde Ocupacional emitido pelo médico do trabalho (PCMSO / NR-7).
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <button type="button" class="btn btn-outline" onclick="document.getElementById('modal-importar-aso-xml').removeAttribute('hidden')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Importar XML da Clínica</span>
+      </button>
+      <a href="/fila" class="btn btn-outline" hx-get="/fila" hx-target="#conteudo" hx-push-url="true">Fila de Transmissão</a>
+    </div>
+  </div>
+
+  <form action="/eventos/s2220" method="POST" hx-post="/eventos/s2220" hx-target="#conteudo">
+    <!-- SEÇÃO 1: TRABALHADOR -->
+    <div class="card" style="margin-bottom: var(--sp-4);">
+      <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        1. Identificação do Trabalhador
+      </h3>
+
+      <div class="form-grid" style="margin-top: var(--sp-3);">
+        <div class="campo" style="grid-column: span 2;">
+          <label for="colaborador_id">Selecione o Trabalhador <span class="req">*</span></label>
+          <select id="colaborador_id" name="colaborador_id" onchange="atualizarColaboradorS2220(this)" required>
+            <option value="">-- Selecione o colaborador --</option>
+            {{ range .Colaboradores }}
+            <option value="{{ .ID }}" data-cpf="{{ .CPF }}" data-matricula="{{ .Matricula }}" {{ if eq $.ColaboradorSelecionadoID .ID }}selected{{ end }}>
+              {{ .Nome }} — CPF: {{ formatarCPF .CPF }} (Matrícula: {{ .Matricula }})
+            </option>
+            {{ end }}
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="cpf_aso">CPF</label>
+          <input type="text" id="cpf_aso" class="mono" readonly style="background: var(--surface-2);">
+        </div>
+
+        <div class="campo">
+          <label for="matricula_aso">Matrícula</label>
+          <input type="text" id="matricula_aso" class="mono" readonly style="background: var(--surface-2);">
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 2: DADOS DO ASO -->
+    <div class="card" style="margin-bottom: var(--sp-4);">
+      <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path><circle cx="20" cy="10" r="2"></circle></svg>
+        2. Dados do Atestado de Saúde Ocupacional (ASO)
+      </h3>
+
+      <div class="form-grid" style="margin-top: var(--sp-3);">
+        <div class="campo">
+          <label for="tipo_exame">Tipo do Exame Médico Ocupacional <span class="req">*</span></label>
+          <select id="tipo_exame" name="tipo_exame">
+            <option value="0">0 - Exame admissional</option>
+            <option value="1" selected>1 - Exame periódico</option>
+            <option value="2">2 - Exame de retorno ao trabalho</option>
+            <option value="3">3 - Exame de mudança de função / risco</option>
+            <option value="4">4 - Exame de monitoração pontual</option>
+            <option value="9">9 - Exame demissional</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="dt_aso">Data da Emissão do ASO <span class="req">*</span></label>
+          <input type="date" id="dt_aso" name="dt_aso" value="{{ .Hoje }}" required>
+        </div>
+
+        <div class="campo">
+          <label for="resultado_aso">Resultado / Parecer da Aptidão <span class="req">*</span></label>
+          <select id="resultado_aso" name="resultado_aso">
+            <option value="1" selected>1 - Apto para a função</option>
+            <option value="2">2 - Inapto para a função</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 3: MÉDICO EXAMINADOR E COORDENADOR -->
+    <div class="card" style="margin-bottom: var(--sp-4);">
+      <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+        3. Médicos Responsáveis (Examinador e Coordenador PCMSO)
+      </h3>
+
+      <div class="form-grid" style="margin-top: var(--sp-3);">
+        <div class="campo">
+          <label for="nome_medico">Nome do Médico Examinador <span class="req">*</span></label>
+          <input type="text" id="nome_medico" name="nome_medico" placeholder="Ex: Dra. Mariana Vasconcelos" required value="Dra. Mariana Vasconcelos">
+        </div>
+
+        <div class="campo">
+          <label for="crm_medico">CRM do Examinador <span class="req">*</span></label>
+          <input type="text" id="crm_medico" name="crm_medico" placeholder="Ex: 104523" required value="104523">
+        </div>
+
+        <div class="campo">
+          <label for="uf_medico">UF do CRM</label>
+          <select id="uf_medico" name="uf_medico">
+            <option value="SP" selected>SP</option>
+            <option value="RJ">RJ</option>
+            <option value="MG">MG</option>
+            <option value="RS">RS</option>
+            <option value="PR">PR</option>
+            <option value="SC">SC</option>
+            <option value="BA">BA</option>
+            <option value="GO">GO</option>
+            <option value="DF">DF</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="nome_coord">Médico Coordenador do PCMSO (se houver)</label>
+          <input type="text" id="nome_coord" name="nome_coord" placeholder="Opcional se dispensado pela NR-7">
+        </div>
+
+        <div class="campo">
+          <label for="crm_coord">CRM do Coordenador</label>
+          <input type="text" id="crm_coord" name="crm_coord" placeholder="Opcional">
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRA DE AÇÕES -->
+    <div class="form-acoes" style="justify-content: flex-end;">
+      <a href="/colaboradores" class="btn btn-outline" hx-get="/colaboradores" hx-target="#conteudo" hx-push-url="true">Cancelar</a>
+      <button type="submit" class="btn btn-primario" style="height: 42px; padding: 0 24px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        Salvar e Gerar XML S-2220 (ASO)
+      </button>
+    </div>
+  </form>
+
+  <!-- MODAL: IMPORTAR XML DA CLÍNICA -->
+  <div id="modal-importar-aso-xml" class="modal-overlay" hidden>
+    <div class="modal-caixa">
+      <div class="modal-cabecalho">
+        <h3>Importar XML de ASO (S-2220)</h3>
+        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('modal-importar-aso-xml').setAttribute('hidden', 'true')">&times;</button>
+      </div>
+      <form action="/eventos/s2220/importar-xml" method="POST" enctype="multipart/form-data" hx-post="/eventos/s2220/importar-xml" hx-target="#conteudo">
+        <div class="modal-corpo">
+          <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; margin: 0;">
+            Selecione o arquivo XML emitido pelo software da clínica de medicina ocupacional (SOC, Madu, SGG, etc.). Os dados serão automaticamente conferidos e importados para a fila de transmissão.
+          </p>
+
+          <div class="campo" style="margin-top: 12px;">
+            <label for="arquivo_xml_aso">Arquivo XML do ASO (.xml)</label>
+            <input type="file" id="arquivo_xml_aso" name="arquivo_xml_aso" accept=".xml" required>
+          </div>
+        </div>
+        <div class="modal-rodape">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('modal-importar-aso-xml').setAttribute('hidden', 'true')">Fechar</button>
+          <button type="submit" class="btn btn-primario">Carregar & Conferir</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function atualizarColaboradorS2220(sel) {
+  var opt = sel.options[sel.selectedIndex];
+  if (opt && opt.dataset) {
+    document.getElementById('cpf_aso').value = opt.dataset.cpf || '';
+    document.getElementById('matricula_aso').value = opt.dataset.matricula || '';
+  }
+}
+
+(function() {
+  var sel = document.getElementById('colaborador_id');
+  if (sel && sel.value) {
+    atualizarColaboradorS2220(sel);
+  }
+})();
+</script>
+{{ end }}
