@@ -34,6 +34,7 @@ func prepararServidorSeguranca(t *testing.T) (*web.Servidor, *storage.DB, http.H
 	if err != nil {
 		t.Fatalf("falha ao instanciar servidor: %v", err)
 	}
+	configurarEmpresaTeste(t, db)
 	return srv, db, srv.Rotas(), func() {
 		db.Fechar()
 		os.RemoveAll(tmpDir)
@@ -314,7 +315,9 @@ func TestGeradorXMLEscapaCamposMaliciosos(t *testing.T) {
 		NomeRisco:      payload,
 		DataInicio:     "2026-01-01</dtIniCondicao><x>",
 		UFRegistro:     "SP</ufOC><x>",
-		OrgaoClasse:    "CREA</ideOC><x>",
+		OrgaoClasse:    "4</ideOC><x>",
+		DscSetor:       "Setor</dscSetor><x>",
+		NumRegistro:    "123</dscOC><x>",
 	})
 	if strings.Contains(xml2240, "<codAgNoc>INJETADO") || strings.Contains(xml2240, "<x>") {
 		t.Errorf("XML S-2240 contém injeção de estrutura:\n%s", xml2240)
@@ -330,7 +333,13 @@ func TestGeradorXMLEscapaCamposMaliciosos(t *testing.T) {
 		CPFTrabalhador: "11122233344",
 		DtAcidente:     "2026-01-01</dtAcid><x>",
 		HrAcidente:     "08:00</hrAcid><x>",
-		DescLocal:      "Local</dscLocal><x>",
+		DscLocal:       "Local</dscLocal><x>",
+		DscLograd:      "Rua</dscLograd><x>",
+		NrLograd:       "1</nrLograd><x>",
+		Bairro:         "Bairro</bairro><x>",
+		NomeMedico:     "Med</nmEmit><x>",
+		CRMMedico:      "1</nrOC><x>",
+		Observacao:     "Obs</observacao><x>",
 		CID10:          "S61.0</codCID><x>",
 		UFMedico:       "SP</ufOC><x>",
 	})
@@ -344,6 +353,8 @@ func TestGeradorXMLEscapaCamposMaliciosos(t *testing.T) {
 		CNPJ:           "12345678000190",
 		CPFTrabalhador: "11122233344",
 		DataASO:        "2026-01-01</dtAso><x>",
+		NomeMedico:     "Med</nmMed><x>",
+		CRMMedico:      "123456",
 		UFMedico:       "XX</ufCRM><x>",
 	})
 	if strings.Contains(xml2220, "<x>") {

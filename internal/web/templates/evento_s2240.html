@@ -54,6 +54,11 @@
         </div>
 
         <div class="campo">
+          <label for="dsc_setor">Setor / Ambiente (dscSetor) <span class="req">*</span></label>
+          <input type="text" id="dsc_setor" name="dsc_setor" value="Geral Operacional" maxlength="100" required>
+        </div>
+
+        <div class="campo">
           <label for="dt_inicio">Data de Início da Condição <span class="req">*</span></label>
           <input type="date" id="dt_inicio" name="dt_inicio" value="{{ .Hoje }}" required>
           <span class="ajuda">Data em que o trabalhador iniciou as atividades no ambiente.</span>
@@ -116,8 +121,24 @@
         </div>
 
         <div class="campo" id="bloco-intensidade" style="display: none;">
-          <label for="intensidade">Intensidade / Concentração</label>
+          <label for="intensidade">Intensidade / Concentração (tpAval = 1)</label>
           <input type="text" id="intensidade" name="intensidade" placeholder="Ex: 85 dB(A) ou 2.5 mg/m³">
+        </div>
+
+        <div class="campo">
+          <label for="unidade_medida">Unidade de Medida (unMed)</label>
+          <select id="unidade_medida" name="unidade_medida">
+            <option value="1">1 - Dose diária de ruído</option>
+            <option value="2">2 - Decibel linear (dB linear)</option>
+            <option value="3">3 - Decibel C (dB(C))</option>
+            <option value="4" selected>4 - Decibel A (dB(A))</option>
+          </select>
+          <span class="ajuda">Obrigatória na avaliação quantitativa (tpAval = 1).</span>
+        </div>
+
+        <div class="campo" style="grid-column: span 2;">
+          <label for="tecnica_medicao">Técnica de Medição (tecMedicao)</label>
+          <input type="text" id="tecnica_medicao" name="tecnica_medicao" value="Avaliação quantitativa conforme NR-09" maxlength="100">
         </div>
       </div>
     </div>
@@ -154,6 +175,15 @@
             <option value="1">1 - Não utilizado</option>
             <option value="2">2 - Utilizado</option>
           </select>
+
+        <div class="campo">
+          <label for="eficaz_epi">EPI Eficaz? (eficEpi)</label>
+          <select id="eficaz_epi" name="eficaz_epi">
+            <option value="S" selected>Sim (S)</option>
+            <option value="N">Não (N)</option>
+          </select>
+          <span class="ajuda">Obrigatório quando utilizEPI = 2.</span>
+        </div>
         </div>
 
         <div class="campo" id="bloco-ca-epi" style="display: none;">

@@ -359,7 +359,7 @@ ACHADOS = [
         "cat": "Complementares (Conformidade)",
         "sev": "alta",
         "local": "internal/web/generator.go:97-181, 239-342, 381-421 + internal/data/xsd/*.xsd",
-        "titulo": "XML gerado pelo editor nao e aderente ao XSD oficial S-1.3 (revelado ao ligar a validacao real)",
+        "titulo": "XML gerado pelo editor nao e aderente ao XSD oficial S-1.3 (CORRIGIDO no Sprint 1 da v1.2)",
         "trecho": 'gerador emite <ideTrabalhador><cpfTrab>   // evtExpRisco.xsd:31 exige <ideVinculo type="T_ideVinculo_sst">\ngerador emite <agenteNoc>                // evtExpRisco.xsd exige <agNoc>\ngerador emite <ideOC>CREA</ideOC>        // XSD: enumeracao {1,4,9} (codigo do orgao, nao sigla)\n// xmllint --schema evtExpRisco.xsd: "element ideTrabalhador: This element is not expected. Expected is ( ideVinculo )"',
         "porque": (
             "Ate esta correcao o botao Validar apenas fazia strings.Contains e sempre aprovava, mascarando a divergencia. "
@@ -528,6 +528,14 @@ CORRECOES = [
     ("I-01",
      "Senhas de fixture dos testes geradas em tempo de execucao com crypto/rand (nenhum literal de credencial no codigo).",
      "internal/crypto/cert_test.go (senhaAleatoriaTeste); go test ./internal/crypto"),
+    ("M-05",
+     "Geradores dos tres eventos reescritos para o leiaute S-1.3 (ideVinculo, agNoc, epcEpi com epi/epiCompl, respReg com "
+     "codigo de orgao de classe, estrutura completa de cat/atestado/localAcidente/parteAtingida/agenteCausador, "
+     "exMedOcup/aso/exame/medico/respMonit), com CID normalizado para 4 caracteres e codigos de tabelas oficiais "
+     "(13, 14, 15, 17 e 27) embutidos e selecionaveis no formulario.",
+     "internal/web/generator.go (GerarXMLS2240/S2210/S2220), internal/data/tabelas/tabela{13,14,15,17,27}_*.json, "
+     "internal/data/data.go (carregadores), templates evento_s2210/s2220/s2240; testes TestConformidadeXSDGeraEventosValidos, "
+     "TestGeradoresUsamEstruturaOficial e TestTabelasOficiaisEmbutidas (xmllint contra os XSD oficiais)"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -1257,9 +1265,9 @@ def montar_pdf(total):
         "recibos oficiais ficticios, criando uma trilha de auditoria falsa. A base tecnica, porem, e solida nos pontos "
         "estruturais: 100%% das consultas SQL sao parametrizadas, os templates usam escaping contextual do "
         "html/template, nao ha segredos hardcoded (nem no historico git) e nao ha path traversal, command injection "
-        "nem XXE exploraveis. <b>Todos os achados foram corrigidos nesta revisao</b> (ver secao 7, com a evidencia "
-        "de cada correcao); a validacao por schema, agora ligada, revelou ainda um achado adicional de conformidade "
-        "(M-05) que permanece aberto por depender da adequacao dos leiautes.") % (PROJETO, VERSAO, len(ACHADOS)), est["corpo"]))
+        "nem XXE exploraveis. <b>Todos os achados foram corrigidos</b> (ver secao 7, com a evidencia de cada correcao), "
+        "inclusive o achado de conformidade M-05: os geradores dos eventos S-2240, S-2210 e S-2220 foram reescritos para "
+        "o leiaute S-1.3 e passam a ser aprovados pelo xmllint contra os XSD oficiais embutidos.") % (PROJETO, VERSAO, len(ACHADOS)), est["corpo"]))
 
     resumo = [[
         Paragraph("Severidade", est["tbl_head"]),
@@ -1447,10 +1455,12 @@ def montar_pdf(total):
     E.append(t_corr)
     E.append(Spacer(1, 8))
     E.append(Paragraph(
-        "Achado adicional (aberto): <b>M-05</b> - os geradores de XML do editor ainda nao sao aderentes ao XSD oficial "
-        "S-1.3 (ideVinculo, agNoc, codigos de orgao de classe e blocos obrigatorios de CAT/ASO). A correcao do M-03 "
-        "tornou essa divergencia visivel e rastreavel em vez de silenciosa; a adequacao dos leiautes depende de decisao "
-        "funcional sobre os campos obrigatorios do documento fiscal (issue dedicada na secao 6).", est["corpo"]))
+        "Achado adicional <b>M-05 (corrigido)</b>: os geradores de XML foram reescritos para o leiaute S-1.3 - "
+        "ideVinculo, agNoc, epcEpi com epi/epiCompl, respReg com codigo de orgao de classe, CAT completa "
+        "(codSitGeradora, iniciatCAT, localAcidente, parteAtingida, agenteCausador, atestado) e ASO "
+        "(exMedOcup/aso/exame/medico). As tabelas 13, 14, 15, 17 e 27 foram embutidas no binario e expostas nos "
+        "formularios. Verificacao: os tres eventos gerados pela interface real foram aprovados pelo xmllint contra os "
+        "XSD oficiais (evtExpRisco, evtCAT e evtMonit).", est["corpo"]))
 
     # (f) Issues para o GitHub
     E.append(Paragraph("6. ISSUES PARA O GITHUB", est["h1"]))

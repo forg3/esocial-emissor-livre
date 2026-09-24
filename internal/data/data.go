@@ -69,3 +69,51 @@ func ObterXSD(nome string) ([]byte, error) {
 	}
 	return bytes, nil
 }
+
+// ItemTabela representa um código/descrição de uma tabela oficial do eSocial.
+type ItemTabela struct {
+	Codigo    string `json:"codigo"`
+	Descricao string `json:"descricao"`
+}
+
+type itensWrapper struct {
+	Fonte string       `json:"fonte"`
+	Itens []ItemTabela `json:"itens"`
+}
+
+func carregarItens(arquivo string) ([]ItemTabela, error) {
+	bytes, err := EmbeddedFS.ReadFile("tabelas/" + arquivo)
+	if err != nil {
+		return nil, fmt.Errorf("falha ao ler %s: %w", arquivo, err)
+	}
+	var wrapper itensWrapper
+	if err := json.Unmarshal(bytes, &wrapper); err != nil {
+		return nil, fmt.Errorf("falha ao decodificar %s: %w", arquivo, err)
+	}
+	return wrapper.Itens, nil
+}
+
+// CarregarPartesCorpo lê a Tabela 13 (parte do corpo atingida).
+func CarregarPartesCorpo() ([]ItemTabela, error) {
+	return carregarItens("tabela13_partes_corpo.json")
+}
+
+// CarregarAgentesCausadores lê a Tabela 14 (agente causador do acidente).
+func CarregarAgentesCausadores() ([]ItemTabela, error) {
+	return carregarItens("tabela14_agentes_causadores.json")
+}
+
+// CarregarSituacoesGeradoras lê a Tabela 15 (situação geradora do acidente).
+func CarregarSituacoesGeradoras() ([]ItemTabela, error) {
+	return carregarItens("tabela15_situacoes.json")
+}
+
+// CarregarNaturezasLesao lê a Tabela 17 (descrição da natureza da lesão).
+func CarregarNaturezasLesao() ([]ItemTabela, error) {
+	return carregarItens("tabela17_lesoes.json")
+}
+
+// CarregarProcedimentosDiagnosticos lê a Tabela 27 (procedimentos diagnósticos do ASO).
+func CarregarProcedimentosDiagnosticos() ([]ItemTabela, error) {
+	return carregarItens("tabela27_procedimentos.json")
+}

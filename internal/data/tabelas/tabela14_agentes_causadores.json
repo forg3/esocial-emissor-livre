@@ -1,0 +1,205 @@
+{
+  "fonte": "eSocial Leiaute S-1.3 - Tabela 14 - Agente Causador do Acidente de Trabalho (subconjunto verificado; a tabela oficial completa deve ser consultada no portal do eSocial)",
+  "itens": [
+    {
+      "codigo": "302010200",
+      "descricao": "Rua e estrada - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010250",
+      "descricao": "Calçada ou caminho para pedestre - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010300",
+      "descricao": "Piso de edifício - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010350",
+      "descricao": "Escada permanente cujos degraus permitem apoio integral do pé"
+    },
+    {
+      "codigo": "302010400",
+      "descricao": "Rampa - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010450",
+      "descricao": "Passarela ou plataforma permanentes - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010500",
+      "descricao": "Piso de mina - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010550",
+      "descricao": "Chão - superfície utilizada para sustentar pessoas"
+    },
+    {
+      "codigo": "302010600",
+      "descricao": "Piso de andaime e plataforma desmontável"
+    },
+    {
+      "codigo": "302010650",
+      "descricao": "Piso de veículo"
+    },
+    {
+      "codigo": "302010700",
+      "descricao": "Telhado"
+    },
+    {
+      "codigo": "302010900",
+      "descricao": "Superfície de sustentação, NIC"
+    },
+    {
+      "codigo": "302030900",
+      "descricao": "Escada móvel ou fixada, NIC"
+    },
+    {
+      "codigo": "302050100",
+      "descricao": "Edifício - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050200",
+      "descricao": "Depósito fixo (tanque, silo, paiol, etc.)"
+    },
+    {
+      "codigo": "302050300",
+      "descricao": "Cais, doca - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050400",
+      "descricao": "Dique, barragem - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050500",
+      "descricao": "Ponte, viaduto - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050600",
+      "descricao": "Arquibancada, estádio - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050700",
+      "descricao": "Andaime, plataforma - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050800",
+      "descricao": "Torre, poste - edifício ou estrutura"
+    },
+    {
+      "codigo": "302050900",
+      "descricao": "Edifício ou estrutura, NIC"
+    },
+    {
+      "codigo": "302070100",
+      "descricao": "Escavação (para edifício, estrada, etc.)"
+    },
+    {
+      "codigo": "302070300",
+      "descricao": "Canal, fosso"
+    },
+    {
+      "codigo": "302070500",
+      "descricao": "Poço, entrada, galeria, etc., de mina"
+    },
+    {
+      "codigo": "302070700",
+      "descricao": "Túnel"
+    },
+    {
+      "codigo": "302070900",
+      "descricao": "Escavação, fosso, túnel, NIC"
+    },
+    {
+      "codigo": "302090000",
+      "descricao": "Superfície e estrutura, NIC"
+    },
+    {
+      "codigo": "303010040",
+      "descricao": "Martelo, malho, marreta - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010080",
+      "descricao": "Machadinha, enxó - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010120",
+      "descricao": "Faca, facão - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010160",
+      "descricao": "Tesoura, tesourão - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010200",
+      "descricao": "Formão, cinzel - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010240",
+      "descricao": "Serra, serrote - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010280",
+      "descricao": "Alicate, torques, tenaz - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010320",
+      "descricao": "Plaina - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010360",
+      "descricao": "Lima, grosa - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010400",
+      "descricao": "Punção, ponteiro, vazador, talhadeira - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010440",
+      "descricao": "Pua, trado, verruma, máquina de furar manual"
+    },
+    {
+      "codigo": "303010480",
+      "descricao": "Chave de parafuso - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010520",
+      "descricao": "Chave de porca ou de abertura regulável, chave de boca"
+    },
+    {
+      "codigo": "303010560",
+      "descricao": "Alavanca, pé-de-cabra - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010600",
+      "descricao": "Corda, cabo, corrente - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010640",
+      "descricao": "Machado - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010680",
+      "descricao": "Enxada, enxadão, sacho - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010720",
+      "descricao": "Pá, cavadeira - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010760",
+      "descricao": "Picareta - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010800",
+      "descricao": "Garfo, ancinho, forcado - ferramenta manual sem força motriz"
+    },
+    {
+      "codigo": "303010900",
+      "descricao": "Ferramenta manual sem força motriz, NIC"
+    },
+    {
+      "codigo": "303015050",
+      "descricao": "Martelete, socador - ferramenta portátil com força motriz ou aquecimento"
+    }
+  ]
+}

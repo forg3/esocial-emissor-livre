@@ -1,0 +1,85 @@
+{
+  "fonte": "eSocial Leiaute S-1.3 - Tabela 27 - Procedimentos Diagnósticos (subconjunto verificado; a tabela oficial completa deve ser consultada no portal do eSocial)",
+  "itens": [
+    {
+      "codigo": "0295",
+      "descricao": "Avaliação clínica ocupacional (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0286",
+      "descricao": "Avaliação clínica com ênfase cardiocirculatória (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0287",
+      "descricao": "Avaliação clínica com ênfase dermatológica (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0288",
+      "descricao": "Avaliação clínica com ênfase gastrointestinal (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0289",
+      "descricao": "Avaliação clínica com ênfase mental (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0290",
+      "descricao": "Avaliação clínica com ênfase neurológica (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0291",
+      "descricao": "Avaliação clínica com ênfase neurossensorial (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0292",
+      "descricao": "Avaliação clínica com ênfase ortopédica (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0293",
+      "descricao": "Avaliação clínica com ênfase respiratória (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0294",
+      "descricao": "Avaliação clínica com ênfase urogenital (anamnese e exame físico)"
+    },
+    {
+      "codigo": "0296",
+      "descricao": "Avaliação da acuidade visual"
+    },
+    {
+      "codigo": "0297",
+      "descricao": "Avaliação da estereopsia"
+    },
+    {
+      "codigo": "0298",
+      "descricao": "Avaliação da visão de cores"
+    },
+    {
+      "codigo": "0299",
+      "descricao": "Avaliação do campo visual"
+    },
+    {
+      "codigo": "0300",
+      "descricao": "Avaliação psicossocial"
+    },
+    {
+      "codigo": "0281",
+      "descricao": "Audiometria tonal ocupacional"
+    },
+    {
+      "codigo": "0282",
+      "descricao": "Audiometria de tronco cerebral (PEA) BERA"
+    },
+    {
+      "codigo": "0283",
+      "descricao": "Audiometria tonal limiar com testes de discriminação"
+    },
+    {
+      "codigo": "0284",
+      "descricao": "Audiometria vocal - Pesquisa de limiar de discriminação"
+    },
+    {
+      "codigo": "0285",
+      "descricao": "Audiometria vocal - Pesquisa de limiar de inteligibilidade"
+    }
+  ]
+}
