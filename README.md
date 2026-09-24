@@ -13,7 +13,7 @@
 
 Software web livre, leve e direto para elaboração, validação estrutural (XSD) e assinatura digital (XMLDSig A1) dos eventos do **eSocial** (versão S-1.3), com execução local e autenticação obrigatória.
 
-> **Estado atual (v1.1-alpha):** a assinatura com certificado A1 é real; o **envio ao webservice oficial ainda é simulado** — nenhum dado é transmitido ao governo e **nenhum recibo oficial é gerado**. Eventos processados nesse fluxo ficam com o status `simulado` e a interface exibe o aviso "MODO SIMULAÇÃO". Não utilize os comprovantes para cumprimento de obrigação acessória até a integração real ser habilitada.
+> **Estado atual (v1.1.1-alpha):** a assinatura com certificado A1 é real; o **envio ao webservice oficial ainda é simulado** — nenhum dado é transmitido ao governo e **nenhum recibo oficial é gerado**. Eventos processados nesse fluxo ficam com o status `simulado` e a interface exibe o aviso "MODO SIMULAÇÃO". Não utilize os comprovantes para cumprimento de obrigação acessória até a integração real ser habilitada.
 
 ---
 
@@ -27,12 +27,12 @@ O **Validador eSocial** é uma aplicação web autônoma e portátil desenvolvid
 
 Você **não precisa ter o Go instalado** e não precisa de banco de dados ou dependências externas. O aplicativo é distribuído como um binário nativo único e auto-contido. Ao ser iniciado, **abre automaticamente o seu navegador** no painel local:
 
-1. Acesse a página de [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.1-alpha).
+1. Acesse a página de [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.1.1-alpha).
 2. Baixe o pacote correspondente ao seu sistema operacional:
    - **Windows (x86_64):** Extraia o arquivo `.zip` e execute `validador-esocial.exe`.
-   - **macOS Apple Silicon (M1 / M2 / M3 / M4 / M5 / M6+):** Baixe `validador-esocial-v1.1-alpha-darwin-arm64.tar.gz`, extraia e execute `./validador-esocial-darwin-arm64`.
-   - **macOS Intel (x86_64):** Baixe `validador-esocial-v1.1-alpha-darwin-amd64.tar.gz`, extraia e execute `./validador-esocial-darwin-amd64`.
-   - **Linux (x86_64):** Baixe `validador-esocial-v1.1-alpha-linux-amd64.tar.gz`, extraia e execute `./validador-esocial`.
+   - **macOS Apple Silicon (M1 / M2 / M3 / M4 / M5 / M6+):** Baixe `validador-esocial-v1.1.1-alpha-darwin-arm64.tar.gz`, extraia e execute `./validador-esocial-darwin-arm64`.
+   - **macOS Intel (x86_64):** Baixe `validador-esocial-v1.1.1-alpha-darwin-amd64.tar.gz`, extraia e execute `./validador-esocial-darwin-amd64`.
+   - **Linux (x86_64):** Baixe `validador-esocial-v1.1.1-alpha-linux-amd64.tar.gz`, extraia e execute `./validador-esocial`.
 3. O navegador será iniciado automaticamente em `http://localhost:8000`.
 
 ### Modo 2: A Partir do Código-Fonte (Para Desenvolvedores)
@@ -55,18 +55,29 @@ primeira execução (ela fica salva com hash em `dados/auth.json`, permissão `0
 
 ```bash
 # Debian/Ubuntu (.deb)
-sudo dpkg -i validador-esocial_1.1-alpha_linux_amd64.deb
+sudo dpkg -i validador-esocial_1.1.1-alpha_linux_amd64.deb
 
 # Fedora/RHEL/openSUSE (.rpm)
-sudo rpm -i validador-esocial-1.1-alpha.x86_64.rpm
+sudo rpm -i validador-esocial-1.1.1-alpha.x86_64.rpm
 
 # Windows: execute o instalador .msi (cria atalhos no Menu Iniciar e na Área de Trabalho)
-#   validador-esocial-1.1-alpha-windows-amd64.msi
+#   validador-esocial-1.1.1-alpha-windows-amd64.msi
 ```
 
 Após instalar, execute `validador-esocial` (o atalho no Windows). O binário é auto-contido: cria o banco SQLite em
 `./dados`, sobe o servidor em `127.0.0.1:8000` e abre o navegador. A senha local de acesso é exibida no terminal na
 primeira execução (ou defina com `-senha` / `ESOCIAL_SENHA`).
+
+### Transmissão real ao eSocial (opcional)
+
+Por padrão o sistema opera em **modo simulado** (nada é enviado ao governo). Para habilitar o envio oficial:
+
+1. Carregue o certificado A1 em **Empresas e Certificados** (perfil ativo) ou em **Certificado & Empresa**.
+2. Em **Certificado & Empresa → Modo de transmissão ao eSocial**, selecione **Real** e aplique.
+3. Assine os eventos com o certificado e use **Transmitir** na fila, informando a senha do certificado no campo exibido.
+4. Use **Recibo** para consultar o processamento do lote e gravar o número de recibo oficial.
+
+Para apontar para um proxy/homologação, defina `ESOCIAL_WS_ENVIO` e `ESOCIAL_WS_CONSULTA`.
 
 ### Senha de acesso e exposição de rede
 
@@ -123,8 +134,8 @@ IDOR, segredos expostos e XSS) com **todos os achados corrigidos** — o relató
 
 ## Versão e Releases
 
-**Versão Atual:** `v1.1-alpha` (Release Pré-lançamento com **correções de segurança** e melhorias de usabilidade sobre a v1.0-alpha, para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
-Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.1-alpha).
+**Versão Atual:** `v1.1.1-alpha` (Release com **correções de segurança**, **leiautes S-1.3 aderentes ao XSD oficial**, **relatórios de auditoria de retorno**, **múltiplos certificados/procurações** e **transmissão real opcional** ao webservice oficial, para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
+Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.1.1-alpha).
 
 ---
 
@@ -136,24 +147,27 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 - **Tabelas oficiais do eSocial embutidas**: Tabela 13 (parte do corpo atingida), Tabela 14 (agente causador), Tabela 15 (situação geradora), Tabela 17 (natureza da lesão), Tabela 24 (agentes nocivos) e Tabela 27 (procedimentos diagnósticos), disponíveis como listas nos formulários — sem digitação de códigos.
 - **Assinatura Digital Local (A1)**: Assina eventos utilizando certificado digital ICP-Brasil **A1** (`.pfx` / `.p12`) diretamente na máquina do usuário (`internal/crypto`, XMLDSig + C14N). O fluxo de demonstração gera um envelope **explicitamente marcado como simulado** (`ASSINATURA SIMULADA`), sem validade jurídica.
 - **Transmissão ao eSocial (em integração)**: o cliente mTLS dos web services oficiais (`internal/soap`, TLS 1.2+, certificado A1) está implementado, mas **ainda não conectado à interface**. Nesta versão o envio é apenas simulado, sem protocolo e sem recibo.
-- **Auditoria de Eventos**: Rastreamento do ciclo de vida (`pronto` → `assinado` → `simulado` → `aceito`/`rejeitado`), com registro de recibo e mensagens **somente** quando houver transmissão real.
+- **Auditoria de Eventos**: Rastreamento do ciclo de vida (`pronto` → `assinado` → `simulado` → `transmitido` → `aceito`/`rejeitado`), com registro de recibo e mensagens oficiais.
+- **Relatórios e Auditoria de Retorno (S-5001/S-5011)**: importação dos totalizadores devolvidos pelo eSocial, consolidação por período (previdenciário, FGTS e IRRF), memórias de cálculo por trabalhador e exportação em CSV.
+- **Múltiplas Empresas e Procurações**: perfis por CNPJ com certificado A1 próprio, dados do procurador eletrônico e ativação com sincronização automática do empregador emissor.
+- **Transmissão Real Opcional**: modo **Real** envia os lotes assinados ao webservice oficial do eSocial via mTLS (`EnviarLoteEventos`) e consulta os recibos (`ConsultarLoteEventos`), com senha do certificado solicitada a cada envio e nunca armazenada.
 
 ---
 
 - [x] **Leiautes S-1.3 aderentes ao XSD oficial (Sprint 1)**: geradores de S-2210, S-2220 e S-2240 reescritos conforme o leiaute oficial, com tabelas 13/14/15/17/27 embutidas e validação por schema aprovada nos testes de regressão.
 - [x] **Auditoria de Segurança e Hardening (v1.1-alpha)**: autenticação obrigatória, anti-CSRF, validação de Host, limites de entrada, rate limit, cabeçalhos de segurança e relatório de auditoria publicado em `docs/security-audit/`.
-- [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.1-alpha`).
+- [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.1.1-alpha`).
 - [x] **Pacotes de Distribuição (.deb, .rpm e MSI)**: instaladores nativos gerados pelo pipeline de release (GoReleaser para `.deb`/`.rpm`/`.tar.gz`/`.zip` e WiX Toolset para o `.msi` do Windows).
 - [x] **Pipeline de CI/CD para Releases**: workflow `release.yml` executa build, `go vet`, testes, compilação cruzada (linux/darwin/windows em amd64 e arm64), pacotes `.deb`/`.rpm`, instalador `.msi`, checksums SHA-256 e publicação automática na release — além da imagem de container no GHCR.
 - [ ] **Suporte a Certificados A3 (Tokens USB e Smartcards via PKCS#11)**: Integração nativa com drivers de hardware para leitura de dispositivos A3.
-- [ ] **Módulo de Relatórios e Auditoria de Retorno**: Exportação de relatórios de conformidade e conferência de débitos previdenciários e FGTS (eventos de totalização S-5001/S-5011).
-- [ ] **Múltiplos Certificados e Procurações Eletrônicas**: Gestão de perfis multi-empresa com seleção dinâmica de certificado para escritórios contábeis.
+- [x] **Módulo de Relatórios e Auditoria de Retorno**: importação dos totalizadores S-5001/S-5011, consolidação por período (previdenciário/FGTS/IRRF), memórias de cálculo e exportação CSV.
+- [x] **Múltiplos Certificados e Procurações Eletrônicas**: perfis multiempresa com certificado A1 por CNPJ, dados do procurador eletrônico e ativação sincronizada.
 
 ---
 
 ## O que não faz
 
-- **Não transmite ao eSocial nesta versão**: o envio ao webservice oficial (e a consulta de recibos) depende da conexão do cliente SOAP mTLS à interface. Enquanto isso, todo o fluxo de envio é simulado e rotulado como tal.
+- **Transmissão real exige certificado A1 válido e homologação**: o envio oficial está implementado (mTLS + `EnviarLoteEventos`/`ConsultarLoteEventos`) e validado com webservice simulado; a conferência final depende de certificado real em Produção Restrita. O modo padrão continua **simulado**, com aviso na interface.
 - **Não suporta certificados A3 no momento**: Dispositivos físicos (cartões inteligentes e tokens USB via PKCS#11) não são suportados na versão atual. A aplicação aceita estritamente certificados em arquivo **A1** (`.pfx` / `.p12`).
 - **Não é um ERP de Folha de Pagamento**: Não calcula holerites, encargos sindicais complexos, horas extras ou rescisões trabalhistas. O software opera sobre os dados brutos necessários para a geração do evento.
 - **Não armazena chaves privadas em nuvem**: Em implantações corporativas multiusuário, o sistema não transfere certificados A1 para repositórios desprotegidos.

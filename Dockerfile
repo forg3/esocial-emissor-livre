@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.title="Validador eSocial"
 LABEL org.opencontainers.image.description="Aplicativo autônomo para elaboração, validação e transmissão dos 36 eventos do eSocial"
 LABEL org.opencontainers.image.url="https://github.com/forg3/validador-esocial"
 LABEL org.opencontainers.image.source="https://github.com/forg3/validador-esocial"
-LABEL org.opencontainers.image.version="v1.1-alpha"
+LABEL org.opencontainers.image.version="v1.1.1-alpha"
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Executa como usuário sem privilégios (achado B-01)

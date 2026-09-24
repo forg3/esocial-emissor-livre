@@ -1,0 +1,133 @@
+{{ define "content" }}
+<div class="page-header">
+  <div>
+    <h1 style="margin: 0; font-size: var(--fs-xl);">Relatórios e Auditoria de Retorno</h1>
+    <p style="margin: 4px 0 0 0; font-size: var(--fs-sm); color: var(--text-2);">
+      Conferência dos eventos de totalização do eSocial (S-5001/S-5002/S-5003 por trabalhador e S-5011/S-5012/S-5013 consolidados)
+      contra os eventos gerados localmente.
+    </p>
+  </div>
+  <div style="display: flex; gap: 8px;">
+    <a href="/relatorios/exportar{{ if .FiltroPeriodo }}?periodo={{ .FiltroPeriodo }}{{ end }}" class="btn btn-outline btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      Exportar CSV
+    </a>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: var(--sp-4);">
+  <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+    1. Importar retorno do eSocial
+  </h3>
+  <form action="/relatorios/importar" method="POST" enctype="multipart/form-data" hx-post="/relatorios/importar" hx-target="#conteudo">
+    <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+    <div class="form-grid" style="margin-top: var(--sp-3);">
+      <div class="campo" style="grid-column: span 2;">
+        <label for="arquivo_retorno">Arquivo XML de retorno (S-5001/S-5011) <span class="req">*</span></label>
+        <input type="file" id="arquivo_retorno" name="arquivo_retorno" accept=".xml,text/xml,application/xml" required>
+        <span class="ajuda">Limite de 10 MB. Os valores monetários (campos iniciados por <code>vr</code>) são consolidados por trabalhador e período.</span>
+      </div>
+    </div>
+    <div class="form-acoes" style="justify-content: flex-end; margin-top: var(--sp-3);">
+      <button type="submit" class="btn btn-primario" style="height: 40px;">Importar retorno</button>
+    </div>
+  </form>
+</div>
+
+<div class="card" style="margin-bottom: var(--sp-4);">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+    <h3 style="margin: 0; font-size: var(--fs-base); color: var(--navy);">2. Consolidação por período de apuração</h3>
+    <form method="GET" action="/relatorios" style="margin: 0; display: flex; gap: 8px; align-items: center;">
+      <select name="periodo" style="height: 32px; font-size: 12px;" onchange="this.form.submit()">
+        <option value="">Todos os períodos</option>
+        {{ range .Periodos }}
+          <option value="{{ . }}" {{ if eq . $.FiltroPeriodo }}selected{{ end }}>{{ . }}</option>
+        {{ end }}
+      </select>
+    </form>
+  </div>
+
+  {{ if .Resumo }}
+    <table style="width: 100%; margin-top: var(--sp-3); border-collapse: collapse; font-size: 13px;">
+      <thead>
+        <tr style="background: var(--surface-2); text-align: left;">
+          <th style="padding: 8px;">Período</th>
+          <th style="padding: 8px;">Registros</th>
+          <th style="padding: 8px;">Trabalhadores</th>
+          <th style="padding: 8px;">Previdenciário</th>
+          <th style="padding: 8px;">FGTS</th>
+          <th style="padding: 8px;">IRRF</th>
+          <th style="padding: 8px;">Total conferido</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .Resumo }}
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 8px;" class="mono">{{ .PerApur }}</td>
+            <td style="padding: 8px;">{{ .Registros }}</td>
+            <td style="padding: 8px;">{{ .Trabalhadores }}</td>
+            <td style="padding: 8px;" class="mono">{{ centavosReais .PrevidenciarioCentavos }}</td>
+            <td style="padding: 8px;" class="mono">{{ centavosReais .FGTSCentavos }}</td>
+            <td style="padding: 8px;" class="mono">{{ centavosReais .IRRFCentavos }}</td>
+            <td style="padding: 8px; font-weight: 700;" class="mono">{{ centavosReais .TotalCentavos }}</td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  {{ else }}
+    <p style="font-size: 13px; color: var(--text-2); margin: var(--sp-3) 0 0 0;">
+      Nenhum totalizador importado ainda. Importe o XML de retorno do eSocial para conferir os débitos previdenciários e de FGTS.
+    </p>
+  {{ end }}
+</div>
+
+<div class="card">
+  <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+    3. Totalizadores importados ({{ len .Retornos }})
+  </h3>
+
+  {{ if .Retornos }}
+    <table style="width: 100%; margin-top: var(--sp-3); border-collapse: collapse; font-size: 12px;">
+      <thead>
+        <tr style="background: var(--surface-2); text-align: left;">
+          <th style="padding: 8px;">Período</th>
+          <th style="padding: 8px;">Evento</th>
+          <th style="padding: 8px;">CPF / Matrícula</th>
+          <th style="padding: 8px;">Recibo base</th>
+          <th style="padding: 8px;">Memórias de cálculo</th>
+          <th style="padding: 8px;">Total</th>
+          <th style="padding: 8px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .Retornos }}
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 8px;" class="mono">{{ .PerApur }}</td>
+            <td style="padding: 8px;">{{ .DescricaoTipo }}</td>
+            <td style="padding: 8px;" class="mono">{{ if .CPFTrab }}{{ formatarCPF .CPFTrab }}{{ else }}--{{ end }}{{ if .Matricula }} / {{ .Matricula }}{{ end }}</td>
+            <td style="padding: 8px;" class="mono">{{ if .NRRecibo }}{{ .NRRecibo }}{{ else }}--{{ end }}</td>
+            <td style="padding: 8px; color: var(--text-2);">
+              {{ range $campo, $valor := .Valores }}{{ $campo }}={{ $valor }}; {{ end }}
+            </td>
+            <td style="padding: 8px; font-weight: 700;" class="mono">{{ centavosReais .TotalCentavos }}</td>
+            <td style="padding: 8px;">
+              <button type="button" class="btn btn-outline btn-sm" style="color: var(--err-text);"
+                      hx-delete="/relatorios/{{ .ID }}" hx-target="#conteudo"
+                      hx-confirm="Remover este totalizador do relatório?">
+                Excluir
+              </button>
+            </td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  {{ else }}
+    <p style="font-size: 13px; color: var(--text-2); margin: var(--sp-3) 0 0 0;">Nenhum registro para o filtro atual.</p>
+  {{ end }}
+
+  <p style="font-size: 11px; color: var(--text-2); margin-top: var(--sp-4); line-height: 1.6;">
+    Eventos gerados localmente: <strong>{{ .TotalEventosLocais }}</strong>. A conferência compara os valores declarados pelo
+    governo com os eventos do sistema; divergências devem ser tratadas antes do fechamento do período.
+  </p>
+</div>
+{{ end }}

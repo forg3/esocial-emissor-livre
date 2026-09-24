@@ -155,6 +155,9 @@ func (s *Servidor) carregarTemplates() error {
 			}
 			return cnpj
 		},
+		"centavosReais": func(centavos int64) string {
+			return formatarCentavosBR(centavos)
+		},
 		"csrfToken": func() string {
 			return s.auth.csrf
 		},
@@ -236,6 +239,8 @@ func (s *Servidor) carregarTemplates() error {
 		"fila",
 		"menu_eventos",
 		"editor_generico",
+		"relatorios",
+		"perfis",
 	}
 
 	for _, pag := range paginas {
@@ -298,6 +303,7 @@ func (s *Servidor) Rotas() http.Handler {
 	mux.HandleFunc("POST /configuracao", s.handleSalvarConfiguracao)
 	mux.HandleFunc("POST /configuracao/certificado", s.handleUploadCertificado)
 	mux.HandleFunc("POST /configuracao/testar", s.handleTestarCertificado)
+	mux.HandleFunc("POST /configuracao/modo-transmissao", s.handleDefinirModoTransmissao)
 
 	// 3. Colaboradores
 	mux.HandleFunc("GET /colaboradores", s.handleColaboradores)
@@ -334,7 +340,20 @@ func (s *Servidor) Rotas() http.Handler {
 	mux.HandleFunc("POST /fila/lote/assinar", s.handleAssinarLote)
 	mux.HandleFunc("POST /fila/lote/transmitir", s.handleTransmitirLote)
 
-	// 6. APIs auxiliares de busca (Autocomplete)
+	// 6. Relatórios e auditoria de retorno (S-5001/S-5011)
+	mux.HandleFunc("GET /relatorios", s.handleRelatorios)
+	mux.HandleFunc("POST /relatorios/importar", s.handleImportarRetorno)
+	mux.HandleFunc("GET /relatorios/exportar", s.handleExportarRelatorios)
+	mux.HandleFunc("DELETE /relatorios/{id}", s.handleExcluirRetorno)
+
+	// 7. Perfis multi-empresa (múltiplos certificados e procurações)
+	mux.HandleFunc("GET /perfis", s.handlePerfis)
+	mux.HandleFunc("POST /perfis", s.handleSalvarPerfil)
+	mux.HandleFunc("POST /perfis/{id}/ativar", s.handleAtivarPerfil)
+	mux.HandleFunc("POST /perfis/{id}/certificado", s.handleUploadCertificadoPerfil)
+	mux.HandleFunc("DELETE /perfis/{id}", s.handleExcluirPerfil)
+
+	// 8. APIs auxiliares de busca (Autocomplete)
 	mux.HandleFunc("GET /api/riscos/busca", s.handleBuscaRiscos)
 	mux.HandleFunc("GET /api/cbos/busca", s.handleBuscaCBOs)
 
@@ -1867,8 +1886,13 @@ func (s *Servidor) handleTransmitirEvento(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Achado A-02: nenhum recibo/protocolo oficial é inventado. O evento é marcado
-	// como "simulado" até que exista integração real com o webservice do eSocial.
+	// Modo real: envia ao webservice oficial (mTLS + certificado A1).
+	if cfg.ModoTransmissao == "real" {
+		s.transmitirEventoReal(w, r, cfg, evento)
+		return
+	}
+
+	// Modo simulado (padrão): nenhum recibo/protocolo oficial é inventado.
 	mensagem := MensagemTransmissaoSimulada(cfg.Ambiente, evento.Tipo)
 	if err := s.db.AtualizarStatusEvento(id, "simulado", "", "", mensagem); err != nil {
 		s.handleFilaComFlash(w, r, "Falha ao registrar a simulação: "+err.Error(), true)
@@ -1878,6 +1902,7 @@ func (s *Servidor) handleTransmitirEvento(w http.ResponseWriter, r *http.Request
 }
 
 func (s *Servidor) handleConsultarRecibo(w http.ResponseWriter, r *http.Request) {
+	cfg, _ := s.db.ObterConfiguracao()
 	id := r.PathValue("id")
 	evento, err := s.db.ObterEvento(id)
 	if err != nil || evento == nil {
@@ -1887,6 +1912,12 @@ func (s *Servidor) handleConsultarRecibo(w http.ResponseWriter, r *http.Request)
 
 	if evento.Recibo != "" {
 		s.handleFilaComFlash(w, r, fmt.Sprintf("Recibo registrado para o evento: %s", evento.Recibo), false)
+		return
+	}
+
+	// Modo real: consulta o processamento do lote no webservice oficial.
+	if cfg.ModoTransmissao == "real" {
+		s.consultarReciboReal(w, r, cfg, evento)
 		return
 	}
 

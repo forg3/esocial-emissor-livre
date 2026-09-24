@@ -44,6 +44,7 @@ archives:
     files:
       - README.md
       - LICENSE
+      - RELEASE_NOTES_v1.1.1-alpha.md
       - docs/security-audit/relatorio-auditoria-seguranca.pdf
 
 checksum:

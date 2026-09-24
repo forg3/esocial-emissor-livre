@@ -2,9 +2,11 @@ package storage
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -26,7 +28,10 @@ type Configuracao struct {
 	TipoCertificado      string    `json:"tipo_certificado"` // A1 ou A3
 	CertificadoPath      string    `json:"certificado_path"`
 	CertificadoValidoAte time.Time `json:"certificado_valido_ate"`
-	AtualizadoEm         time.Time `json:"atualizado_em"`
+	// ModoTransmissao define se o envio ao eSocial é "simulado" (padrão) ou "real"
+	// (webservice oficial via mTLS com o certificado A1).
+	ModoTransmissao string    `json:"modo_transmissao"`
+	AtualizadoEm    time.Time `json:"atualizado_em"`
 }
 
 // Colaborador representa um trabalhador registrado localmente.
@@ -146,8 +151,26 @@ func (d *DB) migrar() error {
 		FOREIGN KEY (colaborador_id) REFERENCES colaborador(id) ON DELETE SET NULL
 	);
 	`
-	_, err := d.conn.Exec(schema)
-	return err
+	if _, err := d.conn.Exec(schema); err != nil {
+		return err
+	}
+	if err := migrarRetornos(d); err != nil {
+		return err
+	}
+	if err := migrarPerfis(d); err != nil {
+		return err
+	}
+	return migrarModoTransmissao(d)
+}
+
+// migrarModoTransmissao garante a coluna de modo de transmissão na configuração
+// ("simulado" por padrão; "real" habilita o envio pelo webservice oficial).
+func migrarModoTransmissao(d *DB) error {
+	_, err := d.conn.Exec(`ALTER TABLE configuracao ADD COLUMN modo_transmissao TEXT NOT NULL DEFAULT 'simulado'`)
+	if err != nil && !strings.Contains(strings.ToLower(err.Error()), "duplicate column") {
+		return err
+	}
+	return nil
 }
 
 // ObterConfiguracao busca o registro singleton de configuração.
@@ -158,9 +181,10 @@ func (d *DB) ObterConfiguracao() (*Configuracao, error) {
 	var c Configuracao
 	var validoAte, atualizadoEm sql.NullString
 	err := d.conn.QueryRow(`
-		SELECT id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path, certificado_valido_ate, atualizado_em
+		SELECT id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path, certificado_valido_ate, atualizado_em,
+		       COALESCE(modo_transmissao, 'simulado')
 		FROM configuracao WHERE id = 'config'
-	`).Scan(&c.ID, &c.RazaoSocial, &c.CNPJ, &c.Ambiente, &c.TipoCertificado, &c.CertificadoPath, &validoAte, &atualizadoEm)
+	`).Scan(&c.ID, &c.RazaoSocial, &c.CNPJ, &c.Ambiente, &c.TipoCertificado, &c.CertificadoPath, &validoAte, &atualizadoEm, &c.ModoTransmissao)
 
 	if err == sql.ErrNoRows {
 		// Retorna default
@@ -168,6 +192,7 @@ func (d *DB) ObterConfiguracao() (*Configuracao, error) {
 			ID:              "config",
 			Ambiente:        2, // Produção Restrita padrão
 			TipoCertificado: "A1",
+			ModoTransmissao: "simulado",
 			AtualizadoEm:    time.Now(),
 		}, nil
 	}
@@ -195,9 +220,13 @@ func (d *DB) SalvarConfiguracao(c *Configuracao) error {
 		validoStr = c.CertificadoValidoAte.Format(time.RFC3339)
 	}
 
+	modo := c.ModoTransmissao
+	if modo != "real" {
+		modo = "simulado"
+	}
 	_, err := d.conn.Exec(`
-		INSERT INTO configuracao (id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path, certificado_valido_ate, atualizado_em)
-		VALUES ('config', ?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO configuracao (id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path, certificado_valido_ate, atualizado_em, modo_transmissao)
+		VALUES ('config', ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(id) DO UPDATE SET
 			razao_social = excluded.razao_social,
 			cnpj = excluded.cnpj,
@@ -205,8 +234,9 @@ func (d *DB) SalvarConfiguracao(c *Configuracao) error {
 			tipo_certificado = excluded.tipo_certificado,
 			certificado_path = excluded.certificado_path,
 			certificado_valido_ate = excluded.certificado_valido_ate,
-			atualizado_em = excluded.atualizado_em
-	`, c.RazaoSocial, c.CNPJ, c.Ambiente, c.TipoCertificado, c.CertificadoPath, validoStr, agora)
+			atualizado_em = excluded.atualizado_em,
+			modo_transmissao = excluded.modo_transmissao
+	`, c.RazaoSocial, c.CNPJ, c.Ambiente, c.TipoCertificado, c.CertificadoPath, validoStr, agora, modo)
 	return err
 }
 
@@ -457,4 +487,356 @@ func (d *DB) ObterResumoKPI() (*ResumoKPI, error) {
 		}
 	}
 	return &kpi, nil
+}
+
+// -----------------------------------------------------------------------------
+// RETORNO DE TOTALIZAÇÃO (S-5001/S-5002/S-5003 e S-5011/S-5012/S-5013)
+// -----------------------------------------------------------------------------
+
+// RetornoTotalizacao é um evento de totalização recebido do eSocial, persistido
+// para conferência de débitos previdenciários e FGTS.
+type RetornoTotalizacao struct {
+	ID            string            `json:"id"`
+	Tipo          string            `json:"tipo"`
+	DescricaoTipo string            `json:"descricao_tipo"`
+	PerApur       string            `json:"per_apur"`
+	CPFTrab       string            `json:"cpf_trab"`
+	Matricula     string            `json:"matricula"`
+	NRRecibo      string            `json:"nr_recibo"`
+	Valores       map[string]string `json:"valores"`
+	TotalCentavos int64             `json:"total_centavos"`
+	ImportadoEm   time.Time         `json:"importado_em"`
+}
+
+func migrarRetornos(d *DB) error {
+	_, err := d.conn.Exec(`
+	CREATE TABLE IF NOT EXISTS retorno_totalizacao (
+		id TEXT PRIMARY KEY,
+		tipo TEXT NOT NULL,
+		descricao_tipo TEXT NOT NULL DEFAULT '',
+		per_apur TEXT NOT NULL DEFAULT '',
+		cpf_trab TEXT NOT NULL DEFAULT '',
+		matricula TEXT NOT NULL DEFAULT '',
+		nr_recibo TEXT NOT NULL DEFAULT '',
+		valores TEXT NOT NULL DEFAULT '{}',
+		total_centavos INTEGER NOT NULL DEFAULT 0,
+		importado_em TEXT NOT NULL
+	);
+	CREATE INDEX IF NOT EXISTS idx_retorno_per_apur ON retorno_totalizacao (per_apur);
+	CREATE INDEX IF NOT EXISTS idx_retorno_cpf ON retorno_totalizacao (cpf_trab);
+	`)
+	return err
+}
+
+// SalvarRetornoTotalizacao insere ou atualiza um totalizador importado.
+func (d *DB) SalvarRetornoTotalizacao(r *RetornoTotalizacao) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	valores, err := json.Marshal(r.Valores)
+	if err != nil {
+		return fmt.Errorf("falha ao serializar valores do retorno: %w", err)
+	}
+	_, err = d.conn.Exec(`
+		INSERT INTO retorno_totalizacao (id, tipo, descricao_tipo, per_apur, cpf_trab, matricula, nr_recibo, valores, total_centavos, importado_em)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(id) DO UPDATE SET
+			per_apur = excluded.per_apur,
+			cpf_trab = excluded.cpf_trab,
+			matricula = excluded.matricula,
+			nr_recibo = excluded.nr_recibo,
+			valores = excluded.valores,
+			total_centavos = excluded.total_centavos,
+			importado_em = excluded.importado_em
+	`, r.ID, r.Tipo, r.DescricaoTipo, r.PerApur, r.CPFTrab, r.Matricula, r.NRRecibo, string(valores), r.TotalCentavos, r.ImportadoEm.Format(time.RFC3339))
+	return err
+}
+
+// ListarRetornosTotalizacao devolve os totalizadores importados, opcionalmente
+// filtrados por período de apuração.
+func (d *DB) ListarRetornosTotalizacao(perApur string) ([]RetornoTotalizacao, error) {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+
+	consulta := `SELECT id, tipo, descricao_tipo, per_apur, cpf_trab, matricula, nr_recibo, valores, total_centavos, importado_em
+	             FROM retorno_totalizacao`
+	args := []any{}
+	if perApur != "" {
+		consulta += ` WHERE per_apur = ?`
+		args = append(args, perApur)
+	}
+	consulta += ` ORDER BY per_apur DESC, tipo ASC, cpf_trab ASC`
+
+	rows, err := d.conn.Query(consulta, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var lista []RetornoTotalizacao
+	for rows.Next() {
+		var r RetornoTotalizacao
+		var valores, importadoEm string
+		if err := rows.Scan(&r.ID, &r.Tipo, &r.DescricaoTipo, &r.PerApur, &r.CPFTrab, &r.Matricula,
+			&r.NRRecibo, &valores, &r.TotalCentavos, &importadoEm); err != nil {
+			return nil, err
+		}
+		_ = json.Unmarshal([]byte(valores), &r.Valores)
+		r.ImportadoEm, _ = time.Parse(time.RFC3339, importadoEm)
+		lista = append(lista, r)
+	}
+	return lista, nil
+}
+
+// ExcluirRetornoTotalizacao remove um totalizador importado.
+func (d *DB) ExcluirRetornoTotalizacao(id string) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	_, err := d.conn.Exec(`DELETE FROM retorno_totalizacao WHERE id = ?`, id)
+	return err
+}
+
+// ResumoRetornoTotalizacao consolida os valores importados por período.
+type ResumoRetornoTotalizacao struct {
+	PerApur                string
+	Registros              int
+	Trabalhadores          int
+	TotalCentavos          int64
+	PrevidenciarioCentavos int64
+	FGTSCentavos           int64
+	IRRFCentavos           int64
+}
+
+// ObterResumoRetornos consolida os totalizadores por período de apuração.
+func (d *DB) ObterResumoRetornos() ([]ResumoRetornoTotalizacao, error) {
+	lista, err := d.ListarRetornosTotalizacao("")
+	if err != nil {
+		return nil, err
+	}
+
+	indice := map[string]*ResumoRetornoTotalizacao{}
+	cpfs := map[string]map[string]bool{}
+	var ordem []string
+
+	for _, r := range lista {
+		res, ok := indice[r.PerApur]
+		if !ok {
+			res = &ResumoRetornoTotalizacao{PerApur: r.PerApur}
+			indice[r.PerApur] = res
+			cpfs[r.PerApur] = map[string]bool{}
+			ordem = append(ordem, r.PerApur)
+		}
+		res.Registros++
+		res.TotalCentavos += r.TotalCentavos
+		if r.CPFTrab != "" {
+			cpfs[r.PerApur][r.CPFTrab] = true
+		}
+		switch r.Tipo {
+		case "evtBasesTrab", "evtCS", "evtInfoContrib":
+			res.PrevidenciarioCentavos += r.TotalCentavos
+		case "evtFGTS", "evtFGTSCons", "evtBasesFGTS":
+			res.FGTSCentavos += r.TotalCentavos
+		case "evtIrrfBenef", "evtIrrf":
+			res.IRRFCentavos += r.TotalCentavos
+		}
+	}
+
+	var resumo []ResumoRetornoTotalizacao
+	for _, per := range ordem {
+		r := indice[per]
+		r.Trabalhadores = len(cpfs[per])
+		resumo = append(resumo, *r)
+	}
+	return resumo, nil
+}
+
+// -----------------------------------------------------------------------------
+// PERFIS MULTI-EMPRESA (múltiplos certificados e procurações eletrônicas)
+// -----------------------------------------------------------------------------
+
+// PerfilEmpresa representa uma empresa/contribuinte com o seu próprio
+// certificado digital e, opcionalmente, os dados do procurador eletrônico.
+type PerfilEmpresa struct {
+	ID                   string    `json:"id"`
+	RazaoSocial          string    `json:"razao_social"`
+	CNPJ                 string    `json:"cnpj"`
+	Ambiente             int       `json:"ambiente"`
+	TipoCertificado      string    `json:"tipo_certificado"`
+	CertificadoPath      string    `json:"certificado_path"`
+	CertificadoValidoAte time.Time `json:"certificado_valido_ate"`
+	ModoTransmissao      string    `json:"modo_transmissao"`
+	ProcuradorNome       string    `json:"procurador_nome"`
+	ProcuradorDoc        string    `json:"procurador_doc"`
+	Ativo                bool      `json:"ativo"`
+	CriadoEm             time.Time `json:"criado_em"`
+	AtualizadoEm         time.Time `json:"atualizado_em"`
+}
+
+func migrarPerfis(d *DB) error {
+	_, err := d.conn.Exec(`
+	CREATE TABLE IF NOT EXISTS perfil_empresa (
+		id TEXT PRIMARY KEY,
+		razao_social TEXT NOT NULL DEFAULT '',
+		cnpj TEXT NOT NULL DEFAULT '',
+		ambiente INTEGER NOT NULL DEFAULT 2,
+		tipo_certificado TEXT NOT NULL DEFAULT 'A1',
+		certificado_path TEXT NOT NULL DEFAULT '',
+		certificado_valido_ate TEXT NOT NULL DEFAULT '',
+		procurador_nome TEXT NOT NULL DEFAULT '',
+		procurador_doc TEXT NOT NULL DEFAULT '',
+		ativo INTEGER NOT NULL DEFAULT 0,
+		criado_em TEXT NOT NULL,
+		atualizado_em TEXT NOT NULL
+	);
+	CREATE UNIQUE INDEX IF NOT EXISTS idx_perfil_cnpj ON perfil_empresa (cnpj);
+	`)
+	return err
+}
+
+// ListarPerfis devolve todos os perfis cadastrados (ativo primeiro).
+func (d *DB) ListarPerfis() ([]PerfilEmpresa, error) {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+
+	rows, err := d.conn.Query(`
+		SELECT id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path, certificado_valido_ate,
+		       procurador_nome, procurador_doc, ativo, criado_em, atualizado_em
+		FROM perfil_empresa
+		ORDER BY ativo DESC, razao_social ASC
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var lista []PerfilEmpresa
+	for rows.Next() {
+		var p PerfilEmpresa
+		var validoAte, criadoEm, atualizadoEm string
+		if err := rows.Scan(&p.ID, &p.RazaoSocial, &p.CNPJ, &p.Ambiente, &p.TipoCertificado, &p.CertificadoPath,
+			&validoAte, &p.ProcuradorNome, &p.ProcuradorDoc, &p.Ativo, &criadoEm, &atualizadoEm); err != nil {
+			return nil, err
+		}
+		if validoAte != "" {
+			p.CertificadoValidoAte, _ = time.Parse(time.RFC3339, validoAte)
+		}
+		p.CriadoEm, _ = time.Parse(time.RFC3339, criadoEm)
+		p.AtualizadoEm, _ = time.Parse(time.RFC3339, atualizadoEm)
+		lista = append(lista, p)
+	}
+	return lista, nil
+}
+
+// ObterPerfil busca um perfil pelo identificador.
+func (d *DB) ObterPerfil(id string) (*PerfilEmpresa, error) {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+
+	var p PerfilEmpresa
+	var validoAte, criadoEm, atualizadoEm string
+	err := d.conn.QueryRow(`
+		SELECT id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path, certificado_valido_ate,
+		       procurador_nome, procurador_doc, ativo, criado_em, atualizado_em
+		FROM perfil_empresa WHERE id = ?
+	`, id).Scan(&p.ID, &p.RazaoSocial, &p.CNPJ, &p.Ambiente, &p.TipoCertificado, &p.CertificadoPath,
+		&validoAte, &p.ProcuradorNome, &p.ProcuradorDoc, &p.Ativo, &criadoEm, &atualizadoEm)
+	if err != nil {
+		return nil, err
+	}
+	if validoAte != "" {
+		p.CertificadoValidoAte, _ = time.Parse(time.RFC3339, validoAte)
+	}
+	p.CriadoEm, _ = time.Parse(time.RFC3339, criadoEm)
+	p.AtualizadoEm, _ = time.Parse(time.RFC3339, atualizadoEm)
+	return &p, nil
+}
+
+// ObterPerfilAtivo devolve o perfil marcado como ativo (nil quando não houver).
+func (d *DB) ObterPerfilAtivo() (*PerfilEmpresa, error) {
+	d.mu.RLock()
+	var id string
+	err := d.conn.QueryRow(`SELECT id FROM perfil_empresa WHERE ativo = 1 LIMIT 1`).Scan(&id)
+	d.mu.RUnlock()
+	if err != nil {
+		return nil, nil
+	}
+	return d.ObterPerfil(id)
+}
+
+// SalvarPerfil insere ou atualiza um perfil de empresa.
+func (d *DB) SalvarPerfil(p *PerfilEmpresa) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	agora := time.Now().Format(time.RFC3339)
+	validoAte := ""
+	if !p.CertificadoValidoAte.IsZero() {
+		validoAte = p.CertificadoValidoAte.Format(time.RFC3339)
+	}
+	ativo := 0
+	if p.Ativo {
+		ativo = 1
+	}
+
+	_, err := d.conn.Exec(`
+		INSERT INTO perfil_empresa (id, razao_social, cnpj, ambiente, tipo_certificado, certificado_path,
+			certificado_valido_ate, procurador_nome, procurador_doc, ativo, criado_em, atualizado_em)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(id) DO UPDATE SET
+			razao_social = excluded.razao_social,
+			cnpj = excluded.cnpj,
+			ambiente = excluded.ambiente,
+			tipo_certificado = excluded.tipo_certificado,
+			certificado_path = excluded.certificado_path,
+			certificado_valido_ate = excluded.certificado_valido_ate,
+			procurador_nome = excluded.procurador_nome,
+			procurador_doc = excluded.procurador_doc,
+			ativo = excluded.ativo,
+			atualizado_em = excluded.atualizado_em
+	`, p.ID, p.RazaoSocial, p.CNPJ, p.Ambiente, p.TipoCertificado, p.CertificadoPath, validoAte,
+		p.ProcuradorNome, p.ProcuradorDoc, ativo, agora, agora)
+	return err
+}
+
+// ExcluirPerfil remove um perfil de empresa.
+func (d *DB) ExcluirPerfil(id string) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	_, err := d.conn.Exec(`DELETE FROM perfil_empresa WHERE id = ?`, id)
+	return err
+}
+
+// AtivarPerfil marca um único perfil como ativo e sincroniza a configuração
+// global usada pelos geradores de eventos (CNPJ, razão social, ambiente e
+// certificado), garantindo compatibilidade com o fluxo existente.
+func (d *DB) AtivarPerfil(id string) error {
+	perfil, err := d.ObterPerfil(id)
+	if err != nil {
+		return fmt.Errorf("perfil não encontrado: %w", err)
+	}
+
+	d.mu.Lock()
+	if _, err := d.conn.Exec(`UPDATE perfil_empresa SET ativo = 0, atualizado_em = ?`, time.Now().Format(time.RFC3339)); err != nil {
+		d.mu.Unlock()
+		return err
+	}
+	if _, err := d.conn.Exec(`UPDATE perfil_empresa SET ativo = 1, atualizado_em = ? WHERE id = ?`,
+		time.Now().Format(time.RFC3339), id); err != nil {
+		d.mu.Unlock()
+		return err
+	}
+	d.mu.Unlock()
+
+	cfg, err := d.ObterConfiguracao()
+	if err != nil {
+		return err
+	}
+	cfg.RazaoSocial = perfil.RazaoSocial
+	cfg.CNPJ = perfil.CNPJ
+	cfg.Ambiente = perfil.Ambiente
+	cfg.TipoCertificado = perfil.TipoCertificado
+	cfg.CertificadoPath = perfil.CertificadoPath
+	cfg.CertificadoValidoAte = perfil.CertificadoValidoAte
+	cfg.AtualizadoEm = time.Now()
+	return d.SalvarConfiguracao(cfg)
 }
