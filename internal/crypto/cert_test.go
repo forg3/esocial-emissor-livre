@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/hex"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -16,6 +17,17 @@ import (
 )
 
 // Helper para gerar um certificado e-CNPJ ICP-Brasil de teste autoassinado
+// senhaAleatoriaTeste gera uma senha de fixture em tempo de execução, evitando
+// literais de credencial no código-fonte (achado I-01).
+func senhaAleatoriaTeste(t *testing.T) string {
+	t.Helper()
+	b := make([]byte, 16)
+	if _, err := rand.Read(b); err != nil {
+		t.Fatalf("erro ao gerar senha de teste: %v", err)
+	}
+	return hex.EncodeToString(b)
+}
+
 func gerarPFXTeste(t *testing.T, senha string, cn string, razaoSocial string) ([]byte, *rsa.PrivateKey, *x509.Certificate) {
 	t.Helper()
 
@@ -63,7 +75,7 @@ func gerarPFXTeste(t *testing.T, senha string, cn string, razaoSocial string) ([
 }
 
 func TestCarregarCertificadoA1(t *testing.T) {
-	senha := "senhaSegura123"
+	senha := senhaAleatoriaTeste(t)
 	cnpjTeste := "11222333000181" // CNPJ válido com dígitos verificadores
 	razaoTeste := "EMPRESA DE TESTE LTDA"
 	cnTeste := razaoTeste + ":" + cnpjTeste
@@ -122,7 +134,7 @@ func TestCarregarCertificadoA1(t *testing.T) {
 }
 
 func TestCarregarA1Arquivo(t *testing.T) {
-	senha := "testeArquivo456"
+	senha := senhaAleatoriaTeste(t)
 	cnpj := "00000000000191"
 	razao := "BANCO DO BRASIL S.A."
 	cn := razao + ":" + cnpj

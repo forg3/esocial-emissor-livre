@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/static/css/app.css">
   <script src="/static/js/htmx.min.js"></script>
 </head>
-<body hx-boost="false">
+<body hx-boost="false" hx-headers='{"X-CSRF-Token": "{{ csrfToken }}"}'>
   <div class="shell">
     <!-- BARRA LATERAL -->
     <aside class="sidebar">
@@ -94,6 +94,11 @@
 
     <!-- ÁREA PRINCIPAL -->
     <main class="main">
+      <!-- AVISO DE MODO SIMULAÇÃO (achado A-02) -->
+      <div style="background: #FEF3C7; border-bottom: 1px solid #FCD34D; color: #7C2D12; font-size: 12px; font-weight: 600; padding: 6px 18px; display: flex; align-items: center; gap: 8px;">
+        <span style="background: #D97706; color: #fff; border-radius: 3px; padding: 1px 6px; font-size: 10px; letter-spacing: 0.04em;">MODO SIMULAÇÃO</span>
+        <span>Assinatura e transmissão ao eSocial são <strong>simuladas</strong> nesta versão: nenhum dado é enviado ao governo e nenhum recibo oficial é gerado. Não use os comprovantes para cumprimento de obrigação acessória.</span>
+      </div>
       <header class="header">
         <div class="breadcrumb-area" style="display: flex; align-items: center; gap: 12px;">
           <button type="button" onclick="if(window.history.length>1){window.history.back()}else{window.location.href='/'}" class="btn btn-outline btn-sm btn-voltar" title="Voltar para a tela anterior" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; height: 32px; font-size: 12px; cursor: pointer; border-radius: var(--radius);">
@@ -118,6 +123,13 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               <span>Novo Evento</span>
             </a>
+            <form method="POST" action="/logout" style="margin: 0;">
+              <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+              <button type="submit" class="btn btn-outline btn-sm" title="Encerrar a sessão local">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Sair</span>
+              </button>
+            </form>
           </div>
         </div>
       </header>

@@ -25,6 +25,7 @@
   </div>
 
   <form action="/eventos/s2220" method="POST" hx-post="/eventos/s2220" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
     <!-- SEÇÃO 1: TRABALHADOR -->
     <div class="card" style="margin-bottom: var(--sp-4);">
       <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
@@ -155,6 +156,7 @@
         <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('modal-importar-aso-xml').setAttribute('hidden', 'true')">&times;</button>
       </div>
       <form action="/eventos/s2220/importar-xml" method="POST" enctype="multipart/form-data" hx-post="/eventos/s2220/importar-xml" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
         <div class="modal-corpo">
           <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; margin: 0;">
             Selecione o arquivo XML emitido pelo software da clínica de medicina ocupacional (SOC, Madu, SGG, etc.). Os dados serão automaticamente conferidos e importados para a fila de transmissão.

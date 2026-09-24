@@ -41,6 +41,7 @@
         </div>
 
         <form id="form-empresa" action="/configuracao" method="POST" hx-post="/configuracao" hx-target="#conteudo" style="display: flex; flex-direction: column; gap: var(--sp-3);">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
           <div class="campo">
             <label for="razao_social">Razão Social / Nome Empresarial <span class="req">*</span></label>
             <input type="text" id="razao_social" name="razao_social" value="{{ .Config.RazaoSocial }}" placeholder="Ex: Engenharia e Construções Silva Ltda" required>
@@ -99,6 +100,7 @@
         </div>
 
         <form id="form-cert" action="/configuracao/certificado" method="POST" enctype="multipart/form-data" hx-post="/configuracao/certificado" hx-target="#conteudo" style="display: flex; flex-direction: column; gap: var(--sp-3);">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
           <div class="campo">
             <label for="tipo_certificado">Modelo do Certificado Digital</label>
             <select id="tipo_certificado" name="tipo_certificado" onchange="alternarCamposCertificado(this.value)">

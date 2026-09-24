@@ -22,6 +22,7 @@
   </div>
 
   <form action="/eventos/s2240" method="POST" hx-post="/eventos/s2240" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
     <!-- SEÇÃO 1: DADOS DO TRABALHADOR -->
     <div class="card" style="margin-bottom: var(--sp-4);">
       <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">

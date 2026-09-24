@@ -2,6 +2,7 @@ package web
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
@@ -100,7 +101,7 @@ func GerarXMLS2240(p ParametrosS2240) string {
 	fmt.Fprintf(&sb, "      <cpfTrab>%s</cpfTrab>\n", cpfLimpo)
 	sb.WriteString("    </ideTrabalhador>\n")
 	sb.WriteString("    <infoExpRisco>\n")
-	fmt.Fprintf(&sb, "      <dtIniCondicao>%s</dtIniCondicao>\n", p.DataInicio)
+	fmt.Fprintf(&sb, "      <dtIniCondicao>%s</dtIniCondicao>\n", validarDataISO(p.DataInicio))
 	sb.WriteString("      <infoAmb>\n")
 	sb.WriteString("        <localAmb>1</localAmb>\n")
 	sb.WriteString("        <dscSetor>Geral Operacional</dscSetor>\n")
@@ -115,9 +116,9 @@ func GerarXMLS2240(p ParametrosS2240) string {
 	fmt.Fprintf(&sb, "        <dscAtivDes>%s</dscAtivDes>\n", descAtiv)
 	sb.WriteString("      </infoAtiv>\n")
 	sb.WriteString("      <agenteNoc>\n")
-	fmt.Fprintf(&sb, "        <codAgNoc>%s</codAgNoc>\n", p.CodigoRisco)
+	fmt.Fprintf(&sb, "        <codAgNoc>%s</codAgNoc>\n", escapeXML(p.CodigoRisco))
 	fmt.Fprintf(&sb, "        <dscAgNoc>%s</dscAgNoc>\n", escapeXML(p.NomeRisco))
-	fmt.Fprintf(&sb, "        <tpAval>%s</tpAval>\n", p.TipoAvaliacao)
+	fmt.Fprintf(&sb, "        <tpAval>%s</tpAval>\n", validarDominio(p.TipoAvaliacao, "2", "1"))
 	if p.TipoAvaliacao == "1" && p.Intensidade != "" {
 		fmt.Fprintf(&sb, "        <intConc>%s</intConc>\n", escapeXML(p.Intensidade))
 	}
@@ -126,18 +127,18 @@ func GerarXMLS2240(p ParametrosS2240) string {
 		p.UtilizaEPC = "0"
 	}
 	fmt.Fprintf(&sb, "        <epcEpi>\n")
-	fmt.Fprintf(&sb, "          <utilizEPC>%s</utilizEPC>\n", p.UtilizaEPC)
+	fmt.Fprintf(&sb, "          <utilizEPC>%s</utilizEPC>\n", validarDominio(p.UtilizaEPC, "0", "1", "2"))
 	if p.UtilizaEPC == "2" {
 		eficaz := p.EfficazEPC
 		if eficaz == "" {
 			eficaz = "S"
 		}
-		fmt.Fprintf(&sb, "          <eficEpc>%s</eficEpc>\n", eficaz)
+		fmt.Fprintf(&sb, "          <eficEpc>%s</eficEpc>\n", validarDominio(eficaz, "S", "N"))
 	}
 	if p.UtilizaEPI == "" {
 		p.UtilizaEPI = "0"
 	}
-	fmt.Fprintf(&sb, "          <utilizEPI>%s</utilizEPI>\n", p.UtilizaEPI)
+	fmt.Fprintf(&sb, "          <utilizEPI>%s</utilizEPI>\n", validarDominio(p.UtilizaEPI, "0", "1", "2"))
 	if p.UtilizaEPI == "2" {
 		sb.WriteString("          <epi>\n")
 		ca := p.CAEPI
@@ -163,7 +164,7 @@ func GerarXMLS2240(p ParametrosS2240) string {
 	if orgao == "" {
 		orgao = "CREA"
 	}
-	fmt.Fprintf(&sb, "        <ideOC>%s</ideOC>\n", orgao)
+	fmt.Fprintf(&sb, "        <ideOC>%s</ideOC>\n", escapeXML(orgao))
 	numReg := p.NumRegistro
 	if numReg == "" {
 		numReg = "000000"
@@ -173,7 +174,7 @@ func GerarXMLS2240(p ParametrosS2240) string {
 	if uf == "" {
 		uf = "SP"
 	}
-	fmt.Fprintf(&sb, "        <ufOC>%s</ufOC>\n", uf)
+	fmt.Fprintf(&sb, "        <ufOC>%s</ufOC>\n", validarUF(uf))
 	sb.WriteString("      </respReg>\n")
 	sb.WriteString("    </infoExpRisco>\n")
 	sb.WriteString("  </evtExpRisco>\n")
@@ -252,9 +253,9 @@ func GerarXMLS2210(p ParametrosS2210) string {
 	fmt.Fprintf(&sb, "      <cpfTrab>%s</cpfTrab>\n", cpfLimpo)
 	sb.WriteString("    </ideTrabalhador>\n")
 	sb.WriteString("    <cat>\n")
-	fmt.Fprintf(&sb, "      <dtAcid>%s</dtAcid>\n", p.DtAcidente)
-	fmt.Fprintf(&sb, "      <tpAcid>%s</tpAcid>\n", p.TpAcidente)
-	fmt.Fprintf(&sb, "      <hrAcid>%s</hrAcid>\n", p.HrAcidente)
+	fmt.Fprintf(&sb, "      <dtAcid>%s</dtAcid>\n", validarDataISO(p.DtAcidente))
+	fmt.Fprintf(&sb, "      <tpAcid>%s</tpAcid>\n", validarDominio(p.TpAcidente, "1", "2", "3"))
+	fmt.Fprintf(&sb, "      <hrAcid>%s</hrAcid>\n", validarHora(p.HrAcidente))
 	sb.WriteString("      <hrsTrabAntesAcid>0200</hrsTrabAntesAcid>\n")
 	tpCat := "1" // Inicial
 	fmt.Fprintf(&sb, "      <tpCat>%s</tpCat>\n", tpCat)
@@ -304,7 +305,7 @@ func GerarXMLS2210(p ParametrosS2210) string {
 	fmt.Fprintf(&sb, "        <codAgntCausador>%s</codAgntCausador>\n", codAgente)
 	sb.WriteString("      </agenteCausador>\n")
 	sb.WriteString("      <atestado>\n")
-	fmt.Fprintf(&sb, "        <dtAtendimento>%s</dtAtendimento>\n", p.DtAtendimento)
+	fmt.Fprintf(&sb, "        <dtAtendimento>%s</dtAtendimento>\n", validarDataISO(p.DtAtendimento))
 	cid := p.CID10
 	if cid == "" {
 		cid = "S61.0" // Ferimento de dedos
@@ -331,7 +332,7 @@ func GerarXMLS2210(p ParametrosS2210) string {
 	if ufMed == "" {
 		ufMed = "SP"
 	}
-	fmt.Fprintf(&sb, "          <ufOC>%s</ufOC>\n", ufMed)
+	fmt.Fprintf(&sb, "          <ufOC>%s</ufOC>\n", validarUF(ufMed))
 	sb.WriteString("        </emitente>\n")
 	sb.WriteString("      </atestado>\n")
 	sb.WriteString("    </cat>\n")
@@ -395,10 +396,10 @@ func GerarXMLS2220(p ParametrosS2220) string {
 	fmt.Fprintf(&sb, "      <cpfTrab>%s</cpfTrab>\n", cpfLimpo)
 	sb.WriteString("    </ideTrabalhador>\n")
 	sb.WriteString("    <aso>\n")
-	fmt.Fprintf(&sb, "      <dtAso>%s</dtAso>\n", p.DataASO)
-	fmt.Fprintf(&sb, "      <tpExameOcup>%s</tpExameOcup>\n", p.TipoExame)
+	fmt.Fprintf(&sb, "      <dtAso>%s</dtAso>\n", validarDataISO(p.DataASO))
+	fmt.Fprintf(&sb, "      <tpExameOcup>%s</tpExameOcup>\n", validarDominio(p.TipoExame, "0", "1", "2", "3", "9"))
 	sb.WriteString("      <exame>\n")
-	fmt.Fprintf(&sb, "        <dtExm>%s</dtExm>\n", p.DataASO)
+	fmt.Fprintf(&sb, "        <dtExm>%s</dtExm>\n", validarDataISO(p.DataASO))
 	sb.WriteString("        <procRealizado>0295</procRealizado>\n")
 	sb.WriteString("      </exame>\n")
 	sb.WriteString("      <medico>\n")
@@ -411,7 +412,7 @@ func GerarXMLS2220(p ParametrosS2220) string {
 	if uf == "" {
 		uf = "SP"
 	}
-	fmt.Fprintf(&sb, "        <ufCRM>%s</ufCRM>\n", uf)
+	fmt.Fprintf(&sb, "        <ufCRM>%s</ufCRM>\n", validarUF(uf))
 	sb.WriteString("      </medico>\n")
 	sb.WriteString("    </aso>\n")
 	sb.WriteString("  </evtMonit>\n")
@@ -481,13 +482,22 @@ func ValidarEventoXSD(tipo, xmlContent string) (bool, []string) {
 	return len(erros) == 0, erros
 }
 
-// SimularAssinatura insere envelope XMLDSig no documento XML.
+// SimularAssinatura insere um envelope XMLDSig DEMONSTRATIVO no documento XML.
+//
+// ATENÇÃO (achado A-02): este envelope NÃO é uma assinatura digital válida. Ele é
+// marcado explicitamente como simulação (valores em base64 legíveis como
+// "SIMULACAO-...") para que nenhum artefato seja confundido com prova documental
+// oficial. A assinatura real deve usar crypto.AssinarXML com o certificado A1.
 func SimularAssinatura(xmlContent, certSubject string) string {
 	h := sha256.New()
 	h.Write([]byte(xmlContent))
 	digest := hex.EncodeToString(h.Sum(nil))
 
-	sigBlock := fmt.Sprintf(`  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+	valorSimulado := base64.StdEncoding.EncodeToString([]byte("SIMULACAO-NAO-VALIDA-JURIDICAMENTE:" + digest[:32]))
+	certSimulado := base64.StdEncoding.EncodeToString([]byte("SIMULACAO-SEM-CERTIFICADO-ICP-BRASIL"))
+
+	sigBlock := fmt.Sprintf(`  <!-- ASSINATURA SIMULADA: sem certificado digital aplicado e sem validade jurídica -->
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
     <SignedInfo>
       <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
       <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
@@ -497,39 +507,37 @@ func SimularAssinatura(xmlContent, certSubject string) string {
           <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
         </Transforms>
         <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
-        <DigestValue>%s</DigestValue>
-      </Reference>
-    </SignedInfo>
-    <SignatureValue>SIMULATED_RSA_SHA256_SIGNATURE_%s</SignatureValue>
-    <KeyInfo>
-      <X509Data>
-        <X509Certificate>CERTIFICADO_DIGITAL_ICP_BRASIL_%s</X509Certificate>
-      </X509Data>
-    </KeyInfo>
-  </Signature>
-</eSocial>`, digest[:24], digest[:32], escapeXML(certSubject))
+<DigestValue>%s</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>%s</SignatureValue>
+<KeyInfo>
+<X509Data>
+<X509Certificate>%s</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature>
+</eSocial>`, digest[:24], valorSimulado, certSimulado)
 
 	return strings.Replace(xmlContent, "</eSocial>", sigBlock, 1)
 }
 
-// SimularTransmissao gera números de protocolo e recibo oficiais eSocial.
-func SimularTransmissao(ambiente int, tipo string, xmlContent string) (protocolo, recibo, mensagem string, aceito bool) {
-	agora := time.Now().Format("200601")
-	nano := time.Now().UnixNano() % 100000000000000
-
-	protocolo = fmt.Sprintf("%d.2.%s.%014d", ambiente, agora, nano)
-	recibo = fmt.Sprintf("%d.2.%s.%014d", ambiente, agora, nano+107)
-
-	ambStr := "Produção Restrita"
+// MensagemTransmissaoSimulada descreve explicitamente que NADA foi enviado ao eSocial.
+//
+// ATENÇÃO (achado A-02): esta versão não está integrada ao webservice oficial
+// (internal/soap). Nenhum protocolo e nenhum recibo são gerados, para não produzir
+// prova documental fictícia nem trilha de auditoria falsa.
+func MensagemTransmissaoSimulada(ambiente int, tipo string) string {
+	ambStr := "Produção Restrita (homologação)"
 	if ambiente == 1 {
 		ambStr = "Produção Oficial"
 	}
-
-	mensagem = fmt.Sprintf(
-		"Transmissão ao eSocial realizada com sucesso [%s]. Lote processado sem advertências. Recibo emitido pelo Serpro/Receita Federal.",
-		ambStr,
+	return fmt.Sprintf(
+		"SIMULAÇÃO: nenhum dado foi enviado ao eSocial. O envio real do evento %s para o ambiente %s depende da "+
+			"integração com o webservice oficial (mTLS com certificado A1), ainda não conectada nesta versão. "+
+			"Nenhum protocolo ou recibo oficial foi gerado.",
+		tipo, ambStr,
 	)
-	return protocolo, recibo, mensagem, true
 }
 
 func limpaDigitos(s string) string {
@@ -539,6 +547,67 @@ func limpaDigitos(s string) string {
 		}
 		return -1
 	}, s)
+}
+
+// validarDataISO aceita apenas datas no formato AAAA-MM-DD (fallback: data de hoje).
+func validarDataISO(v string) string {
+	v = strings.TrimSpace(v)
+	if len(v) == 10 && v[4] == '-' && v[7] == '-' &&
+		somenteDigitos(v[0:4]) && somenteDigitos(v[5:7]) && somenteDigitos(v[8:10]) {
+		return v
+	}
+	return time.Now().Format("2006-01-02")
+}
+
+// validarHora aceita apenas HHMM numérico de 4 dígitos (fallback: 0800).
+func validarHora(v string) string {
+	v = strings.ReplaceAll(strings.TrimSpace(v), ":", "")
+	if len(v) == 4 && somenteDigitos(v) {
+		return v
+	}
+	return "0800"
+}
+
+// validarDominio restringe o valor a uma lista fechada (fallback: primeiro item).
+func validarDominio(v string, permitidos ...string) string {
+	v = strings.TrimSpace(v)
+	for _, p := range permitidos {
+		if v == p {
+			return v
+		}
+	}
+	if len(permitidos) > 0 {
+		return permitidos[0]
+	}
+	return ""
+}
+
+var ufsOficiais = map[string]bool{
+	"AC": true, "AL": true, "AP": true, "AM": true, "BA": true, "CE": true, "DF": true,
+	"ES": true, "GO": true, "MA": true, "MT": true, "MS": true, "MG": true, "PA": true,
+	"PB": true, "PR": true, "PE": true, "PI": true, "RJ": true, "RN": true, "RS": true,
+	"RO": true, "RR": true, "SC": true, "SP": true, "SE": true, "TO": true,
+}
+
+// validarUF aceita apenas siglas oficiais de UF (fallback: SP).
+func validarUF(v string) string {
+	v = strings.ToUpper(strings.TrimSpace(v))
+	if ufsOficiais[v] {
+		return v
+	}
+	return "SP"
+}
+
+func somenteDigitos(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 func escapeXML(s string) string {

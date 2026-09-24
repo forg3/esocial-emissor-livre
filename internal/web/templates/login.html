@@ -1,0 +1,44 @@
+{{ define "login.html" }}<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso restrito | Validador eSocial</title>
+  <link rel="icon" type="image/png" href="/static/img/favicon.png">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body style="background: var(--surface-2); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">
+  <div class="card" style="width: 100%; max-width: 380px; padding: var(--sp-5);">
+    <div style="text-align: center; margin-bottom: var(--sp-4);">
+      <img src="/static/img/validador-logo-vertical-light.png" alt="Validador eSocial" style="max-width: 180px;">
+    </div>
+
+    <h1 style="font-size: var(--fs-lg); margin: 0 0 4px 0; color: var(--navy);">Acesso restrito</h1>
+    <p style="font-size: var(--fs-xs); color: var(--text-2); margin: 0 0 var(--sp-4) 0; line-height: 1.6;">
+      {{ if .RazaoSocial }}{{ .RazaoSocial }}<br>{{ end }}
+      Informe a senha local do aplicativo. Ela é exibida no terminal na primeira execução e pode ser trocada com
+      <code>-senha</code> ou a variável de ambiente <code>ESOCIAL_SENHA</code>.
+    </p>
+
+    {{ if .Erro }}
+      <div class="flash flash-err" style="font-size: 13px; margin-bottom: var(--sp-3);">{{ .Erro }}</div>
+    {{ end }}
+
+    <form method="POST" action="/login" style="display: flex; flex-direction: column; gap: var(--sp-3);">
+      <input type="hidden" name="csrf_token" value="{{ .CSRF }}">
+      <div>
+        <label for="senha" style="font-size: var(--fs-xs); font-weight: 600; color: var(--text-2);">Senha local</label>
+        <input type="password" id="senha" name="senha" autocomplete="current-password" autofocus required
+               style="width: 100%; height: 40px; margin-top: 4px;">
+      </div>
+      <button type="submit" class="btn btn-primario" style="height: 42px;">Entrar</button>
+    </form>
+
+    <p style="font-size: 11px; color: var(--text-2); margin: var(--sp-4) 0 0 0; line-height: 1.6;">
+      O servidor escuta apenas em <strong>127.0.0.1</strong> por padrão. A sessão usa cookie <code>HttpOnly</code> com
+      <code>SameSite=Strict</code> e expira automaticamente.
+    </p>
+  </div>
+</body>
+</html>
+{{ end }}

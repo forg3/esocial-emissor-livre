@@ -58,6 +58,7 @@
         <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('modal-novo-colaborador').setAttribute('hidden', 'true')">&times;</button>
       </div>
       <form action="/colaboradores" method="POST" hx-post="/colaboradores" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
         <div class="modal-corpo">
           <div class="form-grid">
             <div class="campo" style="grid-column: span 2;">
@@ -115,6 +116,7 @@
         <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('modal-importar-csv').setAttribute('hidden', 'true')">&times;</button>
       </div>
       <form action="/colaboradores/importar-csv" method="POST" enctype="multipart/form-data" hx-post="/colaboradores/importar-csv" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
         <div class="modal-corpo">
           <p style="font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; margin: 0;">
             O arquivo CSV deve conter o cabeçalho obrigatório:<br>
