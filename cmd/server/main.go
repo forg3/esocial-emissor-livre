@@ -18,6 +18,9 @@ import (
 	"github.com/forg3/esocial-emissor-livre/internal/web"
 )
 
+// versao é sobrescrita no build (ldflags -X main.versao=...) pelo pipeline de release.
+var versao = "dev"
+
 func abrirNavegador(url string) {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
@@ -75,7 +78,7 @@ func main() {
 
 	go func() {
 		log.Printf("=======================================================")
-		log.Printf("  Validador eSocial - Servidor Web Ativo")
+		log.Printf("  Validador eSocial %s - Servidor Web Ativo", versao)
 		log.Printf("  Interface: %s", urlAcesso)
 		log.Printf("  Escutando em: %s", endereco)
 		log.Printf("  Banco de dados: %s", dbPath)
