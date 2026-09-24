@@ -304,6 +304,7 @@ func (s *Servidor) Rotas() http.Handler {
 	mux.HandleFunc("POST /configuracao/certificado", s.handleUploadCertificado)
 	mux.HandleFunc("POST /configuracao/testar", s.handleTestarCertificado)
 	mux.HandleFunc("POST /configuracao/modo-transmissao", s.handleDefinirModoTransmissao)
+	mux.HandleFunc("POST /configuracao/token-a3", s.handleTestarTokenA3)
 
 	// 3. Colaboradores
 	mux.HandleFunc("GET /colaboradores", s.handleColaboradores)

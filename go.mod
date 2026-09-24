@@ -3,6 +3,7 @@ module github.com/forg3/esocial-emissor-livre
 go 1.26.8
 
 require (
+	github.com/miekg/pkcs11 v1.1.2
 	golang.org/x/crypto v0.57.0
 	modernc.org/sqlite v1.59.0
 	software.sslmate.com/src/go-pkcs12 v0.7.3

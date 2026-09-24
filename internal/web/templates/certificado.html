@@ -151,6 +151,33 @@
     </div>
   </div>
 
+  <!-- CERTIFICADO A3 (TOKEN / SMARTCARD) -->
+  <div class="card" style="margin-top: var(--sp-4); border-left: 3px solid var(--info, #2563EB);">
+    <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy);">Certificado A3 — Token USB / Smartcard (PKCS#11)</h3>
+    <p style="font-size: 12px; color: var(--text-2); line-height: 1.6; margin-top: 6px;">
+      A chave privada permanece no dispositivo; a assinatura é delegada ao hardware via PKCS#11.
+      O driver PKCS#11 é incluído apenas nas builds compiladas com a tag <code>pkcs11</code>
+      (<code>go build -tags pkcs11 ./cmd/server</code>).
+    </p>
+    <form action="/configuracao/token-a3" method="POST" hx-post="/configuracao/token-a3" hx-target="#teste-resultado"
+          style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; margin-top: var(--sp-3);">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+      <div class="campo" style="margin: 0;">
+        <label for="modulo_pkcs11" style="font-size: 11px;">Módulo PKCS#11 do fabricante</label>
+        <input type="text" id="modulo_pkcs11" name="modulo_pkcs11" class="mono" placeholder="/usr/lib/opensc-pkcs11.so">
+      </div>
+      <div class="campo" style="margin: 0;">
+        <label for="slot_pkcs11" style="font-size: 11px;">Slot (opcional)</label>
+        <input type="text" id="slot_pkcs11" name="slot_pkcs11" class="mono" placeholder="auto">
+      </div>
+      <div class="campo" style="margin: 0;">
+        <label for="pin_a3" style="font-size: 11px;">PIN do token</label>
+        <input type="password" id="pin_a3" name="pin_a3" autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-outline" style="height: 38px;">Testar token A3</button>
+    </form>
+  </div>
+
   <!-- MODO DE TRANSMISSÃO -->
   <div class="card" style="margin-top: var(--sp-4); border-left: 3px solid {{ if eq .Config.ModoTransmissao "real" }}var(--ok){{ else }}var(--warn){{ end }};">
     <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy);">Modo de transmissão ao eSocial</h3>

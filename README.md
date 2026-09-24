@@ -124,6 +124,8 @@ IDOR, segredos expostos e XSS) com **todos os achados corrigidos** — o relató
 
 **Melhorias**
 
+- **Sprint 6 (certificados A3 / PKCS#11)**: driver PKCS#11 sob a tag de build `pkcs11`, com seleção de módulo/slot/PIN na
+  interface, leitura do certificado do token e assinatura delegada ao hardware (a chave privada nunca sai do dispositivo).
 - **Sprint 1 (conformidade de leiaute)**: os geradores dos eventos S-2210 (CAT), S-2220 (ASO) e S-2240 (condições ambientais) foram reescritos para o leiaute oficial S-1.3 (`ideVinculo`, `agNoc`, `epcEpi`/`epiCompl`, `respReg`, CAT completa com `codSitGeradora`/`iniciatCAT`/`localAcidente`/`parteAtingida`/`agenteCausador`/`atestado` e ASO com `exMedOcup`/`aso`/`exame`/`medico`).
 - Filtro e contador de eventos `simulado` na fila de transmissão.
 - Mensagens de validação passam a informar exatamente o modo executado e o que divergiu.
@@ -159,7 +161,9 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 - [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.1.1-alpha`).
 - [x] **Pacotes de Distribuição (.deb, .rpm e MSI)**: instaladores nativos gerados pelo pipeline de release (GoReleaser para `.deb`/`.rpm`/`.tar.gz`/`.zip` e WiX Toolset para o `.msi` do Windows).
 - [x] **Pipeline de CI/CD para Releases**: workflow `release.yml` executa build, `go vet`, testes, compilação cruzada (linux/darwin/windows em amd64 e arm64), pacotes `.deb`/`.rpm`, instalador `.msi`, checksums SHA-256 e publicação automática na release — além da imagem de container no GHCR.
-- [ ] **Suporte a Certificados A3 (Tokens USB e Smartcards via PKCS#11)**: Integração nativa com drivers de hardware para leitura de dispositivos A3.
+- [~] **Suporte a Certificados A3 (Tokens USB e Smartcards via PKCS#11)**: implementado e habilitável por build
+  (`go build -tags pkcs11 ./cmd/server`) — a chave privada permanece no token e a assinatura é delegada ao hardware.
+  A validação final depende de um token físico (não executável em ambiente de CI).
 - [x] **Módulo de Relatórios e Auditoria de Retorno**: importação dos totalizadores S-5001/S-5011, consolidação por período (previdenciário/FGTS/IRRF), memórias de cálculo e exportação CSV.
 - [x] **Múltiplos Certificados e Procurações Eletrônicas**: perfis multiempresa com certificado A1 por CNPJ, dados do procurador eletrônico e ativação sincronizada.
 
@@ -168,7 +172,9 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 ## O que não faz
 
 - **Transmissão real exige certificado A1 válido e homologação**: o envio oficial está implementado (mTLS + `EnviarLoteEventos`/`ConsultarLoteEventos`) e validado com webservice simulado; a conferência final depende de certificado real em Produção Restrita. O modo padrão continua **simulado**, com aviso na interface.
-- **Não suporta certificados A3 no momento**: Dispositivos físicos (cartões inteligentes e tokens USB via PKCS#11) não são suportados na versão atual. A aplicação aceita estritamente certificados em arquivo **A1** (`.pfx` / `.p12`).
+- **Certificados A3 exigem build dedicada**: o suporte a token/smartcard via PKCS#11 está implementado, mas não é
+  incluído na build padrão (que aceita certificados **A1** em `.pfx`/`.p12`). Para habilitar, compile com
+  `go build -tags pkcs11 ./cmd/server` e informe o módulo PKCS#11 do fabricante na tela **Certificado & Empresa**.
 - **Não é um ERP de Folha de Pagamento**: Não calcula holerites, encargos sindicais complexos, horas extras ou rescisões trabalhistas. O software opera sobre os dados brutos necessários para a geração do evento.
 - **Não armazena chaves privadas em nuvem**: Em implantações corporativas multiusuário, o sistema não transfere certificados A1 para repositórios desprotegidos.
 - **Não substitui a responsabilidade técnica legal**: O preenchimento e a validação de laudos (LTCAT, PGR, PCMSO) e CATs continuam sendo atribuições formais dos profissionais habilitados (Médicos do Trabalho, Engenheiros e Técnicos de Segurança, e Contadores).
