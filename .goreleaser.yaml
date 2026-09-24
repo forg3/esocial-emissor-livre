@@ -1,0 +1,104 @@
+# GoReleaser — compilação cruzada, pacotes de distribuição e publicação de releases
+# Documentação: https://goreleaser.com
+version: 2
+
+project_name: validador-esocial
+
+before:
+  hooks:
+    - go mod tidy
+    - go vet ./...
+    - go test ./...
+
+builds:
+  - id: validador-esocial
+    main: ./cmd/server
+    binary: validador-esocial
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.versao={{ .Version }}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - id: pacotes
+    formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}-{{ .Version }}-
+      {{- if eq .Os "darwin" }}darwin{{ else }}{{ .Os }}{{ end }}-
+      {{- if eq .Arch "amd64" }}amd64{{ else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+      - LICENSE
+      - docs/security-audit/relatorio-auditoria-seguranca.pdf
+
+checksum:
+  name_template: "SHA256SUMS.txt"
+  algorithm: sha256
+
+# Pacotes nativos: .deb (Debian/Ubuntu) e .rpm (Fedora/RHEL/SUSE)
+nfpms:
+  - id: pacotes-linux
+    package_name: validador-esocial
+    vendor: forg3
+    homepage: https://github.com/forg3/validador-esocial
+    maintainer: forg3 <andre.santo@gmail.com>
+    description: |-
+      Validador eSocial — aplicativo web autônomo para elaboração, validação
+      estrutural (XSD), assinatura digital (XMLDSig A1) e auditoria dos eventos
+      do eSocial (leiaute S-1.3), com execução local e autenticação obrigatória.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    contents:
+      - src: README.md
+        dst: /usr/share/doc/validador-esocial/README.md
+      - src: LICENSE
+        dst: /usr/share/doc/validador-esocial/LICENSE
+      - src: docs/security-audit/relatorio-auditoria-seguranca.pdf
+        dst: /usr/share/doc/validador-esocial/relatorio-auditoria-seguranca.pdf
+    scripts:
+      postinstall: packaging/linux/postinstall.sh
+      preremove: packaging/linux/preremove.sh
+
+release:
+  github:
+    owner: forg3
+    name: validador-esocial
+  draft: false
+  prerelease: auto
+  name_template: "Validador eSocial {{ .Tag }}"
+  header: |
+    ## Validador eSocial {{ .Tag }}
+
+    Binários multiplataforma, pacotes .deb/.rpm e imagem de container
+    (`ghcr.io/forg3/validador-esocial:{{ .Tag }}`).
+  footer: |
+    ---
+    Relatório de auditoria de segurança: `docs/security-audit/relatorio-auditoria-seguranca.pdf`.
+    A transmissão ao eSocial permanece **simulada** nesta versão (nenhum dado é enviado ao governo).
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"

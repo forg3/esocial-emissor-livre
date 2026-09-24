@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Autorais do instalador MSI do Validador eSocial (WiX Toolset v4+).
+  Uso: wix build packaging/windows/validador-esocial.wxs -d Version=1.1.0 -o validador-esocial.msi
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Validador eSocial"
+           Manufacturer="forg3"
+           Version="$(Version)"
+           UpgradeCode="7d4c9f2e-5b1a-4c6e-9a3d-2f8e1b6c0a54"
+           Scope="perMachine"
+           Compressed="yes"
+           Language="1046">
+
+    <SummaryInformation Description="Validador eSocial — emissão, validação e assinatura de eventos do eSocial (leiaute S-1.3)"
+                        Manufacturer="forg3" />
+
+    <MajorUpgrade DowngradeErrorMessage="Uma versão mais recente do Validador eSocial já está instalada." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Validador eSocial">
+        <Component Id="ComponenteBinario" Guid="*">
+          <File Id="ExecutavelValidador"
+                Source="$(var.ExePath)"
+                KeyPath="yes" />
+        </Component>
+        <Component Id="ComponenteAtalho" Guid="*">
+          <Shortcut Id="AtalhoMenuIniciar"
+                    Directory="ProgramMenuDir"
+                    Name="Validador eSocial"
+                    Description="Abrir o painel do Validador eSocial"
+                    Target="[INSTALLFOLDER]validador-esocial.exe"
+                    WorkingDirectory="INSTALLFOLDER" />
+          <Shortcut Id="AtalhoDesktop"
+                    Directory="DesktopFolder"
+                    Name="Validador eSocial"
+                    Target="[INSTALLFOLDER]validador-esocial.exe"
+                    WorkingDirectory="INSTALLFOLDER" />
+          <RemoveFolder Id="RemoverMenuIniciar" Directory="ProgramMenuDir" On="uninstall" />
+          <RegistryValue Root="HKCU" Key="Software\forg3\ValidadorESocial"
+                         Name="instalado" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuDir" Name="Validador eSocial" />
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder" />
+
+    <Feature Id="FeaturePrincipal" Title="Validador eSocial" Level="1">
+      <ComponentRef Id="ComponenteBinario" />
+      <ComponentRef Id="ComponenteAtalho" />
+    </Feature>
+  </Package>
+</Wix>

@@ -1,0 +1,184 @@
+name: Release (binários, pacotes e container)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      snapshot:
+        description: "Executar como snapshot (sem publicar release)"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # 1. Binários multiplataforma + .deb/.rpm + checksums + publicação da release
+  goreleaser:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.x'
+
+      - name: Instalar validador de schema XML (xmllint)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libxml2-utils
+
+      - name: Validar configuração do GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: check
+
+      - name: Compilar, empacotar e publicar
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: >-
+            release --clean
+            ${{ (github.event_name == 'workflow_dispatch' && inputs.snapshot == 'true') && '--snapshot' || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Guardar artefatos do snapshot
+        if: github.event_name == 'workflow_dispatch' && inputs.snapshot == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacotes-snapshot
+          path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/*.deb
+            dist/*.rpm
+            dist/SHA256SUMS.txt
+          retention-days: 7
+
+  # 2. Instalador MSI para Windows (WiX Toolset v4+)
+  msi:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v5
+
+      - name: Configurar Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.x'
+
+      - name: Definir versão do pacote
+        id: versao
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $v = "${{ github.ref_name }}".TrimStart("v")
+          } else {
+            $v = "1.1.0"
+          }
+          $v = ($v -replace "[^0-9.]", "")
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { $v = "1.1.0" }
+          "valor=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Versão do MSI: $v"
+
+      - name: Compilar binário Windows
+        shell: pwsh
+        run: |
+          go build -trimpath -ldflags "-s -w -X main.versao=${{ steps.versao.outputs.valor }}" `
+            -o dist/validador-esocial.exe ./cmd/server
+
+      - name: Instalar WiX Toolset
+        shell: pwsh
+        run: dotnet tool install --global wix --version 5.*
+
+      - name: Gerar instalador MSI
+        shell: pwsh
+        run: |
+          wix build packaging/windows/validador-esocial.wxs `
+            -d Version=${{ steps.versao.outputs.valor }} `
+            -d ExePath=dist/validador-esocial.exe `
+            -o dist/validador-esocial-${{ steps.versao.outputs.valor }}-windows-amd64.msi
+
+      - name: Verificar o MSI gerado
+        shell: pwsh
+        run: |
+          $msi = Get-ChildItem dist/*.msi
+          Write-Host "MSI: $($msi.Name) ($([math]::Round($msi.Length/1MB,2)) MB)"
+          if ($msi.Length -lt 1MB) { throw "MSI gerado com tamanho suspeito" }
+
+      - name: Anexar o MSI à release
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ github.ref_name }}" (Get-ChildItem dist/*.msi).FullName --clobber
+
+      - name: Guardar o MSI como artefato
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-msi
+          path: dist/*.msi
+          retention-days: 7
+
+  # 3. Imagem de container publicada no GitHub Packages (ghcr.io)
+  container:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v5
+
+      - name: Configurar Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.x'
+
+      - name: Instalar validador de schema XML (xmllint)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libxml2-utils
+
+      - name: Executar Testes (build + vet + testes)
+        run: |
+          go build ./...
+          go vet ./...
+          go test ./...
+
+      - name: Compilar Binário Nativo Linux
+        run: |
+          mkdir -p dist
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.versao=${{ github.ref_name }}" -o dist/validador-esocial cmd/server
+
+      - name: Autenticar no GitHub Container Registry (ghcr.io)
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Extrair Metadados do Container
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest
+
+      - name: Construir e Publicar Imagem
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

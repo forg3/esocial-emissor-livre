@@ -51,6 +51,23 @@ go run cmd/server/main.go
 Acesse a interface no navegador em `http://localhost:8000` e informe a **senha local** exibida no terminal na
 primeira execução (ela fica salva com hash em `dados/auth.json`, permissão `0600`).
 
+### Instalação por pacote
+
+```bash
+# Debian/Ubuntu (.deb)
+sudo dpkg -i validador-esocial_1.1-alpha_linux_amd64.deb
+
+# Fedora/RHEL/openSUSE (.rpm)
+sudo rpm -i validador-esocial-1.1-alpha.x86_64.rpm
+
+# Windows: execute o instalador .msi (cria atalhos no Menu Iniciar e na Área de Trabalho)
+#   validador-esocial-1.1-alpha-windows-amd64.msi
+```
+
+Após instalar, execute `validador-esocial` (o atalho no Windows). O binário é auto-contido: cria o banco SQLite em
+`./dados`, sobe o servidor em `127.0.0.1:8000` e abre o navegador. A senha local de acesso é exibida no terminal na
+primeira execução (ou defina com `-senha` / `ESOCIAL_SENHA`).
+
 ### Senha de acesso e exposição de rede
 
 ```bash
@@ -126,8 +143,8 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 - [x] **Leiautes S-1.3 aderentes ao XSD oficial (Sprint 1)**: geradores de S-2210, S-2220 e S-2240 reescritos conforme o leiaute oficial, com tabelas 13/14/15/17/27 embutidas e validação por schema aprovada nos testes de regressão.
 - [x] **Auditoria de Segurança e Hardening (v1.1-alpha)**: autenticação obrigatória, anti-CSRF, validação de Host, limites de entrada, rate limit, cabeçalhos de segurança e relatório de auditoria publicado em `docs/security-audit/`.
 - [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.1-alpha`).
-- [ ] **Pacotes de Distribuição (.deb, .rpm e MSI)**: Instaladores nativos para distribuições Linux e instalador Windows.
-- [ ] **Pipeline de CI/CD para Releases**: Automação de compilação cruzada (GoReleaser / GitHub Actions) para geração contínua de executáveis compactados a cada tag.
+- [x] **Pacotes de Distribuição (.deb, .rpm e MSI)**: instaladores nativos gerados pelo pipeline de release (GoReleaser para `.deb`/`.rpm`/`.tar.gz`/`.zip` e WiX Toolset para o `.msi` do Windows).
+- [x] **Pipeline de CI/CD para Releases**: workflow `release.yml` executa build, `go vet`, testes, compilação cruzada (linux/darwin/windows em amd64 e arm64), pacotes `.deb`/`.rpm`, instalador `.msi`, checksums SHA-256 e publicação automática na release — além da imagem de container no GHCR.
 - [ ] **Suporte a Certificados A3 (Tokens USB e Smartcards via PKCS#11)**: Integração nativa com drivers de hardware para leitura de dispositivos A3.
 - [ ] **Módulo de Relatórios e Auditoria de Retorno**: Exportação de relatórios de conformidade e conferência de débitos previdenciários e FGTS (eventos de totalização S-5001/S-5011).
 - [ ] **Múltiplos Certificados e Procurações Eletrônicas**: Gestão de perfis multi-empresa com seleção dinâmica de certificado para escritórios contábeis.
