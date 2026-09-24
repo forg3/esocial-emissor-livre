@@ -29,7 +29,7 @@ func GerarIDEvento(cnpj string) string {
 	return fmt.Sprintf("ID1%s%s%05d", limpo, agora, nano)
 }
 
-// ParametrosS2240 reúne os dados necessários para compor o S-2240.
+// ParametrosS2240 reúne os dados necessários para compor o S-2240 (leiaute S-1.3).
 type ParametrosS2240 struct {
 	ID                 string
 	Ambiente           int
@@ -39,15 +39,18 @@ type ParametrosS2240 struct {
 	DataInicio         string
 	DescAtividade      string
 	LocalAmbiente      string
+	DscSetor           string
 	CodigoRisco        string
 	NomeRisco          string
 	TipoAvaliacao      string // 1 - Quantitativa, 2 - Qualitativa
 	Intensidade        string
-	UtilizaEPC         string // 0 - Não se aplica, 1 - Não utilizado, 2 - Utilizado
+	UnidadeMedida      string // 1 dose diária de ruído, 2 dB linear, 3 dB(C), 4 dB(A)
+	TecnicaMedicao     string
+	UtilizaEPC         string // 0 - Não se aplica, 1 - Não implementa, 2 - Implementa
 	EfficazEPC         string // S/N
 	UtilizaEPI         string // 0 - Não se aplica, 1 - Não utilizado, 2 - Utilizado
-	CAEPI              string
 	EficazEPI          string // S/N
+	CAEPI              string
 	MedicaoProtecao    string // S/N
 	CondicaoFunc       string // S/N
 	UsoIninterrupto    string // S/N
@@ -56,12 +59,13 @@ type ParametrosS2240 struct {
 	Higienizacao       string // S/N
 	NomeResp           string
 	CPFResp            string
-	OrgaoClasse        string
+	OrgaoClasse        string // 1 CRM, 4 CREA, 9 RMS (código do XSD)
 	NumRegistro        string
 	UFRegistro         string
 }
 
-// GerarXMLS2240 produz o documento XML no leiaute S-1.3 oficial.
+// GerarXMLS2240 produz o documento XML no leiaute S-1.3 oficial (evtExpRisco),
+// aderente ao XSD embutido em internal/data/xsd/evtExpRisco.xsd.
 func GerarXMLS2240(p ParametrosS2240) string {
 	if p.ID == "" {
 		p.ID = GerarIDEvento(p.CNPJ)
@@ -79,33 +83,45 @@ func GerarXMLS2240(p ParametrosS2240) string {
 		p.CodigoRisco = "09.01.001"
 		p.NomeRisco = "Ausência de agente nocivo ou atividades não constantes da Tabela 24"
 	}
-	if p.TipoAvaliacao == "" {
-		p.TipoAvaliacao = "2"
+	tpAval := validarDominio(p.TipoAvaliacao, "2", "1")
+	if p.CodigoRisco != "09.01.001" && p.NomeRisco == "" {
+		p.NomeRisco = "Agente nocivo informado conforme Tabela 24"
+	}
+	localAmb := validarDominio(p.LocalAmbiente, "1", "2")
+	dscSetor := strings.TrimSpace(p.DscSetor)
+	if dscSetor == "" {
+		dscSetor = "Geral Operacional"
 	}
 
 	var sb strings.Builder
 	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	sb.WriteString(`<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtExpRisco/v_S_01_03_00">` + "\n")
-	fmt.Fprintf(&sb, `  <evtExpRisco Id="%s">`+"\n", p.ID)
+	fmt.Fprintf(&sb, `  <evtExpRisco Id="%s">`+"\n", escapeXML(p.ID))
 	sb.WriteString("    <ideEvento>\n")
 	sb.WriteString("      <indRetif>1</indRetif>\n")
 	fmt.Fprintf(&sb, "      <tpAmb>%d</tpAmb>\n", p.Ambiente)
 	sb.WriteString("      <procEmi>1</procEmi>\n")
-	sb.WriteString("      <verProc>1.0.0</verProc>\n")
+	sb.WriteString("      <verProc>1.1.0</verProc>\n")
 	sb.WriteString("    </ideEvento>\n")
 	sb.WriteString("    <ideEmpregador>\n")
 	sb.WriteString("      <tpInsc>1</tpInsc>\n")
 	fmt.Fprintf(&sb, "      <nrInsc>%s</nrInsc>\n", cnpjLimpo)
 	sb.WriteString("    </ideEmpregador>\n")
-	sb.WriteString("    <ideTrabalhador>\n")
+
+	// ideVinculo (o XSD S-1.3 exige ideVinculo; matrícula é opcional)
+	sb.WriteString("    <ideVinculo>\n")
 	fmt.Fprintf(&sb, "      <cpfTrab>%s</cpfTrab>\n", cpfLimpo)
-	sb.WriteString("    </ideTrabalhador>\n")
+	if mat := strings.TrimSpace(p.Matricula); mat != "" {
+		fmt.Fprintf(&sb, "      <matricula>%s</matricula>\n", escapeXML(mat))
+	}
+	sb.WriteString("    </ideVinculo>\n")
+
 	sb.WriteString("    <infoExpRisco>\n")
 	fmt.Fprintf(&sb, "      <dtIniCondicao>%s</dtIniCondicao>\n", validarDataISO(p.DataInicio))
 	sb.WriteString("      <infoAmb>\n")
-	sb.WriteString("        <localAmb>1</localAmb>\n")
-	sb.WriteString("        <dscSetor>Geral Operacional</dscSetor>\n")
-	fmt.Fprintf(&sb, "        <tpInsc>1</tpInsc>\n")
+	fmt.Fprintf(&sb, "        <localAmb>%s</localAmb>\n", localAmb)
+	fmt.Fprintf(&sb, "        <dscSetor>%s</dscSetor>\n", escapeXML(dscSetor))
+	sb.WriteString("        <tpInsc>1</tpInsc>\n")
 	fmt.Fprintf(&sb, "        <nrInsc>%s</nrInsc>\n", cnpjLimpo)
 	sb.WriteString("      </infoAmb>\n")
 	sb.WriteString("      <infoAtiv>\n")
@@ -115,67 +131,72 @@ func GerarXMLS2240(p ParametrosS2240) string {
 	}
 	fmt.Fprintf(&sb, "        <dscAtivDes>%s</dscAtivDes>\n", descAtiv)
 	sb.WriteString("      </infoAtiv>\n")
-	sb.WriteString("      <agenteNoc>\n")
+
+	sb.WriteString("      <agNoc>\n")
 	fmt.Fprintf(&sb, "        <codAgNoc>%s</codAgNoc>\n", escapeXML(p.CodigoRisco))
-	fmt.Fprintf(&sb, "        <dscAgNoc>%s</dscAgNoc>\n", escapeXML(p.NomeRisco))
-	fmt.Fprintf(&sb, "        <tpAval>%s</tpAval>\n", validarDominio(p.TipoAvaliacao, "2", "1"))
-	if p.TipoAvaliacao == "1" && p.Intensidade != "" {
-		fmt.Fprintf(&sb, "        <intConc>%s</intConc>\n", escapeXML(p.Intensidade))
+	if nomeRisco := strings.TrimSpace(p.NomeRisco); nomeRisco != "" {
+		fmt.Fprintf(&sb, "        <dscAgNoc>%s</dscAgNoc>\n", escapeXML(nomeRisco))
 	}
-	// EPI / EPC
-	if p.UtilizaEPC == "" {
-		p.UtilizaEPC = "0"
-	}
-	fmt.Fprintf(&sb, "        <epcEpi>\n")
-	fmt.Fprintf(&sb, "          <utilizEPC>%s</utilizEPC>\n", validarDominio(p.UtilizaEPC, "0", "1", "2"))
-	if p.UtilizaEPC == "2" {
-		eficaz := p.EfficazEPC
-		if eficaz == "" {
-			eficaz = "S"
+	fmt.Fprintf(&sb, "        <tpAval>%s</tpAval>\n", tpAval)
+	if tpAval == "1" {
+		intensidade := strings.TrimSpace(p.Intensidade)
+		if intensidade == "" {
+			intensidade = "0"
 		}
-		fmt.Fprintf(&sb, "          <eficEpc>%s</eficEpc>\n", validarDominio(eficaz, "S", "N"))
+		fmt.Fprintf(&sb, "        <intConc>%s</intConc>\n", escapeXML(intensidade))
+		fmt.Fprintf(&sb, "        <unMed>%s</unMed>\n", validarDominio(p.UnidadeMedida, "1", "2", "3", "4"))
+		tec := strings.TrimSpace(p.TecnicaMedicao)
+		if tec == "" {
+			tec = "Avaliação quantitativa conforme NR-09"
+		}
+		fmt.Fprintf(&sb, "        <tecMedicao>%s</tecMedicao>\n", escapeXML(tec))
 	}
-	if p.UtilizaEPI == "" {
-		p.UtilizaEPI = "0"
+
+	// epcEpi
+	utilizaEPC := validarDominio(p.UtilizaEPC, "0", "1", "2")
+	utilizaEPI := validarDominio(p.UtilizaEPI, "0", "1", "2")
+	sb.WriteString("        <epcEpi>\n")
+	fmt.Fprintf(&sb, "          <utilizEPC>%s</utilizEPC>\n", utilizaEPC)
+	if utilizaEPC == "2" {
+		fmt.Fprintf(&sb, "          <eficEpc>%s</eficEpc>\n", validarDominio(p.EfficazEPC, "S", "N"))
 	}
-	fmt.Fprintf(&sb, "          <utilizEPI>%s</utilizEPI>\n", validarDominio(p.UtilizaEPI, "0", "1", "2"))
-	if p.UtilizaEPI == "2" {
-		sb.WriteString("          <epi>\n")
-		ca := p.CAEPI
+	fmt.Fprintf(&sb, "          <utilizEPI>%s</utilizEPI>\n", utilizaEPI)
+	if utilizaEPI == "2" {
+		fmt.Fprintf(&sb, "          <eficEpi>%s</eficEpi>\n", validarDominio(p.EficazEPI, "S", "N"))
+		ca := strings.TrimSpace(p.CAEPI)
 		if ca == "" {
 			ca = "00000"
 		}
+		sb.WriteString("          <epi>\n")
 		fmt.Fprintf(&sb, "            <docAval>%s</docAval>\n", escapeXML(ca))
-		sb.WriteString("            <eficEpi>S</eficEpi>\n")
-		sb.WriteString("            <medProtecao>S</medProtecao>\n")
-		sb.WriteString("            <condFuncto>S</condFuncto>\n")
-		sb.WriteString("            <usoInint>S</usoInint>\n")
-		sb.WriteString("            <przValid>S</przValid>\n")
-		sb.WriteString("            <periodicTroca>S</periodicTroca>\n")
-		sb.WriteString("            <higienizacao>S</higienizacao>\n")
 		sb.WriteString("          </epi>\n")
+		sb.WriteString("          <epiCompl>\n")
+		fmt.Fprintf(&sb, "            <medProtecao>%s</medProtecao>\n", validarDominio(p.MedicaoProtecao, "N", "S"))
+		fmt.Fprintf(&sb, "            <condFuncto>%s</condFuncto>\n", validarDominio(p.CondicaoFunc, "S", "N"))
+		fmt.Fprintf(&sb, "            <usoInint>%s</usoInint>\n", validarDominio(p.UsoIninterrupto, "S", "N"))
+		fmt.Fprintf(&sb, "            <przValid>%s</przValid>\n", validarDominio(p.PrazoValidade, "S", "N"))
+		fmt.Fprintf(&sb, "            <periodicTroca>%s</periodicTroca>\n", validarDominio(p.PeriodicidadeTroca, "S", "N"))
+		fmt.Fprintf(&sb, "            <higienizacao>%s</higienizacao>\n", validarDominio(p.Higienizacao, "S", "N"))
+		sb.WriteString("          </epiCompl>\n")
 	}
 	sb.WriteString("        </epcEpi>\n")
-	sb.WriteString("      </agenteNoc>\n")
-	// Responsável Técnico
-	sb.WriteString("      <respReg>\n")
-	fmt.Fprintf(&sb, "        <cpfResp>%s</cpfResp>\n", cpfRespLimpo)
-	orgao := p.OrgaoClasse
-	if orgao == "" {
-		orgao = "CREA"
+	sb.WriteString("      </agNoc>\n")
+
+	// respReg: responsável pelos registros ambientais
+	if cpfRespLimpo != "" {
+		sb.WriteString("      <respReg>\n")
+		fmt.Fprintf(&sb, "        <cpfResp>%s</cpfResp>\n", cpfRespLimpo)
+		// ideOC é obrigatório quando codAgNoc difere de 09.01.001
+		fmt.Fprintf(&sb, "        <ideOC>%s</ideOC>\n", validarDominio(p.OrgaoClasse, "4", "1", "9"))
+		numReg := strings.TrimSpace(p.NumRegistro)
+		if numReg == "" {
+			numReg = "000000"
+		}
+		fmt.Fprintf(&sb, "        <dscOC>%s</dscOC>\n", escapeXML(numReg))
+		fmt.Fprintf(&sb, "        <nrOC>%s</nrOC>\n", escapeXML(numReg))
+		fmt.Fprintf(&sb, "        <ufOC>%s</ufOC>\n", validarUF(p.UFRegistro))
+		sb.WriteString("      </respReg>\n")
 	}
-	fmt.Fprintf(&sb, "        <ideOC>%s</ideOC>\n", escapeXML(orgao))
-	numReg := p.NumRegistro
-	if numReg == "" {
-		numReg = "000000"
-	}
-	fmt.Fprintf(&sb, "        <dscOC>%s</dscOC>\n", escapeXML(numReg))
-	uf := p.UFRegistro
-	if uf == "" {
-		uf = "SP"
-	}
-	fmt.Fprintf(&sb, "        <ufOC>%s</ufOC>\n", validarUF(uf))
-	sb.WriteString("      </respReg>\n")
 	sb.WriteString("    </infoExpRisco>\n")
 	sb.WriteString("  </evtExpRisco>\n")
 	sb.WriteString("</eSocial>")
@@ -183,7 +204,7 @@ func GerarXMLS2240(p ParametrosS2240) string {
 	return sb.String()
 }
 
-// ParametrosS2210 reúne os dados para o evento de Acidente de Trabalho.
+// ParametrosS2210 reúne os dados para o evento de Acidente de Trabalho (CAT).
 type ParametrosS2210 struct {
 	ID             string
 	Ambiente       int
@@ -193,25 +214,44 @@ type ParametrosS2210 struct {
 	DtAcidente     string
 	HrAcidente     string
 	TpAcidente     string // 1 - Típico, 2 - Doença, 3 - Trajeto
+	HrsTrabAntes   string
+	TpCat          string // 1 - Inicial, 2 - Reabertura, 3 - Comunicação de óbito
 	HouveAfast     string // S/N
-	DtAfast        string
 	HouveObito     string // S/N
-	DtObito        string
 	ComunPolicia   string // S/N
-	LocalAcidente  string // 1 - Estabelecimento, etc.
-	DescLocal      string
+	CodSitGeradora string
+	IniciatCAT     string // 1 Empregador, 2 Ordem judicial, 3 Determinação de órgão fiscalizador
+	ObsCAT         string
+	UltDiaTrab     string
+	TpLocal        string // 1..5
+	DscLocal       string
+	DscLograd      string
+	NrLograd       string
+	Bairro         string
+	CEP            string
+	CodMunic       string
+	UF             string
 	ParteCorpo     string
+	Lateralidade   string // 0..3
 	AgenteCausador string
 	DtAtendimento  string
 	HrAtendimento  string
+	IndInternacao  string // S/N
+	DurTrat        string
+	IndAfast       string // S/N
+	DescLesao      string // código da Tabela 17
+	DscCompLesao   string
+	DiagProvavel   string
 	CID10          string
-	DescLesao      string
+	Observacao     string
 	NomeMedico     string
 	CRMMedico      string
 	UFMedico       string
+	OrgaoClasseMed string // 1 CRM, 2 CRO, 3 RMS
 }
 
-// GerarXMLS2210 produz o documento XML para o CAT.
+// GerarXMLS2210 produz o documento XML do CAT no leiaute S-1.3 oficial (evtCAT),
+// aderente ao XSD embutido em internal/data/xsd/evtCAT.xsd.
 func GerarXMLS2210(p ParametrosS2210) string {
 	if p.ID == "" {
 		p.ID = GerarIDEvento(p.CNPJ)
@@ -221,118 +261,155 @@ func GerarXMLS2210(p ParametrosS2210) string {
 	if p.DtAcidente == "" {
 		p.DtAcidente = time.Now().Format("2006-01-02")
 	}
-	if p.HrAcidente == "" {
-		p.HrAcidente = "0800"
+	tpAcid := validarDominio(p.TpAcidente, "1", "2", "3")
+	hrAcid := validarHora(p.HrAcidente)
+	hrsAntes := validarHora(p.HrsTrabAntes)
+	tpCat := validarDominio(p.TpCat, "1", "2", "3")
+	indObito := simNao(p.HouveObito)
+	indPolicia := simNao(p.ComunPolicia)
+	indAfast := simNao(p.IndAfast)
+	if p.HouveAfast != "" && p.IndAfast == "" {
+		indAfast = simNao(p.HouveAfast)
 	}
-	p.HrAcidente = strings.ReplaceAll(p.HrAcidente, ":", "")
-	if len(p.HrAcidente) > 4 {
-		p.HrAcidente = p.HrAcidente[:4]
+	if indObito == "S" {
+		indAfast = "N"
 	}
-	if p.TpAcidente == "" {
-		p.TpAcidente = "1"
+	dtAtendimento := validarDataISO(p.DtAtendimento)
+	if dtAtendimento == "" {
+		dtAtendimento = validarDataISO(p.DtAcidente)
 	}
-	if p.DtAtendimento == "" {
-		p.DtAtendimento = p.DtAcidente
+	sitGeradora := strings.TrimSpace(p.CodSitGeradora)
+	if len(sitGeradora) != 9 || !somenteDigitos(sitGeradora) {
+		sitGeradora = "200004300" // Tabela 15 - impacto de pessoa contra objeto parado
 	}
+	codParte := strings.TrimSpace(p.ParteCorpo)
+	if len(codParte) != 9 || !somenteDigitos(codParte) {
+		codParte = "755070000" // Tabela 13 - dedo
+	}
+	codAgente := strings.TrimSpace(p.AgenteCausador)
+	if len(codAgente) != 9 || !somenteDigitos(codAgente) {
+		codAgente = "303010040" // Tabela 14 - martelo/marreta (ferramenta manual)
+	}
+	lesao := strings.TrimSpace(p.DescLesao)
+	if !somenteDigitos(lesao) {
+		lesao = "702010000" // Tabela 17 - corte, laceração, ferida contusa, punctura
+	}
+	durTrat := strings.TrimSpace(p.DurTrat)
+	if !somenteDigitos(durTrat) {
+		durTrat = "0"
+	}
+	cid := normalizarCID(p.CID10)
+	tpLocal := validarDominio(p.TpLocal, "1", "2", "3", "4", "5")
+	cep := somenteDigitosOu(strings.TrimSpace(p.CEP), "00000000", 8)
+	munic := somenteDigitosOu(strings.TrimSpace(p.CodMunic), "0000000", 7)
+	logradouro := strings.TrimSpace(p.DscLograd)
+	if logradouro == "" {
+		logradouro = "NAO INFORMADO"
+	}
+	nrLogradouro := strings.TrimSpace(p.NrLograd)
+	if nrLogradouro == "" {
+		nrLogradouro = "S/N"
+	}
+	bairro := strings.TrimSpace(p.Bairro)
+	if bairro == "" {
+		bairro = "CENTRO"
+	}
+	ufLocal := validarUF(p.UF)
 
 	var sb strings.Builder
 	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	sb.WriteString(`<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtCAT/v_S_01_03_00">` + "\n")
-	fmt.Fprintf(&sb, `  <evtCAT Id="%s">`+"\n", p.ID)
+	fmt.Fprintf(&sb, `  <evtCAT Id="%s">`+"\n", escapeXML(p.ID))
 	sb.WriteString("    <ideEvento>\n")
 	sb.WriteString("      <indRetif>1</indRetif>\n")
 	fmt.Fprintf(&sb, "      <tpAmb>%d</tpAmb>\n", p.Ambiente)
 	sb.WriteString("      <procEmi>1</procEmi>\n")
-	sb.WriteString("      <verProc>1.0.0</verProc>\n")
+	sb.WriteString("      <verProc>1.1.0</verProc>\n")
 	sb.WriteString("    </ideEvento>\n")
 	sb.WriteString("    <ideEmpregador>\n")
 	sb.WriteString("      <tpInsc>1</tpInsc>\n")
 	fmt.Fprintf(&sb, "      <nrInsc>%s</nrInsc>\n", cnpjLimpo)
 	sb.WriteString("    </ideEmpregador>\n")
-	sb.WriteString("    <ideTrabalhador>\n")
+	sb.WriteString("    <ideVinculo>\n")
 	fmt.Fprintf(&sb, "      <cpfTrab>%s</cpfTrab>\n", cpfLimpo)
-	sb.WriteString("    </ideTrabalhador>\n")
+	if mat := strings.TrimSpace(p.Matricula); mat != "" {
+		fmt.Fprintf(&sb, "      <matricula>%s</matricula>\n", escapeXML(mat))
+	}
+	sb.WriteString("    </ideVinculo>\n")
+
 	sb.WriteString("    <cat>\n")
 	fmt.Fprintf(&sb, "      <dtAcid>%s</dtAcid>\n", validarDataISO(p.DtAcidente))
-	fmt.Fprintf(&sb, "      <tpAcid>%s</tpAcid>\n", validarDominio(p.TpAcidente, "1", "2", "3"))
-	fmt.Fprintf(&sb, "      <hrAcid>%s</hrAcid>\n", validarHora(p.HrAcidente))
-	sb.WriteString("      <hrsTrabAntesAcid>0200</hrsTrabAntesAcid>\n")
-	tpCat := "1" // Inicial
+	fmt.Fprintf(&sb, "      <tpAcid>%s</tpAcid>\n", tpAcid)
+	if tpAcid == "1" || tpAcid == "3" {
+		fmt.Fprintf(&sb, "      <hrAcid>%s</hrAcid>\n", hrAcid)
+		fmt.Fprintf(&sb, "      <hrsTrabAntesAcid>%s</hrsTrabAntesAcid>\n", hrsAntes)
+	}
 	fmt.Fprintf(&sb, "      <tpCat>%s</tpCat>\n", tpCat)
-	afast := "N"
-	if strings.ToUpper(p.HouveAfast) == "S" || p.HouveAfast == "sim" {
-		afast = "S"
+	fmt.Fprintf(&sb, "      <indCatObito>%s</indCatObito>\n", indObito)
+	if indObito == "S" {
+		fmt.Fprintf(&sb, "      <dtObito>%s</dtObito>\n", validarDataISO(p.DtAcidente))
 	}
-	fmt.Fprintf(&sb, "      <houveAfast>%s</houveAfast>\n", afast)
-	fmt.Fprintf(&sb, "      <indCatObito>%s</indCatObito>\n", func() string {
-		if strings.ToUpper(p.HouveObito) == "S" || p.HouveObito == "sim" {
-			return "S"
-		}
-		return "N"
-	}())
-	fmt.Fprintf(&sb, "      <indComunPolicia>%s</indComunPolicia>\n", func() string {
-		if strings.ToUpper(p.ComunPolicia) == "S" || p.ComunPolicia == "sim" {
-			return "S"
-		}
-		return "N"
-	}())
+	fmt.Fprintf(&sb, "      <indComunPolicia>%s</indComunPolicia>\n", indPolicia)
+	fmt.Fprintf(&sb, "      <codSitGeradora>%s</codSitGeradora>\n", sitGeradora)
+	fmt.Fprintf(&sb, "      <iniciatCAT>%s</iniciatCAT>\n", validarDominio(p.IniciatCAT, "1", "2", "3"))
+	if obs := strings.TrimSpace(p.ObsCAT); obs != "" {
+		fmt.Fprintf(&sb, "      <obsCAT>%s</obsCAT>\n", escapeXML(obs))
+	}
+	fmt.Fprintf(&sb, "      <ultDiaTrab>%s</ultDiaTrab>\n", validarDataISO(p.UltDiaTrab))
+	fmt.Fprintf(&sb, "      <houveAfast>%s</houveAfast>\n", indAfast)
+
 	sb.WriteString("      <localAcidente>\n")
-	sb.WriteString("        <tpLocal>1</tpLocal>\n")
-	descLoc := escapeXML(p.DescLocal)
-	if descLoc == "" {
-		descLoc = "Instalações da empresa."
+	fmt.Fprintf(&sb, "        <tpLocal>%s</tpLocal>\n", tpLocal)
+	if dscLocal := strings.TrimSpace(p.DscLocal); dscLocal != "" {
+		fmt.Fprintf(&sb, "        <dscLocal>%s</dscLocal>\n", escapeXML(dscLocal))
 	}
-	fmt.Fprintf(&sb, "        <dscLocal>%s</dscLocal>\n", descLoc)
+	fmt.Fprintf(&sb, "        <dscLograd>%s</dscLograd>\n", escapeXML(logradouro))
+	fmt.Fprintf(&sb, "        <nrLograd>%s</nrLograd>\n", escapeXML(nrLogradouro))
+	fmt.Fprintf(&sb, "        <bairro>%s</bairro>\n", escapeXML(bairro))
+	fmt.Fprintf(&sb, "        <cep>%s</cep>\n", cep)
+	fmt.Fprintf(&sb, "        <codMunic>%s</codMunic>\n", munic)
+	fmt.Fprintf(&sb, "        <uf>%s</uf>\n", ufLocal)
 	sb.WriteString("      </localAcidente>\n")
+
 	sb.WriteString("      <parteAtingida>\n")
-	codParte := "752000000" // Dedos da mão como default se não informado
-	if p.ParteCorpo != "" {
-		codParte = limpaDigitos(p.ParteCorpo)
-		if len(codParte) < 9 {
-			codParte = "752000000"
-		}
-	}
 	fmt.Fprintf(&sb, "        <codParteAting>%s</codParteAting>\n", codParte)
+	fmt.Fprintf(&sb, "        <lateralidade>%s</lateralidade>\n", validarDominio(p.Lateralidade, "0", "1", "2", "3"))
 	sb.WriteString("      </parteAtingida>\n")
+
 	sb.WriteString("      <agenteCausador>\n")
-	codAgente := "302010100" // Máquinas / ferramentas manuais
-	if p.AgenteCausador != "" {
-		codAgente = limpaDigitos(p.AgenteCausador)
-		if len(codAgente) < 9 {
-			codAgente = "302010100"
-		}
-	}
 	fmt.Fprintf(&sb, "        <codAgntCausador>%s</codAgntCausador>\n", codAgente)
 	sb.WriteString("      </agenteCausador>\n")
+
 	sb.WriteString("      <atestado>\n")
-	fmt.Fprintf(&sb, "        <dtAtendimento>%s</dtAtendimento>\n", validarDataISO(p.DtAtendimento))
-	cid := p.CID10
-	if cid == "" {
-		cid = "S61.0" // Ferimento de dedos
+	fmt.Fprintf(&sb, "        <dtAtendimento>%s</dtAtendimento>\n", dtAtendimento)
+	fmt.Fprintf(&sb, "        <hrAtendimento>%s</hrAtendimento>\n", validarHora(p.HrAtendimento))
+	fmt.Fprintf(&sb, "        <indInternacao>%s</indInternacao>\n", simNao(p.IndInternacao))
+	fmt.Fprintf(&sb, "        <durTrat>%s</durTrat>\n", durTrat)
+	fmt.Fprintf(&sb, "        <indAfast>%s</indAfast>\n", indAfast)
+	fmt.Fprintf(&sb, "        <dscLesao>%s</dscLesao>\n", lesao)
+	if comp := strings.TrimSpace(p.DscCompLesao); comp != "" {
+		fmt.Fprintf(&sb, "        <dscCompLesao>%s</dscCompLesao>\n", escapeXML(comp))
+	}
+	if diag := strings.TrimSpace(p.DiagProvavel); diag != "" {
+		fmt.Fprintf(&sb, "        <diagProvavel>%s</diagProvavel>\n", escapeXML(diag))
 	}
 	fmt.Fprintf(&sb, "        <codCID>%s</codCID>\n", escapeXML(cid))
-	descLes := escapeXML(p.DescLesao)
-	if descLes == "" {
-		descLes = "Contusão / Escoriação superficial."
+	if obs := strings.TrimSpace(p.Observacao); obs != "" {
+		fmt.Fprintf(&sb, "        <observacao>%s</observacao>\n", escapeXML(obs))
 	}
-	fmt.Fprintf(&sb, "        <dscLesao>%s</dscLesao>\n", descLes)
 	sb.WriteString("        <emitente>\n")
-	nomeMed := escapeXML(p.NomeMedico)
+	nomeMed := strings.TrimSpace(p.NomeMedico)
 	if nomeMed == "" {
-		nomeMed = "Dr. Médico Examinador"
+		nomeMed = "Médico Examinador"
 	}
-	fmt.Fprintf(&sb, "          <nmEmit>%s</nmEmit>\n", nomeMed)
-	sb.WriteString("          <ideOC>1</ideOC>\n")
-	crm := p.CRMMedico
+	fmt.Fprintf(&sb, "          <nmEmit>%s</nmEmit>\n", escapeXML(nomeMed))
+	fmt.Fprintf(&sb, "          <ideOC>%s</ideOC>\n", validarDominio(p.OrgaoClasseMed, "1", "2", "3"))
+	crm := strings.TrimSpace(p.CRMMedico)
 	if crm == "" {
-		crm = "123456"
+		crm = "000000"
 	}
 	fmt.Fprintf(&sb, "          <nrOC>%s</nrOC>\n", escapeXML(crm))
-	ufMed := p.UFMedico
-	if ufMed == "" {
-		ufMed = "SP"
-	}
-	fmt.Fprintf(&sb, "          <ufOC>%s</ufOC>\n", validarUF(ufMed))
+	fmt.Fprintf(&sb, "          <ufOC>%s</ufOC>\n", validarUF(p.UFMedico))
 	sb.WriteString("        </emitente>\n")
 	sb.WriteString("      </atestado>\n")
 	sb.WriteString("    </cat>\n")
@@ -349,19 +426,25 @@ type ParametrosS2220 struct {
 	CNPJ           string
 	CPFTrabalhador string
 	Matricula      string
-	TipoExame      string // 0 - Admissional, 1 - Periódico, 2 - Retorno, 3 - Mudança Função, 9 - Demissional
+	TipoExame      string // 0 - Admissional, 1 - Periódico, 2 - Retorno, 3 - Mudança de função, 4 - Demissional
 	DataASO        string
 	ResultadoASO   string // 1 - Apto, 2 - Inapto
+	ProcRealizado  string // Tabela 27
+	ObsProc        string
+	OrdExame       string // 1 - Inicial, 2 - Sequencial
+	IndResult      string // 1 - Normal, 2 - Alterado, 3 - Estável, 4 - Inconclusivo
 	NomeMedico     string
 	CRMMedico      string
 	UFMedico       string
 	NomeCoord      string
+	CPFCoord       string
 	CRMCoord       string
 	UFCoord        string
 	ObsASO         string
 }
 
-// GerarXMLS2220 produz o documento XML de Monitoramento da Saúde do Trabalhador.
+// GerarXMLS2220 produz o documento XML de Monitoramento da Saúde do Trabalhador
+// no leiaute S-1.3 oficial (evtMonit), aderente a internal/data/xsd/evtMonit.xsd.
 func GerarXMLS2220(p ParametrosS2220) string {
 	if p.ID == "" {
 		p.ID = GerarIDEvento(p.CNPJ)
@@ -371,54 +454,119 @@ func GerarXMLS2220(p ParametrosS2220) string {
 	if p.DataASO == "" {
 		p.DataASO = time.Now().Format("2006-01-02")
 	}
-	if p.TipoExame == "" {
-		p.TipoExame = "1" // Periódico
+	// O XSD aceita 0..4 (o valor 9 do formulário legado é convertido em 4 - demissional).
+	tpExame := validarDominio(p.TipoExame, "1", "0", "2", "3", "4")
+	if p.TipoExame == "9" {
+		tpExame = "4"
 	}
-	if p.ResultadoASO == "" {
-		p.ResultadoASO = "1" // Apto
+	resAso := validarDominio(p.ResultadoASO, "1", "2")
+	proc := strings.TrimSpace(p.ProcRealizado)
+	if !somenteDigitos(proc) {
+		proc = "0295" // Tabela 27 - avaliação clínica ocupacional
+	}
+	nomeMed := strings.TrimSpace(p.NomeMedico)
+	if nomeMed == "" {
+		nomeMed = "Médico Examinador"
 	}
 
 	var sb strings.Builder
 	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	sb.WriteString(`<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtMonit/v_S_01_03_00">` + "\n")
-	fmt.Fprintf(&sb, `  <evtMonit Id="%s">`+"\n", p.ID)
+	fmt.Fprintf(&sb, `  <evtMonit Id="%s">`+"\n", escapeXML(p.ID))
 	sb.WriteString("    <ideEvento>\n")
 	sb.WriteString("      <indRetif>1</indRetif>\n")
 	fmt.Fprintf(&sb, "      <tpAmb>%d</tpAmb>\n", p.Ambiente)
 	sb.WriteString("      <procEmi>1</procEmi>\n")
-	sb.WriteString("      <verProc>1.0.0</verProc>\n")
+	sb.WriteString("      <verProc>1.1.0</verProc>\n")
 	sb.WriteString("    </ideEvento>\n")
 	sb.WriteString("    <ideEmpregador>\n")
 	sb.WriteString("      <tpInsc>1</tpInsc>\n")
 	fmt.Fprintf(&sb, "      <nrInsc>%s</nrInsc>\n", cnpjLimpo)
 	sb.WriteString("    </ideEmpregador>\n")
-	sb.WriteString("    <ideTrabalhador>\n")
+	sb.WriteString("    <ideVinculo>\n")
 	fmt.Fprintf(&sb, "      <cpfTrab>%s</cpfTrab>\n", cpfLimpo)
-	sb.WriteString("    </ideTrabalhador>\n")
-	sb.WriteString("    <aso>\n")
-	fmt.Fprintf(&sb, "      <dtAso>%s</dtAso>\n", validarDataISO(p.DataASO))
-	fmt.Fprintf(&sb, "      <tpExameOcup>%s</tpExameOcup>\n", validarDominio(p.TipoExame, "0", "1", "2", "3", "9"))
-	sb.WriteString("      <exame>\n")
-	fmt.Fprintf(&sb, "        <dtExm>%s</dtExm>\n", validarDataISO(p.DataASO))
-	sb.WriteString("        <procRealizado>0295</procRealizado>\n")
-	sb.WriteString("      </exame>\n")
-	sb.WriteString("      <medico>\n")
-	crm := p.CRMMedico
-	if crm == "" {
-		crm = "100000"
+	if mat := strings.TrimSpace(p.Matricula); mat != "" {
+		fmt.Fprintf(&sb, "      <matricula>%s</matricula>\n", escapeXML(mat))
 	}
-	fmt.Fprintf(&sb, "        <crm>%s</crm>\n", escapeXML(crm))
-	uf := p.UFMedico
-	if uf == "" {
-		uf = "SP"
+	sb.WriteString("    </ideVinculo>\n")
+
+	sb.WriteString("    <exMedOcup>\n")
+	fmt.Fprintf(&sb, "      <tpExameOcup>%s</tpExameOcup>\n", tpExame)
+	sb.WriteString("      <aso>\n")
+	fmt.Fprintf(&sb, "        <dtAso>%s</dtAso>\n", validarDataISO(p.DataASO))
+	fmt.Fprintf(&sb, "        <resAso>%s</resAso>\n", resAso)
+	sb.WriteString("        <exame>\n")
+	fmt.Fprintf(&sb, "          <dtExm>%s</dtExm>\n", validarDataISO(p.DataASO))
+	fmt.Fprintf(&sb, "          <procRealizado>%s</procRealizado>\n", proc)
+	if obs := strings.TrimSpace(p.ObsProc); obs != "" {
+		fmt.Fprintf(&sb, "          <obsProc>%s</obsProc>\n", escapeXML(obs))
 	}
-	fmt.Fprintf(&sb, "        <ufCRM>%s</ufCRM>\n", validarUF(uf))
-	sb.WriteString("      </medico>\n")
-	sb.WriteString("    </aso>\n")
+	if p.OrdExame != "" {
+		fmt.Fprintf(&sb, "          <ordExame>%s</ordExame>\n", validarDominio(p.OrdExame, "1", "2"))
+	}
+	if p.IndResult != "" {
+		fmt.Fprintf(&sb, "          <indResult>%s</indResult>\n", validarDominio(p.IndResult, "1", "2", "3", "4"))
+	}
+	sb.WriteString("        </exame>\n")
+	sb.WriteString("        <medico>\n")
+	fmt.Fprintf(&sb, "          <nmMed>%s</nmMed>\n", escapeXML(nomeMed))
+	if crm := strings.TrimSpace(p.CRMMedico); crm != "" {
+		fmt.Fprintf(&sb, "          <nrCRM>%s</nrCRM>\n", escapeXML(crm))
+		fmt.Fprintf(&sb, "          <ufCRM>%s</ufCRM>\n", validarUF(p.UFMedico))
+	}
+	sb.WriteString("        </medico>\n")
+	sb.WriteString("      </aso>\n")
+
+	// respMonit: médico responsável/coordenador do PCMSO (opcional)
+	if nomeCoord := strings.TrimSpace(p.NomeCoord); nomeCoord != "" {
+		sb.WriteString("      <respMonit>\n")
+		if cpfCoord := limpaDigitos(p.CPFCoord); cpfCoord != "" {
+			fmt.Fprintf(&sb, "        <cpfResp>%s</cpfResp>\n", cpfCoord)
+		}
+		fmt.Fprintf(&sb, "        <nmResp>%s</nmResp>\n", escapeXML(nomeCoord))
+		if crm := strings.TrimSpace(p.CRMCoord); crm != "" {
+			fmt.Fprintf(&sb, "        <nrCRM>%s</nrCRM>\n", escapeXML(crm))
+		}
+		fmt.Fprintf(&sb, "        <ufCRM>%s</ufCRM>\n", validarUF(p.UFCoord))
+		sb.WriteString("      </respMonit>\n")
+	}
+	sb.WriteString("    </exMedOcup>\n")
 	sb.WriteString("  </evtMonit>\n")
 	sb.WriteString("</eSocial>")
 
 	return sb.String()
+}
+
+// normalizarCID limpa o código CID-10 informado: o leiaute S-1.3 aceita no máximo
+// 4 caracteres alfanuméricos (o formato com ponto, como "S61.0", é inválido).
+func normalizarCID(v string) string {
+	limpo := strings.ToUpper(strings.TrimSpace(v))
+	limpo = strings.NewReplacer(".", "", "-", "", " ", "").Replace(limpo)
+	if len(limpo) > 4 {
+		limpo = limpo[:4]
+	}
+	if limpo == "" {
+		limpo = "S610" // ferimento de dedo (CID-10 S61.0) como padrão
+	}
+	return limpo
+}
+
+// simNao normaliza valores S/N vindos do formulário.
+func simNao(v string) string {
+	switch strings.ToUpper(strings.TrimSpace(v)) {
+	case "S", "SIM", "1", "TRUE":
+		return "S"
+	default:
+		return "N"
+	}
+}
+
+// somenteDigitosOu devolve o valor se ele tiver exatamente n dígitos; caso contrário, o padrão.
+func somenteDigitosOu(v, padrao string, n int) string {
+	if len(v) == n && somenteDigitos(v) {
+		return v
+	}
+	return padrao
 }
 
 // ValidarEventoXSD executa checagens essenciais no documento gerado.

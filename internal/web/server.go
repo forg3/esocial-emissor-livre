@@ -42,6 +42,13 @@ type Servidor struct {
 	riscos    []data.Risco
 	cbos      []data.CBO
 	auth      *autenticacao
+
+	// Tabelas oficiais do eSocial usadas pelos formulários de SST.
+	partesCorpo       []data.ItemTabela
+	agentesCausadores []data.ItemTabela
+	situacoesGeradora []data.ItemTabela
+	naturezasLesao    []data.ItemTabela
+	procedimentos     []data.ItemTabela
 }
 
 // NovoServidor inicializa as dependências com autenticação padrão (senha aleatória
@@ -69,12 +76,38 @@ func NovoServidorComOpcoes(db *storage.DB, opts OpcoesAuth) (*Servidor, error) {
 		return nil, fmt.Errorf("falha ao inicializar autenticação local: %w", err)
 	}
 
+	partesCorpo, err := data.CarregarPartesCorpo()
+	if err != nil {
+		fmt.Printf("Aviso ao carregar Tabela 13 (partes do corpo): %v\n", err)
+	}
+	agentes, err := data.CarregarAgentesCausadores()
+	if err != nil {
+		fmt.Printf("Aviso ao carregar Tabela 14 (agentes causadores): %v\n", err)
+	}
+	situacoes, err := data.CarregarSituacoesGeradoras()
+	if err != nil {
+		fmt.Printf("Aviso ao carregar Tabela 15 (situações geradoras): %v\n", err)
+	}
+	lesoes, err := data.CarregarNaturezasLesao()
+	if err != nil {
+		fmt.Printf("Aviso ao carregar Tabela 17 (naturezas da lesão): %v\n", err)
+	}
+	procedimentos, err := data.CarregarProcedimentosDiagnosticos()
+	if err != nil {
+		fmt.Printf("Aviso ao carregar Tabela 27 (procedimentos diagnósticos): %v\n", err)
+	}
+
 	srv := &Servidor{
-		db:        db,
-		templates: make(map[string]*template.Template),
-		riscos:    riscos,
-		cbos:      cbos,
-		auth:      auth,
+		db:                db,
+		templates:         make(map[string]*template.Template),
+		riscos:            riscos,
+		cbos:              cbos,
+		auth:              auth,
+		partesCorpo:       partesCorpo,
+		agentesCausadores: agentes,
+		situacoesGeradora: situacoes,
+		naturezasLesao:    lesoes,
+		procedimentos:     procedimentos,
 	}
 
 	if err := srv.carregarTemplates(); err != nil {
@@ -1008,30 +1041,45 @@ func (s *Servidor) handleSalvarS2240(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	params := ParametrosS2240{
-		ID:             GerarIDEvento(cfg.CNPJ),
-		Ambiente:       cfg.Ambiente,
-		CNPJ:           cfg.CNPJ,
-		CPFTrabalhador: colab.CPF,
-		Matricula:      colab.Matricula,
-		DataInicio:     r.FormValue("dt_inicio"),
-		DescAtividade:  r.FormValue("desc_atividade"),
-		LocalAmbiente:  r.FormValue("local_ambiente"),
-		CodigoRisco:    r.FormValue("codigo_risco"),
-		NomeRisco:      r.FormValue("nome_risco"),
-		TipoAvaliacao:  r.FormValue("tipo_avaliacao"),
-		Intensidade:    r.FormValue("intensidade"),
-		UtilizaEPC:     r.FormValue("utiliza_epc"),
-		EfficazEPC:     r.FormValue("eficaz_epc"),
-		UtilizaEPI:     r.FormValue("utiliza_epi"),
-		CAEPI:          r.FormValue("ca_epi"),
-		NomeResp:       r.FormValue("nome_resp"),
-		CPFResp:        r.FormValue("cpf_resp"),
-		OrgaoClasse:    r.FormValue("orgao_classe"),
-		NumRegistro:    r.FormValue("num_registro"),
-		UFRegistro:     r.FormValue("uf_registro"),
+	// Sem o CNPJ do empregador o documento é inválido no leiaute S-1.3 (nrInsc).
+	if limpaDigitos(cfg.CNPJ) == "" {
+		s.handleFilaComFlash(w, r, "Configure o CNPJ da empresa em Certificado & Empresa antes de gerar eventos do eSocial.", true)
+		return
 	}
 
+	params := ParametrosS2240{
+		ID:                 GerarIDEvento(cfg.CNPJ),
+		Ambiente:           cfg.Ambiente,
+		CNPJ:               cfg.CNPJ,
+		CPFTrabalhador:     colab.CPF,
+		Matricula:          colab.Matricula,
+		DataInicio:         r.FormValue("dt_inicio"),
+		DescAtividade:      r.FormValue("desc_atividade"),
+		LocalAmbiente:      r.FormValue("local_ambiente"),
+		CodigoRisco:        r.FormValue("codigo_risco"),
+		NomeRisco:          r.FormValue("nome_risco"),
+		TipoAvaliacao:      r.FormValue("tipo_avaliacao"),
+		Intensidade:        r.FormValue("intensidade"),
+		UtilizaEPC:         r.FormValue("utiliza_epc"),
+		EfficazEPC:         r.FormValue("eficaz_epc"),
+		UtilizaEPI:         r.FormValue("utiliza_epi"),
+		CAEPI:              r.FormValue("ca_epi"),
+		NomeResp:           r.FormValue("nome_resp"),
+		CPFResp:            r.FormValue("cpf_resp"),
+		OrgaoClasse:        r.FormValue("orgao_classe"),
+		NumRegistro:        r.FormValue("num_registro"),
+		UFRegistro:         r.FormValue("uf_registro"),
+		DscSetor:           r.FormValue("dsc_setor"),
+		UnidadeMedida:      r.FormValue("unidade_medida"),
+		TecnicaMedicao:     r.FormValue("tecnica_medicao"),
+		EficazEPI:          r.FormValue("eficaz_epi"),
+		MedicaoProtecao:    r.FormValue("med_protecao"),
+		CondicaoFunc:       r.FormValue("cond_func"),
+		UsoIninterrupto:    r.FormValue("uso_inint"),
+		PrazoValidade:      r.FormValue("prazo_validade"),
+		PeriodicidadeTroca: r.FormValue("periodic_troca"),
+		Higienizacao:       r.FormValue("higienizacao"),
+	}
 	xmlGerado := GerarXMLS2240(params)
 
 	evento := &storage.Evento{
@@ -1076,6 +1124,12 @@ type DadosViewEditorS2210 struct {
 	Hoje                     string
 	MensagemFlash            string
 	FlashErro                bool
+
+	// Tabelas oficiais usadas pelo formulário da CAT.
+	SituacoesGeradoras []data.ItemTabela
+	PartesCorpo        []data.ItemTabela
+	AgentesCausadores  []data.ItemTabela
+	NaturezasLesao     []data.ItemTabela
 }
 
 func (s *Servidor) handleEditorS2210(w http.ResponseWriter, r *http.Request) {
@@ -1090,6 +1144,10 @@ func (s *Servidor) handleEditorS2210(w http.ResponseWriter, r *http.Request) {
 		Colaboradores:            colabs,
 		ColaboradorSelecionadoID: colabID,
 		Hoje:                     time.Now().Format("2006-01-02"),
+		SituacoesGeradoras:       s.situacoesGeradora,
+		PartesCorpo:              s.partesCorpo,
+		AgentesCausadores:        s.agentesCausadores,
+		NaturezasLesao:           s.naturezasLesao,
 	})
 }
 
@@ -1100,14 +1158,24 @@ func (s *Servidor) handleSalvarS2210(w http.ResponseWriter, r *http.Request) {
 	if err != nil || colab == nil {
 		colabs, _ := s.db.ListarColaboradores()
 		s.render(w, r, "evento_s2210", DadosViewEditorS2210{
-			Titulo:        "S-2210 • Comunicação de Acidente (CAT)",
-			MenuAtivo:     "s2210",
-			Config:        cfg,
-			Colaboradores: colabs,
-			Hoje:          time.Now().Format("2006-01-02"),
-			MensagemFlash: "Selecione o trabalhador acidentado.",
-			FlashErro:     true,
+			Titulo:             "S-2210 • Comunicação de Acidente (CAT)",
+			MenuAtivo:          "s2210",
+			Config:             cfg,
+			Colaboradores:      colabs,
+			Hoje:               time.Now().Format("2006-01-02"),
+			SituacoesGeradoras: s.situacoesGeradora,
+			PartesCorpo:        s.partesCorpo,
+			AgentesCausadores:  s.agentesCausadores,
+			NaturezasLesao:     s.naturezasLesao,
+			MensagemFlash:      "Selecione o trabalhador acidentado.",
+			FlashErro:          true,
 		})
+		return
+	}
+
+	// Sem o CNPJ do empregador o documento é inválido no leiaute S-1.3 (nrInsc).
+	if limpaDigitos(cfg.CNPJ) == "" {
+		s.handleFilaComFlash(w, r, "Configure o CNPJ da empresa em Certificado & Empresa antes de gerar eventos do eSocial.", true)
 		return
 	}
 
@@ -1123,15 +1191,38 @@ func (s *Servidor) handleSalvarS2210(w http.ResponseWriter, r *http.Request) {
 		HouveAfast:     r.FormValue("houve_afast"),
 		HouveObito:     r.FormValue("houve_obito"),
 		ComunPolicia:   r.FormValue("comun_policia"),
-		DescLocal:      r.FormValue("desc_local"),
+		DscLocal:       r.FormValue("desc_local"),
 		DtAtendimento:  r.FormValue("dt_atendimento"),
 		CID10:          r.FormValue("cid10"),
 		DescLesao:      r.FormValue("desc_lesao"),
 		NomeMedico:     r.FormValue("nome_medico"),
 		CRMMedico:      r.FormValue("crm_medico"),
 		UFMedico:       r.FormValue("uf_medico"),
+		HrsTrabAntes:   r.FormValue("hrs_trab_antes"),
+		TpCat:          r.FormValue("tp_cat"),
+		CodSitGeradora: r.FormValue("cod_sit_geradora"),
+		IniciatCAT:     r.FormValue("iniciat_cat"),
+		ObsCAT:         r.FormValue("obs_cat"),
+		UltDiaTrab:     r.FormValue("ult_dia_trab"),
+		TpLocal:        r.FormValue("tp_local"),
+		DscLograd:      r.FormValue("dsc_lograd"),
+		NrLograd:       r.FormValue("nr_lograd"),
+		Bairro:         r.FormValue("bairro"),
+		CEP:            r.FormValue("cep"),
+		CodMunic:       r.FormValue("cod_munic"),
+		UF:             r.FormValue("uf_local"),
+		ParteCorpo:     r.FormValue("parte_corpo"),
+		Lateralidade:   r.FormValue("lateralidade"),
+		AgenteCausador: r.FormValue("agente_causador"),
+		HrAtendimento:  r.FormValue("hr_atendimento"),
+		IndInternacao:  r.FormValue("ind_internacao"),
+		DurTrat:        r.FormValue("dur_trat"),
+		IndAfast:       r.FormValue("ind_afast"),
+		DscCompLesao:   r.FormValue("dsc_comp_lesao"),
+		DiagProvavel:   r.FormValue("diag_provavel"),
+		Observacao:     r.FormValue("observacao"),
+		OrgaoClasseMed: r.FormValue("orgao_classe_med"),
 	}
-
 	xmlGerado := GerarXMLS2210(params)
 
 	evento := &storage.Evento{
@@ -1165,6 +1256,9 @@ type DadosViewEditorS2220 struct {
 	Hoje                     string
 	MensagemFlash            string
 	FlashErro                bool
+
+	// Tabela 27 - procedimentos diagnósticos.
+	Procedimentos []data.ItemTabela
 }
 
 func (s *Servidor) handleEditorS2220(w http.ResponseWriter, r *http.Request) {
@@ -1179,6 +1273,7 @@ func (s *Servidor) handleEditorS2220(w http.ResponseWriter, r *http.Request) {
 		Colaboradores:            colabs,
 		ColaboradorSelecionadoID: colabID,
 		Hoje:                     time.Now().Format("2006-01-02"),
+		Procedimentos:            s.procedimentos,
 	})
 }
 
@@ -1194,9 +1289,16 @@ func (s *Servidor) handleSalvarS2220(w http.ResponseWriter, r *http.Request) {
 			Config:        cfg,
 			Colaboradores: colabs,
 			Hoje:          time.Now().Format("2006-01-02"),
+			Procedimentos: s.procedimentos,
 			MensagemFlash: "Selecione o trabalhador avaliado no ASO.",
 			FlashErro:     true,
 		})
+		return
+	}
+
+	// Sem o CNPJ do empregador o documento é inválido no leiaute S-1.3 (nrInsc).
+	if limpaDigitos(cfg.CNPJ) == "" {
+		s.handleFilaComFlash(w, r, "Configure o CNPJ da empresa em Certificado & Empresa antes de gerar eventos do eSocial.", true)
 		return
 	}
 
@@ -1212,8 +1314,14 @@ func (s *Servidor) handleSalvarS2220(w http.ResponseWriter, r *http.Request) {
 		NomeMedico:     r.FormValue("nome_medico"),
 		CRMMedico:      r.FormValue("crm_medico"),
 		UFMedico:       r.FormValue("uf_medico"),
+		ProcRealizado:  r.FormValue("proc_realizado"),
+		ObsProc:        r.FormValue("obs_proc"),
+		OrdExame:       r.FormValue("ord_exame"),
+		IndResult:      r.FormValue("ind_result"),
+		CPFCoord:       r.FormValue("cpf_coord"),
+		UFCoord:        r.FormValue("uf_coord"),
+		ObsASO:         r.FormValue("obs_aso"),
 	}
-
 	xmlGerado := GerarXMLS2220(params)
 
 	evento := &storage.Evento{
@@ -1247,6 +1355,7 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 			Config:        cfg,
 			Colaboradores: colabs,
 			Hoje:          time.Now().Format("2006-01-02"),
+			Procedimentos: s.procedimentos,
 			MensagemFlash: "Arquivo XML excede o limite de 5 MB permitido.",
 			FlashErro:     true,
 		})
@@ -1260,6 +1369,7 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 			Config:        cfg,
 			Colaboradores: colabs,
 			Hoje:          time.Now().Format("2006-01-02"),
+			Procedimentos: s.procedimentos,
 			MensagemFlash: "Falha ao receber arquivo XML.",
 			FlashErro:     true,
 		})
@@ -1276,6 +1386,7 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 			Config:        cfg,
 			Colaboradores: colabs,
 			Hoje:          time.Now().Format("2006-01-02"),
+			Procedimentos: s.procedimentos,
 			MensagemFlash: "Erro ao ler arquivo XML enviado: " + err.Error(),
 			FlashErro:     true,
 		})
@@ -1321,6 +1432,7 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 			Config:        cfg,
 			Colaboradores: colabsErro,
 			Hoje:          time.Now().Format("2006-01-02"),
+			Procedimentos: s.procedimentos,
 			MensagemFlash: "Falha ao gravar o evento importado: " + err.Error(),
 			FlashErro:     true,
 		})
@@ -1464,6 +1576,11 @@ func (s *Servidor) handleSalvarEventoGenerico(w http.ResponseWriter, r *http.Req
 	codigo := r.FormValue("codigo_evento")
 	xmlConteudo := strings.TrimSpace(r.FormValue("xml_conteudo"))
 	colabID := r.FormValue("colaborador_id")
+
+	if limpaDigitos(cfg.CNPJ) == "" {
+		s.handleFilaComFlash(w, r, "Configure o CNPJ da empresa em Certificado & Empresa antes de gerar eventos do eSocial.", true)
+		return
+	}
 
 	if xmlConteudo == "" {
 		s.handleNovoEventoGenerico(w, r)

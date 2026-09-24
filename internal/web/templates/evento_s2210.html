@@ -106,9 +106,104 @@
           </select>
         </div>
 
+        <div class="campo">
+          <label for="tp_cat">Tipo de CAT (tpCat) <span class="req">*</span></label>
+          <select id="tp_cat" name="tp_cat">
+            <option value="1" selected>1 - Inicial</option>
+            <option value="2">2 - Reabertura</option>
+            <option value="3">3 - Comunicação de óbito</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="iniciat_cat">Iniciativa da CAT (iniciatCAT) <span class="req">*</span></label>
+          <select id="iniciat_cat" name="iniciat_cat">
+            <option value="1" selected>1 - Empregador</option>
+            <option value="2">2 - Ordem judicial</option>
+            <option value="3">3 - Determinação de órgão fiscalizador</option>
+          </select>
+        </div>
+
+        <div class="campo" style="grid-column: span 2;">
+          <label for="cod_sit_geradora">Situação Geradora (Tabela 15) <span class="req">*</span></label>
+          <select id="cod_sit_geradora" name="cod_sit_geradora" class="mono">
+            {{ range .SituacoesGeradoras }}
+              <option value="{{ .Codigo }}">{{ .Codigo }} - {{ .Descricao }}</option>
+            {{ end }}
+          </select>
+          <span class="ajuda">Código oficial da Tabela 15 do eSocial (situação geradora do acidente).</span>
+        </div>
+
+        <div class="campo">
+          <label for="hrs_trab_antes">Horas Trabalhadas antes do Acidente (HHMM)</label>
+          <input type="text" id="hrs_trab_antes" name="hrs_trab_antes" class="mono" value="0630" maxlength="5" placeholder="0630">
+        </div>
+
+        <div class="campo">
+          <label for="ult_dia_trab">Último Dia Trabalhado <span class="req">*</span></label>
+          <input type="date" id="ult_dia_trab" name="ult_dia_trab" value="{{ .Hoje }}" required>
+        </div>
+
         <div class="campo" style="grid-column: span 2;">
           <label for="desc_local">Local e Descrição da Ocorrência <span class="req">*</span></label>
           <textarea id="desc_local" name="desc_local" rows="2" placeholder="Descreva o local exato, atividade executada e situação geradora..." required>Setor operacional / oficina durante manuseio de ferramenta/equipamento.</textarea>
+        </div>
+
+        <div class="campo" style="grid-column: span 2;">
+          <label for="obs_cat">Observações da CAT (opcional)</label>
+          <textarea id="obs_cat" name="obs_cat" rows="2" placeholder="Informações complementares sobre o acidente."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 2B: LOCAL DO ACIDENTE (endereço exigido pelo leiaute S-1.3) -->
+    <div class="card" style="margin-bottom: var(--sp-4);">
+      <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        2b. Local do Acidente
+      </h3>
+
+      <div class="form-grid" style="margin-top: var(--sp-3);">
+        <div class="campo">
+          <label for="tp_local">Tipo de Local (tpLocal) <span class="req">*</span></label>
+          <select id="tp_local" name="tp_local">
+            <option value="1" selected>1 - Estabelecimento do empregador no Brasil</option>
+            <option value="2">2 - Estabelecimento do empregador no exterior</option>
+            <option value="3">3 - Estabelecimento de terceiros onde o empregador presta serviços</option>
+            <option value="4">4 - Via pública</option>
+            <option value="5">5 - Área rural</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="dsc_lograd">Logradouro <span class="req">*</span></label>
+          <input type="text" id="dsc_lograd" name="dsc_lograd" value="Avenida Industrial" required>
+        </div>
+
+        <div class="campo">
+          <label for="nr_lograd">Número <span class="req">*</span></label>
+          <input type="text" id="nr_lograd" name="nr_lograd" value="1500" maxlength="10" required>
+        </div>
+
+        <div class="campo">
+          <label for="bairro">Bairro</label>
+          <input type="text" id="bairro" name="bairro" value="Distrito Industrial">
+        </div>
+
+        <div class="campo">
+          <label for="cep">CEP (8 dígitos) <span class="req">*</span></label>
+          <input type="text" id="cep" name="cep" class="mono" value="01310100" maxlength="8" required>
+        </div>
+
+        <div class="campo">
+          <label for="cod_munic">Código do Município IBGE (7 dígitos) <span class="req">*</span></label>
+          <input type="text" id="cod_munic" name="cod_munic" class="mono" value="3550308" maxlength="7" required>
+          <span class="ajuda">Ex.: 3550308 = São Paulo/SP. Consulte a tabela do IBGE.</span>
+        </div>
+
+        <div class="campo">
+          <label for="uf_local">UF do Local <span class="req">*</span></label>
+          <input type="text" id="uf_local" name="uf_local" class="mono" value="SP" maxlength="2" required>
         </div>
       </div>
     </div>
@@ -128,13 +223,90 @@
 
         <div class="campo">
           <label for="cid10">Código CID-10 da Lesão <span class="req">*</span></label>
-          <input type="text" id="cid10" name="cid10" placeholder="Ex: S61.0, T14.0, S52..." class="mono" style="font-weight: 700;" required value="S61.0">
-          <span class="ajuda">Classificação Estatística Internacional de Doenças.</span>
+          <input type="text" id="cid10" name="cid10" placeholder="Ex: S610, T140, S520" class="mono" style="font-weight: 700;" maxlength="4" required value="S610">
+          <span class="ajuda">CID-10 sem pontuação, até 4 caracteres (ex.: S610 = ferimento de dedo).</span>
         </div>
 
         <div class="campo" style="grid-column: span 2;">
-          <label for="desc_lesao">Descrição da Natureza da Lesão <span class="req">*</span></label>
-          <input type="text" id="desc_lesao" name="desc_lesao" placeholder="Ex: Ferimento incisivo nos dedos da mão direita com sutura" required value="Ferimento incisivo/contusão superficial atendido com curativo">
+          <label for="desc_lesao">Natureza da Lesão (Tabela 17) <span class="req">*</span></label>
+          <select id="desc_lesao" name="desc_lesao" class="mono">
+            {{ range .NaturezasLesao }}
+              <option value="{{ .Codigo }}" {{ if eq .Codigo "702010000" }}selected{{ end }}>{{ .Codigo }} - {{ .Descricao }}</option>
+            {{ end }}
+          </select>
+        </div>
+
+        <div class="campo" style="grid-column: span 2;">
+          <label for="dsc_comp_lesao">Descrição Complementar da Lesão (opcional)</label>
+          <input type="text" id="dsc_comp_lesao" name="dsc_comp_lesao" placeholder="Ex: Ferimento incisivo no dedo indicador direito com sutura">
+        </div>
+
+        <div class="campo">
+          <label for="parte_corpo">Parte do Corpo Atingida (Tabela 13) <span class="req">*</span></label>
+          <select id="parte_corpo" name="parte_corpo" class="mono">
+            {{ range .PartesCorpo }}
+              <option value="{{ .Codigo }}" {{ if eq .Codigo "755070000" }}selected{{ end }}>{{ .Codigo }} - {{ .Descricao }}</option>
+            {{ end }}
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="lateralidade">Lateralidade <span class="req">*</span></label>
+          <select id="lateralidade" name="lateralidade">
+            <option value="0">0 - Não aplicável</option>
+            <option value="1" selected>1 - Direita</option>
+            <option value="2">2 - Esquerda</option>
+            <option value="3">3 - Ambas</option>
+          </select>
+        </div>
+
+        <div class="campo" style="grid-column: span 2;">
+          <label for="agente_causador">Agente Causador (Tabela 14) <span class="req">*</span></label>
+          <select id="agente_causador" name="agente_causador" class="mono">
+            {{ range .AgentesCausadores }}
+              <option value="{{ .Codigo }}" {{ if eq .Codigo "303010040" }}selected{{ end }}>{{ .Codigo }} - {{ .Descricao }}</option>
+            {{ end }}
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="hr_atendimento">Hora do Atendimento (HHMM) <span class="req">*</span></label>
+          <input type="text" id="hr_atendimento" name="hr_atendimento" class="mono" value="1500" maxlength="5" required>
+        </div>
+
+        <div class="campo">
+          <label for="ind_internacao">Houve Internação? <span class="req">*</span></label>
+          <select id="ind_internacao" name="ind_internacao">
+            <option value="N" selected>Não (N)</option>
+            <option value="S">Sim (S)</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="dur_trat">Duração Estimada do Tratamento (dias) <span class="req">*</span></label>
+          <input type="number" id="dur_trat" name="dur_trat" min="0" max="9999" value="0" required>
+        </div>
+
+        <div class="campo">
+          <label for="ind_afast">Afastamento do Trabalho (indAfast) <span class="req">*</span></label>
+          <select id="ind_afast" name="ind_afast">
+            <option value="N" selected>Não (N)</option>
+            <option value="S">Sim (S)</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="diag_provavel">Diagnóstico Provável (opcional)</label>
+          <input type="text" id="diag_provavel" name="diag_provavel" placeholder="Ex: Ferida cortocontusa">
+        </div>
+
+        <div class="campo">
+          <label for="orgao_classe_med">Órgão de Classe do Emitente <span class="req">*</span></label>
+          <select id="orgao_classe_med" name="orgao_classe_med">
+            <option value="1" selected>1 - Conselho Regional de Medicina (CRM)</option>
+            <option value="2">2 - Conselho Regional de Odontologia (CRO)</option>
+            <option value="3">3 - Registro do Ministério da Saúde (RMS)</option>
+          </select>
         </div>
 
         <div class="campo">

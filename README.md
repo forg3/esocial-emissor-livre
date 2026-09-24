@@ -96,6 +96,7 @@ IDOR, segredos expostos e XSS) com **todos os achados corrigidos** — o relató
 
 **Melhorias**
 
+- **Sprint 1 (conformidade de leiaute)**: os geradores dos eventos S-2210 (CAT), S-2220 (ASO) e S-2240 (condições ambientais) foram reescritos para o leiaute oficial S-1.3 (`ideVinculo`, `agNoc`, `epcEpi`/`epiCompl`, `respReg`, CAT completa com `codSitGeradora`/`iniciatCAT`/`localAcidente`/`parteAtingida`/`agenteCausador`/`atestado` e ASO com `exMedOcup`/`aso`/`exame`/`medico`).
 - Filtro e contador de eventos `simulado` na fila de transmissão.
 - Mensagens de validação passam a informar exatamente o modo executado e o que divergiu.
 - Senha de acesso definível por `-senha` ou `ESOCIAL_SENHA`, com geração automática na primeira execução.
@@ -113,14 +114,16 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 ## O que faz
 
 - **Cobertura Integral dos 36 Eventos Oficiais**: Catálogo visual estruturado por departamento (SESMT, Medicina Ocupacional, RH/DP, Folha, Jurídico e RPPS) e editor guiado com sincronização em tempo real com o XML S-1.3.
-- **Validação Estrutural Rígida**: Confere os arquivos XML diretamente contra os esquemas XSD oficiais do leiaute S-1.3 (via `xmllint`, com modo degradado explicitamente informado quando a ferramenta não está instalada).
+- **Validação Estrutural Rígida**: Confere os arquivos XML diretamente contra os esquemas XSD oficiais do leiaute S-1.3 (via `xmllint`, com modo degradado explicitamente informado quando a ferramenta não está instalada). Os documentos gerados pelos editores de **S-2210, S-2220 e S-2240 são aprovados pelo schema oficial** — verificado por teste automatizado que executa o `xmllint` contra os XSD embutidos.
 - **Importação e Conferência de XML/CSV**: Recebe arquivos XML (como ASO) e realiza importação de colaboradores em lote via CSV com modelo pronto para download.
+- **Tabelas oficiais do eSocial embutidas**: Tabela 13 (parte do corpo atingida), Tabela 14 (agente causador), Tabela 15 (situação geradora), Tabela 17 (natureza da lesão), Tabela 24 (agentes nocivos) e Tabela 27 (procedimentos diagnósticos), disponíveis como listas nos formulários — sem digitação de códigos.
 - **Assinatura Digital Local (A1)**: Assina eventos utilizando certificado digital ICP-Brasil **A1** (`.pfx` / `.p12`) diretamente na máquina do usuário (`internal/crypto`, XMLDSig + C14N). O fluxo de demonstração gera um envelope **explicitamente marcado como simulado** (`ASSINATURA SIMULADA`), sem validade jurídica.
 - **Transmissão ao eSocial (em integração)**: o cliente mTLS dos web services oficiais (`internal/soap`, TLS 1.2+, certificado A1) está implementado, mas **ainda não conectado à interface**. Nesta versão o envio é apenas simulado, sem protocolo e sem recibo.
 - **Auditoria de Eventos**: Rastreamento do ciclo de vida (`pronto` → `assinado` → `simulado` → `aceito`/`rejeitado`), com registro de recibo e mensagens **somente** quando houver transmissão real.
 
 ---
 
+- [x] **Leiautes S-1.3 aderentes ao XSD oficial (Sprint 1)**: geradores de S-2210, S-2220 e S-2240 reescritos conforme o leiaute oficial, com tabelas 13/14/15/17/27 embutidas e validação por schema aprovada nos testes de regressão.
 - [x] **Auditoria de Segurança e Hardening (v1.1-alpha)**: autenticação obrigatória, anti-CSRF, validação de Host, limites de entrada, rate limit, cabeçalhos de segurança e relatório de auditoria publicado em `docs/security-audit/`.
 - [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.1-alpha`).
 - [ ] **Pacotes de Distribuição (.deb, .rpm e MSI)**: Instaladores nativos para distribuições Linux e instalador Windows.
@@ -133,7 +136,6 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 
 ## O que não faz
 
-- **Leiautes do editor ainda não são 100% aderentes ao XSD oficial embarcado**: com a validação por schema agora ativa (xmllint + XSD S-1.3), eventos gerados pelo editor podem ser reprovados em campos como `ideVinculo` (o editor emite `ideTrabalhador`), `agNoc` (emite `agenteNoc`), códigos de órgão de classe (`ideOC` textual) e no bloco `epi`. A conferência por schema reporta exatamente o que divergiu — corrija o XML no editor antes de assinar. Adequação completa dos geradores está no roadmap.
 - **Não transmite ao eSocial nesta versão**: o envio ao webservice oficial (e a consulta de recibos) depende da conexão do cliente SOAP mTLS à interface. Enquanto isso, todo o fluxo de envio é simulado e rotulado como tal.
 - **Não suporta certificados A3 no momento**: Dispositivos físicos (cartões inteligentes e tokens USB via PKCS#11) não são suportados na versão atual. A aplicação aceita estritamente certificados em arquivo **A1** (`.pfx` / `.p12`).
 - **Não é um ERP de Folha de Pagamento**: Não calcula holerites, encargos sindicais complexos, horas extras ou rescisões trabalhistas. O software opera sobre os dados brutos necessários para a geração do evento.

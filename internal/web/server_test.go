@@ -59,6 +59,10 @@ func prepararServidorTeste(t *testing.T) (*web.Servidor, *storage.DB, http.Handl
 		t.Fatalf("falha ao instanciar servidor web: %v", err)
 	}
 
+	// O leiaute S-1.3 exige o CNPJ do empregador (nrInsc); a aplicação recusa gerar
+	// eventos sem essa configuração, portanto os testes configuram a empresa.
+	configurarEmpresaTeste(t, db)
+
 	mux := srv.Rotas()
 	csrf := srv.TokenCSRF()
 
@@ -536,5 +540,20 @@ func TestEditorGenerico(t *testing.T) {
 	}
 	if !encontrado {
 		t.Errorf("evento S-1000 não encontrado na lista de eventos gravados")
+	}
+}
+
+// configurarEmpresaTeste grava o CNPJ/razão social exigidos pelo leiaute S-1.3.
+func configurarEmpresaTeste(t *testing.T, db *storage.DB) {
+	t.Helper()
+	cfg, err := db.ObterConfiguracao()
+	if err != nil {
+		t.Fatalf("falha ao obter configuração: %v", err)
+	}
+	cfg.RazaoSocial = "EMPRESA MODELO TESTE LTDA"
+	cfg.CNPJ = "12345678000190"
+	cfg.Ambiente = 2
+	if err := db.SalvarConfiguracao(cfg); err != nil {
+		t.Fatalf("falha ao salvar configuração: %v", err)
 	}
 }
