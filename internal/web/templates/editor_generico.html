@@ -66,6 +66,7 @@
   </div>
 
   <form id="form-evento-generico" action="/eventos/salvar-generico" method="POST" hx-post="/eventos/salvar-generico" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
     <input type="hidden" name="codigo_evento" value="{{ .EventoInfo.Codigo }}">
 
     <!-- CONTEÚDO DA ABA 1: FORMULÁRIO GUIADO -->

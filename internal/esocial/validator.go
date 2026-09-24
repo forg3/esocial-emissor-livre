@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	xsdTempDir     string
-	xsdInitOnce    sync.Once
-	xsdInitErr     error
+	xsdTempDir        string
+	xsdInitOnce       sync.Once
+	xsdInitErr        error
 	xmllintDisponivel bool
-	checkXmllintOnce sync.Once
+	checkXmllintOnce  sync.Once
 )
 
 const dummySignatureXML = `  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
@@ -68,6 +68,12 @@ func inicializarDiretorioXSD() {
 			return
 		}
 	}
+}
+
+// XmllintDisponivel informa se o validador por schema (xmllint) está disponível,
+// permitindo que a camada web relate honestamente o modo de validação executado.
+func XmllintDisponivel() bool {
+	return verificarXmllint()
 }
 
 func verificarXmllint() bool {

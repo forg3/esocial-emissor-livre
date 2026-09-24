@@ -28,16 +28,31 @@ var staticFS embed.FS
 //go:embed templates/*
 var templatesFS embed.FS
 
+// Limites de tamanho de upload/corpo (achado M-02).
+const (
+	limiteUploadPFX = 2 << 20  // 2 MB
+	limiteUploadXML = 5 << 20  // 5 MB
+	limiteUploadCSV = 10 << 20 // 10 MB
+)
+
 // Servidor gerencia os handlers HTTP e templates do sistema.
 type Servidor struct {
 	db        *storage.DB
 	templates map[string]*template.Template
 	riscos    []data.Risco
 	cbos      []data.CBO
+	auth      *autenticacao
 }
 
-// NovoServidor inicializa as dependências, lê as bases oficiais e compila os templates.
+// NovoServidor inicializa as dependências com autenticação padrão (senha aleatória
+// persistida em ./dados/auth.json, exibida por SenhaInicial).
 func NovoServidor(db *storage.DB) (*Servidor, error) {
+	return NovoServidorComOpcoes(db, OpcoesAuth{})
+}
+
+// NovoServidorComOpcoes inicializa as dependências, lê as bases oficiais, compila
+// os templates e monta a camada de autenticação local.
+func NovoServidorComOpcoes(db *storage.DB, opts OpcoesAuth) (*Servidor, error) {
 	riscos, err := data.CarregarRiscosEsocial()
 	if err != nil {
 		// Loga mas não impede inicialização se houver fallback
@@ -49,11 +64,17 @@ func NovoServidor(db *storage.DB) (*Servidor, error) {
 		fmt.Printf("Aviso ao carregar CBOs: %v\n", err)
 	}
 
+	auth, err := novoServicoAuth(opts)
+	if err != nil {
+		return nil, fmt.Errorf("falha ao inicializar autenticação local: %w", err)
+	}
+
 	srv := &Servidor{
 		db:        db,
 		templates: make(map[string]*template.Template),
 		riscos:    riscos,
 		cbos:      cbos,
+		auth:      auth,
 	}
 
 	if err := srv.carregarTemplates(); err != nil {
@@ -62,6 +83,13 @@ func NovoServidor(db *storage.DB) (*Servidor, error) {
 
 	return srv, nil
 }
+
+// SenhaInicial devolve a senha gerada automaticamente na primeira execução
+// (string vazia quando o operador informou a própria senha).
+func (s *Servidor) SenhaInicial() string { return s.auth.SenhaInicial() }
+
+// TokenCSRF expõe o token anti-CSRF para uso em clientes/testes.
+func (s *Servidor) TokenCSRF() string { return s.auth.csrf }
 
 func (s *Servidor) carregarTemplates() error {
 	funcMap := template.FuncMap{
@@ -94,8 +122,11 @@ func (s *Servidor) carregarTemplates() error {
 			}
 			return cnpj
 		},
-		"safeHTML": func(s string) template.HTML {
-			return template.HTML(s)
+		"csrfToken": func() string {
+			return s.auth.csrf
+		},
+		"cspNonce": func() string {
+			return s.auth.cspNonce
 		},
 		"statusBadgeClass": func(status string) string {
 			switch status {
@@ -103,6 +134,8 @@ func (s *Servidor) carregarTemplates() error {
 				return "ok"
 			case "assinado":
 				return "info"
+			case "simulado":
+				return "warn"
 			case "transmitido":
 				return "warn"
 			case "rejeitado":
@@ -116,7 +149,9 @@ func (s *Servidor) carregarTemplates() error {
 			case "pronto":
 				return "Pronto p/ Assinar"
 			case "assinado":
-				return "Assinado"
+				return "Assinado (simulado)"
+			case "simulado":
+				return "Simulado (não transmitido)"
 			case "transmitido":
 				return "Aguardando eSocial"
 			case "aceito":
@@ -182,6 +217,7 @@ func (s *Servidor) carregarTemplates() error {
 			"templates/partials/resultado_cbos.html",
 			"templates/partials/detalhes_evento.html",
 			"templates/partials/catalogo_eventos.html",
+			"templates/partials/teste_certificado.html",
 		}
 
 		parsed, err := t.ParseFS(templatesFS, arquivos...)
@@ -191,12 +227,27 @@ func (s *Servidor) carregarTemplates() error {
 		s.templates[pag] = parsed
 	}
 
+	// Template autônomo da tela de login (não usa layout.html)
+	login, err := template.New("login.html").Funcs(funcMap).ParseFS(templatesFS, "templates/login.html")
+	if err != nil {
+		return fmt.Errorf("erro no template de login: %w", err)
+	}
+	s.templates["login"] = login
+
 	return nil
 }
 
-// Rotas configura e retorna o ServeMux do servidor HTTP.
+// Rotas configura e retorna o ServeMux do servidor HTTP, já com os middlewares de
+// segurança: cabeçalhos (B-03), validação de Host (C-01), autenticação (C-01) e
+// proteção anti-CSRF (A-01).
 func (s *Servidor) Rotas() http.Handler {
 	mux := http.NewServeMux()
+
+	// Autenticação
+	mux.HandleFunc("GET /login", s.handleLoginForm)
+	mux.HandleFunc("POST /login", s.handleLogin)
+	mux.HandleFunc("POST /logout", s.handleLogout)
+	mux.HandleFunc("GET /logout", s.handleLogout)
 
 	// Arquivos estáticos (CSS, JS, Fontes) servidos de embed.FS
 	subStatic, err := fs.Sub(staticFS, "static")
@@ -254,7 +305,13 @@ func (s *Servidor) Rotas() http.Handler {
 	mux.HandleFunc("GET /api/riscos/busca", s.handleBuscaRiscos)
 	mux.HandleFunc("GET /api/cbos/busca", s.handleBuscaCBOs)
 
-	return mux
+	// Cadeia de middlewares: cabeçalhos -> host -> autenticação -> CSRF -> rotas
+	var handler http.Handler = mux
+	handler = s.middlewareCSRF(handler)
+	handler = s.middlewareAuth(handler)
+	handler = s.middlewareHost(handler)
+	handler = s.middlewareCabecalhos(handler)
+	return handler
 }
 
 // Helper para renderizar página ou parcial HTMX
@@ -406,17 +463,60 @@ func (s *Servidor) handleUploadCertificado(w http.ResponseWriter, r *http.Reques
 	var msgErro = ""
 
 	if cfg.TipoCertificado == "A1" {
+		// Limite de corpo e de arquivo para o upload do .pfx (achado M-02).
+		r.Body = http.MaxBytesReader(w, r.Body, limiteUploadPFX)
 		arquivo, header, err := r.FormFile("arquivo_pfx")
-		if err == nil && header != nil {
+		if err != nil {
+			msg := "Falha ao receber o arquivo de certificado."
+			if _, excedeu := err.(*http.MaxBytesError); excedeu {
+				msg = "Arquivo de certificado excede o limite de 2 MB permitido."
+			}
+			s.render(w, r, "certificado", DadosViewConfiguracao{
+				Titulo:        "Certificado & Empresa",
+				MenuAtivo:     "configuracao",
+				Config:        cfg,
+				MensagemFlash: msg,
+				FlashErro:     true,
+			})
+			return
+		}
+		if header != nil {
 			defer arquivo.Close()
+
+			if header.Size > limiteUploadPFX {
+				s.render(w, r, "certificado", DadosViewConfiguracao{
+					Titulo:        "Certificado & Empresa",
+					MenuAtivo:     "configuracao",
+					Config:        cfg,
+					MensagemFlash: "Arquivo de certificado excede o limite de 2 MB permitido.",
+					FlashErro:     true,
+				})
+				return
+			}
+
 			destinoDir := "./dados/certificados"
 			_ = os.MkdirAll(destinoDir, 0700)
+			_ = os.Chmod(destinoDir, 0700) // corrige permissões preexistentes (achado B-01)
 			caminhoDest := filepath.Join(destinoDir, header.Filename)
 
-			destFile, err := os.Create(caminhoDest)
+			// 0600: a chave privada não deve ser legível por outros usuários locais (achado B-01).
+			destFile, err := os.OpenFile(caminhoDest, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err == nil {
-				_, _ = io.Copy(destFile, arquivo)
+				_, errCopy := io.Copy(destFile, arquivo)
 				destFile.Close()
+				if errCopy != nil {
+					msgErro = "Falha ao gravar o arquivo de certificado: " + errCopy.Error()
+					_ = s.db.SalvarConfiguracao(cfg)
+					s.render(w, r, "certificado", DadosViewConfiguracao{
+						Titulo:        "Certificado & Empresa",
+						MenuAtivo:     "configuracao",
+						Config:        cfg,
+						MensagemFlash: msgErro,
+						FlashErro:     true,
+					})
+					return
+				}
+				_ = os.Chmod(caminhoDest, 0600)
 				cfg.CertificadoPath = caminhoDest
 
 				senha := r.FormValue("senha_a1")
@@ -457,39 +557,87 @@ func (s *Servidor) handleUploadCertificado(w http.ResponseWriter, r *http.Reques
 	s.render(w, r, "certificado", dados)
 }
 
+// DadosTesteCertificado alimenta o partial teste_certificado.html (saída sempre escapada).
+type DadosTesteCertificado struct {
+	Classe   string // err | warn | ok
+	Titulo   string
+	Mensagem string
+	Itens    []ItemTesteCertificado
+	Nota     string
+}
+
+// ItemTesteCertificado é uma linha rótulo/valor do resultado do teste.
+type ItemTesteCertificado struct {
+	Rotulo string
+	Valor  string
+}
+
+// renderTesteCertificado escreve o resultado via html/template (escaping contextual),
+// eliminando a montagem manual de HTML por fmt.Fprintf (achado A-03).
+func (s *Servidor) renderTesteCertificado(w http.ResponseWriter, dados DadosTesteCertificado) {
+	tmpl, ok := s.templates["certificado"]
+	if !ok {
+		http.Error(w, "Template de certificado indisponível", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := tmpl.ExecuteTemplate(w, "teste_certificado", dados); err != nil {
+		http.Error(w, "Falha ao renderizar resultado do teste", http.StatusInternalServerError)
+	}
+}
+
 func (s *Servidor) handleTestarCertificado(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if cfg.TipoCertificado == "A1" {
 		if cfg.CertificadoPath == "" {
-			fmt.Fprint(w, `<div class="flash flash-err" style="font-size: 13px;">
-				<strong>Atenção:</strong> Nenhum arquivo de certificado A1 foi carregado ainda. Faça o upload do arquivo .pfx ou .p12 acima.
-			</div>`)
+			s.renderTesteCertificado(w, DadosTesteCertificado{
+				Classe: "err",
+				Titulo: "Atenção",
+				Mensagem: "Nenhum arquivo de certificado A1 foi carregado ainda. " +
+					"Faça o upload do arquivo .pfx ou .p12 acima.",
+			})
 			return
 		}
 		if _, err := os.Stat(cfg.CertificadoPath); os.IsNotExist(err) {
-			fmt.Fprintf(w, `<div class="flash flash-err" style="font-size: 13px;">
-				<strong>Arquivo não encontrado:</strong> O arquivo %s não foi localizado no disco local.
-			</div>`, filepath.Base(cfg.CertificadoPath))
+			s.renderTesteCertificado(w, DadosTesteCertificado{
+				Classe:   "err",
+				Titulo:   "Arquivo não encontrado",
+				Mensagem: "O arquivo informado não foi localizado no disco local.",
+				Itens:    []ItemTesteCertificado{{Rotulo: "Arquivo", Valor: filepath.Base(cfg.CertificadoPath)}},
+			})
 			return
 		}
 
 		senha := strings.TrimSpace(r.FormValue("senha_a1"))
 		if senha == "" {
-			fmt.Fprintf(w, `<div class="flash flash-warn" style="font-size: 13px; line-height: 1.5;">
-				<strong>Arquivo A1 Presente:</strong> %s<br>
-				Digite a senha do certificado no campo acima e clique em <em>Testar Validade</em> para validar a chave privada RSA e o teste criptográfico.
-			</div>`, filepath.Base(cfg.CertificadoPath))
+			s.renderTesteCertificado(w, DadosTesteCertificado{
+				Classe:   "warn",
+				Titulo:   "Arquivo A1 presente",
+				Mensagem: `Digite a senha do certificado no campo acima e clique em "Testar Validade" para validar a chave privada RSA e o teste criptográfico.`,
+				Itens:    []ItemTesteCertificado{{Rotulo: "Arquivo", Valor: filepath.Base(cfg.CertificadoPath)}},
+			})
+			return
+		}
+
+		if !s.permitirTesteCertificado(r) {
+			w.Header().Set("Retry-After", "60")
+			s.renderTesteCertificado(w, DadosTesteCertificado{
+				Classe:   "err",
+				Titulo:   "Muitas tentativas",
+				Mensagem: "Limite de validações de senha atingido. Aguarde um minuto antes de tentar novamente.",
+			})
 			return
 		}
 
 		cert, err := crypto.CarregarA1Arquivo(cfg.CertificadoPath, senha)
 		if err != nil {
-			fmt.Fprintf(w, `<div class="flash flash-err" style="font-size: 13px; line-height: 1.5;">
-				<strong>Falha na validação do Certificado A1:</strong> %s<br>
-				A senha informada está incorreta ou o arquivo está corrompido.
-			</div>`, err.Error())
+			s.renderTesteCertificado(w, DadosTesteCertificado{
+				Classe:   "err",
+				Titulo:   "Falha na validação do Certificado A1",
+				Mensagem: "A senha informada está incorreta ou o arquivo está corrompido.",
+				Itens:    []ItemTesteCertificado{{Rotulo: "Detalhe técnico", Valor: err.Error()}},
+			})
 			return
 		}
 
@@ -504,9 +652,11 @@ func (s *Servidor) handleTestarCertificado(w http.ResponseWriter, r *http.Reques
 
 		xmlTeste := []byte(`<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtMonit/v_S_01_03_00"><evtMonit Id="ID1000000000000000000000000001"><ideEmpregador><tpInsc>1</tpInsc><nrInsc>00000000000000</nrInsc></ideEmpregador></evtMonit></eSocial>`)
 		_, errSign := crypto.AssinarXML(xmlTeste, cert)
-		testeCripto := "✓ Assinatura XMLDSig SHA-256 executada com sucesso!"
+		testeCripto := "Assinatura XMLDSig SHA-256 executada com sucesso (chave privada do certificado)."
+		classe := "ok"
 		if errSign != nil {
-			testeCripto = fmt.Sprintf("⚠️ Alerta na assinatura teste: %v", errSign)
+			testeCripto = fmt.Sprintf("Alerta na assinatura de teste: %v", errSign)
+			classe = "warn"
 		}
 
 		diasRestantes := int(time.Until(cert.ValidoAte()).Hours() / 24)
@@ -515,43 +665,35 @@ func (s *Servidor) handleTestarCertificado(w http.ResponseWriter, r *http.Reques
 			emissor = cert.CertificadoFolha().Issuer.CommonName
 		}
 
-		fmt.Fprintf(w, `<div class="flash flash-ok" style="font-size: 13px; line-height: 1.6;">
-			<div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: var(--ok-text);">
-				✓ Certificado Digital A1 Operacional & Válido!
-			</div>
-			<div><strong>Titular:</strong> %s</div>
-			<div><strong>Documento Identificado:</strong> %s</div>
-			<div><strong>Emissor:</strong> %s</div>
-			<div><strong>Vigência:</strong> %s até %s (%d dias restantes)</div>
-			<div><strong>Criptografia:</strong> %s</div>
-			<div style="margin-top: 4px; font-weight: 600; color: var(--navy);">
-				Ambiente ativo: %s
-			</div>
-		</div>`,
-			cert.RazaoSocial(),
-			cert.CNPJ(),
-			emissor,
-			cert.ValidoDe().Format("02/01/2006"),
-			cert.ValidoAte().Format("02/01/2006"),
-			diasRestantes,
-			testeCripto,
-			map[int]string{1: "Produção Oficial (Governo Federal)", 2: "Produção Restrita (Testes / Homologação)"}[cfg.Ambiente],
-		)
+		ambiente := map[int]string{1: "Produção Oficial (Governo Federal)", 2: "Produção Restrita (Testes / Homologação)"}[cfg.Ambiente]
+
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe:   classe,
+			Titulo:   "Certificado Digital A1 operacional e válido",
+			Mensagem: "Chave privada lida com sucesso e teste criptográfico concluído localmente.",
+			Itens: []ItemTesteCertificado{
+				{Rotulo: "Titular", Valor: cert.RazaoSocial()},
+				{Rotulo: "Documento identificado", Valor: cert.CNPJ()},
+				{Rotulo: "Emissor", Valor: emissor},
+				{Rotulo: "Vigência", Valor: fmt.Sprintf("%s até %s (%d dias restantes)", cert.ValidoDe().Format("02/01/2006"), cert.ValidoAte().Format("02/01/2006"), diasRestantes)},
+				{Rotulo: "Criptografia", Valor: testeCripto},
+				{Rotulo: "Ambiente ativo", Valor: ambiente},
+			},
+			Nota: "A assinatura dos eventos é executada localmente; a transmissão ao eSocial depende do webservice oficial (ver aviso de modo simulação).",
+		})
 	} else if cfg.TipoCertificado == "A3" {
-		fmt.Fprint(w, `<div class="flash flash-ok" style="font-size: 13px; line-height: 1.6;">
-			<div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: var(--ok-text);">
-				✓ Modo Certificado A3 Selecionado!
-			</div>
-			<div><strong>Interface:</strong> Hardware Token USB / SmartCard (PKCS#11).</div>
-			<div><strong>Operação:</strong> O PIN de segurança será solicitado diretamente na transmissão dos lotes.</div>
-			<div style="margin-top: 4px; color: var(--text-2); font-size: 12px;">
-				Certifique-se de que os drivers do fabricante do token estejam instalados no seu sistema operacional.
-			</div>
-		</div>`)
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe:   "ok",
+			Titulo:   "Modo Certificado A3 selecionado",
+			Mensagem: "Interface de hardware Token USB / SmartCard (PKCS#11). O PIN de segurança será solicitado diretamente na transmissão dos lotes.",
+			Nota:     "Certifique-se de que os drivers do fabricante do token estejam instalados no seu sistema operacional.",
+		})
 	} else {
-		fmt.Fprint(w, `<div class="flash flash-err" style="font-size: 13px;">
-			<strong>Atenção:</strong> Nenhum tipo de certificado digital foi configurado ainda.
-		</div>`)
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe:   "err",
+			Titulo:   "Atenção",
+			Mensagem: "Nenhum tipo de certificado digital foi configurado ainda.",
+		})
 	}
 }
 
@@ -657,7 +799,33 @@ func (s *Servidor) handleSalvarColaborador(w http.ResponseWriter, r *http.Reques
 func (s *Servidor) handleExcluirColaborador(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
 	id := r.PathValue("id")
-	_ = s.db.ExcluirColaborador(id)
+
+	if _, err := s.db.ObterColaborador(id); err != nil {
+		lista, _ := s.db.ListarColaboradores()
+		s.render(w, r, "colaboradores", DadosViewColaboradores{
+			Titulo:        "Colaboradores",
+			MenuAtivo:     "colaboradores",
+			Config:        cfg,
+			Colaboradores: lista,
+			MensagemFlash: "Colaborador não encontrado para exclusão.",
+			FlashErro:     true,
+		})
+		return
+	}
+
+	// Achado B-04: erro de exclusão é reportado ao usuário.
+	if err := s.db.ExcluirColaborador(id); err != nil {
+		lista, _ := s.db.ListarColaboradores()
+		s.render(w, r, "colaboradores", DadosViewColaboradores{
+			Titulo:        "Colaboradores",
+			MenuAtivo:     "colaboradores",
+			Config:        cfg,
+			Colaboradores: lista,
+			MensagemFlash: "Falha ao excluir o colaborador: " + err.Error(),
+			FlashErro:     true,
+		})
+		return
+	}
 
 	lista, _ := s.db.ListarColaboradores()
 	s.render(w, r, "colaboradores", DadosViewColaboradores{
@@ -683,7 +851,21 @@ func (s *Servidor) handleDownloadModeloCSV(w http.ResponseWriter, r *http.Reques
 
 func (s *Servidor) handleImportarCSV(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
-	arquivo, _, err := r.FormFile("arquivo_csv")
+	// Limite de corpo/arquivo para o CSV importado (achado M-02).
+	r.Body = http.MaxBytesReader(w, r.Body, limiteUploadCSV)
+	arquivo, headerCSV, err := r.FormFile("arquivo_csv")
+	if err == nil && headerCSV != nil && headerCSV.Size > limiteUploadCSV {
+		lista, _ := s.db.ListarColaboradores()
+		s.render(w, r, "colaboradores", DadosViewColaboradores{
+			Titulo:        "Colaboradores",
+			MenuAtivo:     "colaboradores",
+			Config:        cfg,
+			Colaboradores: lista,
+			MensagemFlash: "Arquivo CSV excede o limite de 10 MB permitido.",
+			FlashErro:     true,
+		})
+		return
+	}
 	if err != nil {
 		lista, _ := s.db.ListarColaboradores()
 		s.render(w, r, "colaboradores", DadosViewColaboradores{
@@ -698,7 +880,7 @@ func (s *Servidor) handleImportarCSV(w http.ResponseWriter, r *http.Request) {
 	}
 	defer arquivo.Close()
 
-	leitor := csv.NewReader(arquivo)
+	leitor := csv.NewReader(io.LimitReader(arquivo, limiteUploadCSV))
 	leitor.FieldsPerRecord = -1
 	leitor.LazyQuotes = true
 
@@ -783,14 +965,14 @@ func (s *Servidor) handleImportarCSV(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------------------------
 
 type DadosViewEditorS2240 struct {
-	Titulo                  string
-	MenuAtivo               string
-	Config                  *storage.Configuracao
-	Colaboradores           []storage.Colaborador
+	Titulo                   string
+	MenuAtivo                string
+	Config                   *storage.Configuracao
+	Colaboradores            []storage.Colaborador
 	ColaboradorSelecionadoID string
-	Hoje                    string
-	MensagemFlash           string
-	FlashErro               bool
+	Hoje                     string
+	MensagemFlash            string
+	FlashErro                bool
 }
 
 func (s *Servidor) handleEditorS2240(w http.ResponseWriter, r *http.Request) {
@@ -799,12 +981,12 @@ func (s *Servidor) handleEditorS2240(w http.ResponseWriter, r *http.Request) {
 	colabID := r.URL.Query().Get("colaborador_id")
 
 	s.render(w, r, "evento_s2240", DadosViewEditorS2240{
-		Titulo:                  "S-2240 • Condições Ambientais",
-		MenuAtivo:               "s2240",
-		Config:                  cfg,
-		Colaboradores:           colabs,
+		Titulo:                   "S-2240 • Condições Ambientais",
+		MenuAtivo:                "s2240",
+		Config:                   cfg,
+		Colaboradores:            colabs,
 		ColaboradorSelecionadoID: colabID,
-		Hoje:                    time.Now().Format("2006-01-02"),
+		Hoje:                     time.Now().Format("2006-01-02"),
 	})
 }
 
@@ -827,27 +1009,27 @@ func (s *Servidor) handleSalvarS2240(w http.ResponseWriter, r *http.Request) {
 	}
 
 	params := ParametrosS2240{
-		ID:                 GerarIDEvento(cfg.CNPJ),
-		Ambiente:           cfg.Ambiente,
-		CNPJ:               cfg.CNPJ,
-		CPFTrabalhador:     colab.CPF,
-		Matricula:          colab.Matricula,
-		DataInicio:         r.FormValue("dt_inicio"),
-		DescAtividade:      r.FormValue("desc_atividade"),
-		LocalAmbiente:      r.FormValue("local_ambiente"),
-		CodigoRisco:        r.FormValue("codigo_risco"),
-		NomeRisco:          r.FormValue("nome_risco"),
-		TipoAvaliacao:      r.FormValue("tipo_avaliacao"),
-		Intensidade:        r.FormValue("intensidade"),
-		UtilizaEPC:         r.FormValue("utiliza_epc"),
-		EfficazEPC:         r.FormValue("eficaz_epc"),
-		UtilizaEPI:         r.FormValue("utiliza_epi"),
-		CAEPI:              r.FormValue("ca_epi"),
-		NomeResp:           r.FormValue("nome_resp"),
-		CPFResp:            r.FormValue("cpf_resp"),
-		OrgaoClasse:        r.FormValue("orgao_classe"),
-		NumRegistro:        r.FormValue("num_registro"),
-		UFRegistro:         r.FormValue("uf_registro"),
+		ID:             GerarIDEvento(cfg.CNPJ),
+		Ambiente:       cfg.Ambiente,
+		CNPJ:           cfg.CNPJ,
+		CPFTrabalhador: colab.CPF,
+		Matricula:      colab.Matricula,
+		DataInicio:     r.FormValue("dt_inicio"),
+		DescAtividade:  r.FormValue("desc_atividade"),
+		LocalAmbiente:  r.FormValue("local_ambiente"),
+		CodigoRisco:    r.FormValue("codigo_risco"),
+		NomeRisco:      r.FormValue("nome_risco"),
+		TipoAvaliacao:  r.FormValue("tipo_avaliacao"),
+		Intensidade:    r.FormValue("intensidade"),
+		UtilizaEPC:     r.FormValue("utiliza_epc"),
+		EfficazEPC:     r.FormValue("eficaz_epc"),
+		UtilizaEPI:     r.FormValue("utiliza_epi"),
+		CAEPI:          r.FormValue("ca_epi"),
+		NomeResp:       r.FormValue("nome_resp"),
+		CPFResp:        r.FormValue("cpf_resp"),
+		OrgaoClasse:    r.FormValue("orgao_classe"),
+		NumRegistro:    r.FormValue("num_registro"),
+		UFRegistro:     r.FormValue("uf_registro"),
 	}
 
 	xmlGerado := GerarXMLS2240(params)
@@ -886,14 +1068,14 @@ func (s *Servidor) handleSalvarS2240(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------------------------
 
 type DadosViewEditorS2210 struct {
-	Titulo                  string
-	MenuAtivo               string
-	Config                  *storage.Configuracao
-	Colaboradores           []storage.Colaborador
+	Titulo                   string
+	MenuAtivo                string
+	Config                   *storage.Configuracao
+	Colaboradores            []storage.Colaborador
 	ColaboradorSelecionadoID string
-	Hoje                    string
-	MensagemFlash           string
-	FlashErro               bool
+	Hoje                     string
+	MensagemFlash            string
+	FlashErro                bool
 }
 
 func (s *Servidor) handleEditorS2210(w http.ResponseWriter, r *http.Request) {
@@ -902,12 +1084,12 @@ func (s *Servidor) handleEditorS2210(w http.ResponseWriter, r *http.Request) {
 	colabID := r.URL.Query().Get("colaborador_id")
 
 	s.render(w, r, "evento_s2210", DadosViewEditorS2210{
-		Titulo:                  "S-2210 • Comunicação de Acidente (CAT)",
-		MenuAtivo:               "s2210",
-		Config:                  cfg,
-		Colaboradores:           colabs,
+		Titulo:                   "S-2210 • Comunicação de Acidente (CAT)",
+		MenuAtivo:                "s2210",
+		Config:                   cfg,
+		Colaboradores:            colabs,
 		ColaboradorSelecionadoID: colabID,
-		Hoje:                    time.Now().Format("2006-01-02"),
+		Hoje:                     time.Now().Format("2006-01-02"),
 	})
 }
 
@@ -963,7 +1145,10 @@ func (s *Servidor) handleSalvarS2210(w http.ResponseWriter, r *http.Request) {
 		AtualizadoEm:  time.Now(),
 	}
 
-	_ = s.db.SalvarEvento(evento)
+	if err := s.db.SalvarEvento(evento); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao gravar o evento S-2210: "+err.Error(), true)
+		return
+	}
 	s.handleFilaComFlash(w, r, fmt.Sprintf("CAT S-2210 (%s) gerada para %s!", evento.ID, colab.Nome), false)
 }
 
@@ -972,14 +1157,14 @@ func (s *Servidor) handleSalvarS2210(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------------------------
 
 type DadosViewEditorS2220 struct {
-	Titulo                  string
-	MenuAtivo               string
-	Config                  *storage.Configuracao
-	Colaboradores           []storage.Colaborador
+	Titulo                   string
+	MenuAtivo                string
+	Config                   *storage.Configuracao
+	Colaboradores            []storage.Colaborador
 	ColaboradorSelecionadoID string
-	Hoje                    string
-	MensagemFlash           string
-	FlashErro               bool
+	Hoje                     string
+	MensagemFlash            string
+	FlashErro                bool
 }
 
 func (s *Servidor) handleEditorS2220(w http.ResponseWriter, r *http.Request) {
@@ -988,12 +1173,12 @@ func (s *Servidor) handleEditorS2220(w http.ResponseWriter, r *http.Request) {
 	colabID := r.URL.Query().Get("colaborador_id")
 
 	s.render(w, r, "evento_s2220", DadosViewEditorS2220{
-		Titulo:                  "S-2220 • Monitoramento da Saúde (ASO)",
-		MenuAtivo:               "s2220",
-		Config:                  cfg,
-		Colaboradores:           colabs,
+		Titulo:                   "S-2220 • Monitoramento da Saúde (ASO)",
+		MenuAtivo:                "s2220",
+		Config:                   cfg,
+		Colaboradores:            colabs,
 		ColaboradorSelecionadoID: colabID,
-		Hoje:                    time.Now().Format("2006-01-02"),
+		Hoje:                     time.Now().Format("2006-01-02"),
 	})
 }
 
@@ -1042,13 +1227,31 @@ func (s *Servidor) handleSalvarS2220(w http.ResponseWriter, r *http.Request) {
 		AtualizadoEm:  time.Now(),
 	}
 
-	_ = s.db.SalvarEvento(evento)
+	if err := s.db.SalvarEvento(evento); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao gravar o evento S-2220: "+err.Error(), true)
+		return
+	}
 	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento de ASO S-2220 (%s) gerado para %s!", evento.ID, colab.Nome), false)
 }
 
 func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
-	arquivo, _, err := r.FormFile("arquivo_xml_aso")
+	// Limite de corpo/arquivo para o XML importado (achado M-02).
+	r.Body = http.MaxBytesReader(w, r.Body, limiteUploadXML)
+	arquivo, headerXML, err := r.FormFile("arquivo_xml_aso")
+	if err == nil && headerXML != nil && headerXML.Size > limiteUploadXML {
+		colabs, _ := s.db.ListarColaboradores()
+		s.render(w, r, "evento_s2220", DadosViewEditorS2220{
+			Titulo:        "S-2220 • Monitoramento da Saúde (ASO)",
+			MenuAtivo:     "s2220",
+			Config:        cfg,
+			Colaboradores: colabs,
+			Hoje:          time.Now().Format("2006-01-02"),
+			MensagemFlash: "Arquivo XML excede o limite de 5 MB permitido.",
+			FlashErro:     true,
+		})
+		return
+	}
 	if err != nil {
 		colabs, _ := s.db.ListarColaboradores()
 		s.render(w, r, "evento_s2220", DadosViewEditorS2220{
@@ -1064,7 +1267,7 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 	}
 	defer arquivo.Close()
 
-	xmlBytes, err := io.ReadAll(arquivo)
+	xmlBytes, err := io.ReadAll(io.LimitReader(arquivo, limiteUploadXML))
 	if err != nil {
 		colabs, _ := s.db.ListarColaboradores()
 		s.render(w, r, "evento_s2220", DadosViewEditorS2220{
@@ -1110,7 +1313,19 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 		AtualizadoEm:  time.Now(),
 	}
 
-	_ = s.db.SalvarEvento(evento)
+	if err := s.db.SalvarEvento(evento); err != nil {
+		colabsErro, _ := s.db.ListarColaboradores()
+		s.render(w, r, "evento_s2220", DadosViewEditorS2220{
+			Titulo:        "S-2220 • Monitoramento da Saúde (ASO)",
+			MenuAtivo:     "s2220",
+			Config:        cfg,
+			Colaboradores: colabsErro,
+			Hoje:          time.Now().Format("2006-01-02"),
+			MensagemFlash: "Falha ao gravar o evento importado: " + err.Error(),
+			FlashErro:     true,
+		})
+		return
+	}
 	s.handleFilaComFlash(w, r, fmt.Sprintf("XML de ASO importado com sucesso para %s (ID: %s)!", colabNome, idEvento), false)
 }
 
@@ -1274,12 +1489,15 @@ func (s *Servidor) handleSalvarEventoGenerico(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	// Achado B-02: o ID só é aceito no padrão oficial do eSocial
+	// (ID + tpInsc + nrInsc(14) + timestamp(14) + seq(5) = 36 caracteres).
 	idEvento := GerarIDEvento(cfg.CNPJ)
-	if strings.Contains(xmlConteudo, "Id=\"") {
-		i := strings.Index(xmlConteudo, "Id=\"") + 4
-		f := strings.Index(xmlConteudo[i:], "\"")
-		if f > 0 {
-			idEvento = xmlConteudo[i : i+f]
+	avisoID := ""
+	if idInformado := extrairIDEvento(xmlConteudo); idInformado != "" {
+		if idEventoValido(idInformado) {
+			idEvento = idInformado
+		} else {
+			avisoID = fmt.Sprintf(" O ID informado (%s) não segue o padrão oficial ID+14+14+5 dígitos e foi substituído por %s.", idInformado, idEvento)
 		}
 	}
 
@@ -1294,8 +1512,23 @@ func (s *Servidor) handleSalvarEventoGenerico(w http.ResponseWriter, r *http.Req
 		AtualizadoEm:  time.Now(),
 	}
 
-	_ = s.db.SalvarEvento(evento)
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s (%s) enfileirado com sucesso para validação e transmissão!", codigo, idEvento), false)
+	// Achado B-04: erro de persistência não é mais descartado.
+	if err := s.db.SalvarEvento(evento); err != nil {
+		evt := esocial.ObterEventoCatalogo(codigo)
+		colabs, _ := s.db.ListarColaboradores()
+		s.render(w, r, "editor_generico", DadosViewEditorGenerico{
+			Titulo:                fmt.Sprintf("Emitir %s", codigo),
+			MenuAtivo:             "catalogo",
+			Config:                cfg,
+			EventoInfo:            evt,
+			Colaboradores:         colabs,
+			XMLTemplatePreenchido: xmlConteudo,
+			MensagemFlash:         "Falha ao gravar o evento: " + err.Error(),
+			FlashErro:             true,
+		})
+		return
+	}
+	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s (%s) enfileirado para validação e assinatura.%s", codigo, idEvento, avisoID), false)
 }
 
 // -------------------------------------------------------------
@@ -1311,6 +1544,7 @@ type DadosViewFila struct {
 	TotalGeral      int
 	TotalProntos    int
 	TotalAssinados  int
+	TotalSimulados  int
 	TotalAceitos    int
 	TotalRejeitados int
 	MensagemFlash   string
@@ -1331,13 +1565,15 @@ func (s *Servidor) handleFilaComFlash(w http.ResponseWriter, r *http.Request, ms
 	}
 
 	var filtrados []storage.Evento
-	var nPronto, nAssinado, nAceito, nRejeitado int
+	var nPronto, nAssinado, nSimulado, nAceito, nRejeitado int
 	for _, e := range todos {
 		switch e.Status {
 		case "pronto":
 			nPronto++
 		case "assinado":
 			nAssinado++
+		case "simulado":
+			nSimulado++
 		case "aceito":
 			nAceito++
 		case "rejeitado":
@@ -1358,6 +1594,7 @@ func (s *Servidor) handleFilaComFlash(w http.ResponseWriter, r *http.Request, ms
 		TotalGeral:      len(todos),
 		TotalProntos:    nPronto,
 		TotalAssinados:  nAssinado,
+		TotalSimulados:  nSimulado,
 		TotalAceitos:    nAceito,
 		TotalRejeitados: nRejeitado,
 		MensagemFlash:   msg,
@@ -1430,15 +1667,53 @@ func (s *Servidor) handleValidarEvento(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valido, erros := ValidarEventoXSD(evento.Tipo, evento.XMLGerado)
-	if valido {
-		_ = s.db.AtualizarStatusEvento(id, evento.Status, evento.Recibo, evento.Protocolo, "Estrutura XML e namespaces validados com sucesso contra os schemas XSD oficiais.")
-		s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s validado com sucesso! Nenhuma pendência de XSD encontrada.", id), false)
-	} else {
-		msg := "Erros de validação XSD: " + strings.Join(erros, "; ")
-		_ = s.db.AtualizarStatusEvento(id, "rejeitado", "", "", msg)
-		s.handleFilaComFlash(w, r, msg, true)
+	// Achado M-03: usa a validação real por schema (xmllint + XSD oficiais) quando o
+	// tipo de evento possui schema embutido; sem schema, aplica (e informa) apenas as
+	// checagens estruturais básicas.
+	_, temSchema := esocial.ObterNomeXSD(evento.Tipo)
+	errosSchema := esocial.ValidarXSD([]byte(evento.XMLGerado), evento.Tipo)
+
+	if temSchema == nil {
+		// Existe XSD oficial para este tipo: o resultado do validador é definitivo.
+		if errosSchema != nil {
+			msg := "Reprovado na validação por schema oficial: " + errosSchema.Error()
+			if err := s.db.AtualizarStatusEvento(id, "rejeitado", "", "", msg); err != nil {
+				s.handleFilaComFlash(w, r, "Falha ao registrar a rejeição: "+err.Error(), true)
+				return
+			}
+			s.handleFilaComFlash(w, r, msg, true)
+			return
+		}
+		modo := "validação por schema oficial (xmllint)"
+		if !esocial.XmllintDisponivel() {
+			modo = "validação estrutural nativa (xmllint ausente no sistema - instale-o para conferência por schema)"
+		}
+		msg := "XML aprovado na " + modo + "."
+		if err := s.db.AtualizarStatusEvento(id, evento.Status, evento.Recibo, evento.Protocolo, msg); err != nil {
+			s.handleFilaComFlash(w, r, "Falha ao registrar a validação: "+err.Error(), true)
+			return
+		}
+		s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s validado com sucesso (%s).", id, modo), false)
+		return
 	}
+
+	// Tipos sem schema embutido: checagens estruturais básicas, com modo informado.
+	if valido, erros := ValidarEventoXSD(evento.Tipo, evento.XMLGerado); !valido {
+		msg := "Erros de validação: " + strings.Join(erros, "; ")
+		if err := s.db.AtualizarStatusEvento(id, "rejeitado", "", "", msg); err != nil {
+			s.handleFilaComFlash(w, r, "Falha ao registrar a rejeição: "+err.Error(), true)
+			return
+		}
+		s.handleFilaComFlash(w, r, msg, true)
+		return
+	}
+
+	msg := "Checagens estruturais básicas aprovadas (schema XSD oficial não disponível para o evento " + evento.Tipo + ")."
+	if err := s.db.AtualizarStatusEvento(id, evento.Status, evento.Recibo, evento.Protocolo, msg); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao registrar a validação: "+err.Error(), true)
+		return
+	}
+	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s aprovado nas checagens estruturais básicas (sem schema XSD para este tipo).", id), false)
 }
 
 func (s *Servidor) handleAssinarEvento(w http.ResponseWriter, r *http.Request) {
@@ -1450,14 +1725,20 @@ func (s *Servidor) handleAssinarEvento(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Achado A-02: o envelope gerado é explicitamente identificado como SIMULADO.
+	// Nenhuma assinatura com valor jurídico é produzida enquanto o certificado não
+	// for aplicado pelo fluxo real de assinatura.
 	assinado := SimularAssinatura(evento.XMLGerado, cfg.RazaoSocial)
 	evento.XMLAssinado = assinado
 	evento.Status = "assinado"
-	evento.MensagemRetorno = "Assinado com sucesso via certificado ICP-Brasil."
+	evento.MensagemRetorno = "ASSINATURA SIMULADA: envelope XMLDSig demonstrativo gerado localmente, SEM certificado digital aplicado e SEM validade jurídica."
 	evento.AtualizadoEm = time.Now()
 
-	_ = s.db.SalvarEvento(evento)
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s assinado digitalmente com sucesso!", id), false)
+	if err := s.db.SalvarEvento(evento); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao gravar a assinatura simulada: "+err.Error(), true)
+		return
+	}
+	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s recebeu assinatura SIMULADA (demonstração, sem validade jurídica).", id), false)
 }
 
 func (s *Servidor) handleTransmitirEvento(w http.ResponseWriter, r *http.Request) {
@@ -1469,14 +1750,14 @@ func (s *Servidor) handleTransmitirEvento(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	protocolo, recibo, mensagem, aceito := SimularTransmissao(cfg.Ambiente, evento.Tipo, evento.XMLAssinado)
-	status := "aceito"
-	if !aceito {
-		status = "rejeitado"
+	// Achado A-02: nenhum recibo/protocolo oficial é inventado. O evento é marcado
+	// como "simulado" até que exista integração real com o webservice do eSocial.
+	mensagem := MensagemTransmissaoSimulada(cfg.Ambiente, evento.Tipo)
+	if err := s.db.AtualizarStatusEvento(id, "simulado", "", "", mensagem); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao registrar a simulação: "+err.Error(), true)
+		return
 	}
-
-	_ = s.db.AtualizarStatusEvento(id, status, recibo, protocolo, mensagem)
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s transmitido ao eSocial! Recibo: %s", id, recibo), false)
+	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s marcado como SIMULADO. %s", id, mensagem), true)
 }
 
 func (s *Servidor) handleConsultarRecibo(w http.ResponseWriter, r *http.Request) {
@@ -1488,18 +1769,31 @@ func (s *Servidor) handleConsultarRecibo(w http.ResponseWriter, r *http.Request)
 	}
 
 	if evento.Recibo != "" {
-		s.handleFilaComFlash(w, r, fmt.Sprintf("Recibo oficial do eSocial já confirmado: %s", evento.Recibo), false)
+		s.handleFilaComFlash(w, r, fmt.Sprintf("Recibo registrado para o evento: %s", evento.Recibo), false)
 		return
 	}
 
-	novoRecibo := fmt.Sprintf("REC-%d", time.Now().UnixNano()%1000000000)
-	_ = s.db.AtualizarStatusEvento(id, "aceito", novoRecibo, evento.Protocolo, "Recibo consultado e validado com sucesso na base governamental.")
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Recibo obtido com sucesso: %s", novoRecibo), false)
+	// Achado A-02: sem integração real não existe recibo. Nada é inventado.
+	msg := "Nenhum recibo disponível: este evento não foi transmitido ao eSocial. " +
+		"A consulta de recibo real depende da integração com o webservice oficial (não conectada nesta versão)."
+	if err := s.db.AtualizarStatusEvento(id, "simulado", "", "", msg); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao registrar a consulta: "+err.Error(), true)
+		return
+	}
+	s.handleFilaComFlash(w, r, msg, true)
 }
 
 func (s *Servidor) handleExcluirEvento(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	_ = s.db.ExcluirEvento(id)
+	if _, err := s.db.ObterEvento(id); err != nil {
+		s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s não encontrado na fila.", id), true)
+		return
+	}
+	// Achado B-04: erro de exclusão é reportado ao usuário.
+	if err := s.db.ExcluirEvento(id); err != nil {
+		s.handleFilaComFlash(w, r, "Falha ao excluir o evento: "+err.Error(), true)
+		return
+	}
 	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s removido da fila.", id), false)
 }
 
@@ -1508,19 +1802,27 @@ func (s *Servidor) handleAssinarLote(w http.ResponseWriter, r *http.Request) {
 	todos, _ := s.db.ListarEventos()
 
 	qtd := 0
+	falhas := 0
 	for _, e := range todos {
 		if e.Status == "pronto" || e.Status == "rejeitado" {
 			assinado := SimularAssinatura(e.XMLGerado, cfg.RazaoSocial)
 			e.XMLAssinado = assinado
 			e.Status = "assinado"
-			e.MensagemRetorno = "Assinado digitalmente em lote."
+			e.MensagemRetorno = "ASSINATURA SIMULADA em lote: envelope demonstrativo, sem certificado aplicado e sem validade jurídica."
 			e.AtualizadoEm = time.Now()
-			_ = s.db.SalvarEvento(&e)
+			if err := s.db.SalvarEvento(&e); err != nil {
+				falhas++
+				continue
+			}
 			qtd++
 		}
 	}
 
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Lote processado: %d eventos assinados digitalmente!", qtd), false)
+	msg := fmt.Sprintf("Lote processado: %d eventos com assinatura SIMULADA (sem validade jurídica).", qtd)
+	if falhas > 0 {
+		msg += fmt.Sprintf(" %d evento(s) falharam ao gravar.", falhas)
+	}
+	s.handleFilaComFlash(w, r, msg, falhas > 0)
 }
 
 func (s *Servidor) handleTransmitirLote(w http.ResponseWriter, r *http.Request) {
@@ -1528,19 +1830,23 @@ func (s *Servidor) handleTransmitirLote(w http.ResponseWriter, r *http.Request) 
 	todos, _ := s.db.ListarEventos()
 
 	qtd := 0
+	falhas := 0
 	for _, e := range todos {
 		if e.Status == "assinado" {
-			protocolo, recibo, mensagem, aceito := SimularTransmissao(cfg.Ambiente, e.Tipo, e.XMLAssinado)
-			st := "aceito"
-			if !aceito {
-				st = "rejeitado"
+			mensagem := MensagemTransmissaoSimulada(cfg.Ambiente, e.Tipo)
+			if err := s.db.AtualizarStatusEvento(e.ID, "simulado", "", "", mensagem); err != nil {
+				falhas++
+				continue
 			}
-			_ = s.db.AtualizarStatusEvento(e.ID, st, recibo, protocolo, mensagem)
 			qtd++
 		}
 	}
 
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Lote transmitido: %d eventos enviados e aceitos pelo eSocial!", qtd), false)
+	msg := fmt.Sprintf("Lote processado: %d eventos marcados como SIMULADOS (nenhum dado foi enviado ao eSocial).", qtd)
+	if falhas > 0 {
+		msg += fmt.Sprintf(" %d evento(s) falharam ao atualizar.", falhas)
+	}
+	s.handleFilaComFlash(w, r, msg, true)
 }
 
 // -------------------------------------------------------------
@@ -1631,3 +1937,32 @@ func extrairTagXML(xmlStr, tag string) string {
 // Assegura imports usados
 var _ = bytes.Buffer{}
 var _ = xml.Header
+
+// idEventoValido verifica o padrão oficial do identificador de evento do eSocial:
+// "ID" + tpInsc (1) + nrInsc (14) + YYYYMMDDHHMMSS (14) + sequencial (5) = 36 caracteres.
+func idEventoValido(id string) bool {
+	if len(id) != 36 || !strings.HasPrefix(id, "ID") {
+		return false
+	}
+	for _, c := range id[2:] {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+// extrairIDEvento lê o atributo Id do elemento raiz do evento sem confiar em
+// posições arbitrárias do documento (achado B-02).
+func extrairIDEvento(xmlConteudo string) string {
+	indice := strings.Index(xmlConteudo, "Id=\"")
+	if indice < 0 {
+		return ""
+	}
+	inicio := indice + 4
+	fim := strings.Index(xmlConteudo[inicio:], "\"")
+	if fim <= 0 {
+		return ""
+	}
+	return strings.TrimSpace(xmlConteudo[inicio : inicio+fim])
+}

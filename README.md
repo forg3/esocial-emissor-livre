@@ -11,7 +11,9 @@
 [![HTMX](https://img.shields.io/badge/HTMX-2.0+-336699.svg)](https://htmx.org/)
 [![eSocial](https://img.shields.io/badge/eSocial-Leiaute%20S--1.3-005CA9.svg)](https://www.gov.br/esocial/pt-br/documentacao-tecnica)
 
-Software web livre, leve e direto para elaboração, validação estrutural (XSD), assinatura digital (XMLDSig A1), transmissão via webservice oficial e auditoria de recibos dos eventos do **eSocial** (versão S-1.3).
+Software web livre, leve e direto para elaboração, validação estrutural (XSD) e assinatura digital (XMLDSig A1) dos eventos do **eSocial** (versão S-1.3), com execução local e autenticação obrigatória.
+
+> **Estado atual (v1.1-alpha):** a assinatura com certificado A1 é real; o **envio ao webservice oficial ainda é simulado** — nenhum dado é transmitido ao governo e **nenhum recibo oficial é gerado**. Eventos processados nesse fluxo ficam com o status `simulado` e a interface exibe o aviso "MODO SIMULAÇÃO". Não utilize os comprovantes para cumprimento de obrigação acessória até a integração real ser habilitada.
 
 ---
 
@@ -25,12 +27,12 @@ O **Validador eSocial** é uma aplicação web autônoma e portátil desenvolvid
 
 Você **não precisa ter o Go instalado** e não precisa de banco de dados ou dependências externas. O aplicativo é distribuído como um binário nativo único e auto-contido. Ao ser iniciado, **abre automaticamente o seu navegador** no painel local:
 
-1. Acesse a página de [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.0-alpha).
+1. Acesse a página de [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.1-alpha).
 2. Baixe o pacote correspondente ao seu sistema operacional:
    - **Windows (x86_64):** Extraia o arquivo `.zip` e execute `validador-esocial.exe`.
-   - **macOS Apple Silicon (M1 / M2 / M3 / M4 / M5 / M6+):** Baixe `validador-esocial-v1.0-alpha-darwin-arm64.tar.gz`, extraia e execute `./validador-esocial-darwin-arm64`.
-   - **macOS Intel (x86_64):** Baixe `validador-esocial-v1.0-alpha-darwin-amd64.tar.gz`, extraia e execute `./validador-esocial-darwin-amd64`.
-   - **Linux (x86_64):** Baixe `validador-esocial-v1.0-alpha-linux-amd64.tar.gz`, extraia e execute `./validador-esocial`.
+   - **macOS Apple Silicon (M1 / M2 / M3 / M4 / M5 / M6+):** Baixe `validador-esocial-v1.1-alpha-darwin-arm64.tar.gz`, extraia e execute `./validador-esocial-darwin-arm64`.
+   - **macOS Intel (x86_64):** Baixe `validador-esocial-v1.1-alpha-darwin-amd64.tar.gz`, extraia e execute `./validador-esocial-darwin-amd64`.
+   - **Linux (x86_64):** Baixe `validador-esocial-v1.1-alpha-linux-amd64.tar.gz`, extraia e execute `./validador-esocial`.
 3. O navegador será iniciado automaticamente em `http://localhost:8000`.
 
 ### Modo 2: A Partir do Código-Fonte (Para Desenvolvedores)
@@ -46,29 +48,81 @@ cd validador-esocial
 go run cmd/server/main.go
 ```
 
-Acesse a interface no navegador em `http://localhost:8000`.
+Acesse a interface no navegador em `http://localhost:8000` e informe a **senha local** exibida no terminal na
+primeira execução (ela fica salva com hash em `dados/auth.json`, permissão `0600`).
+
+### Senha de acesso e exposição de rede
+
+```bash
+# Define a senha de acesso manualmente
+go run cmd/server/main.go -senha "MINHA_SENHA_FORTE"
+# ou
+ESOCIAL_SENHA="MINHA_SENHA_FORTE" go run cmd/server/main.go
+
+# Expõe na rede (use apenas com TLS/proxy reverso e senha forte)
+go run cmd/server/main.go -host 0.0.0.0 -senha "MINHA_SENHA_FORTE"
+```
+
+A aplicação escuta **somente em `127.0.0.1` por padrão**. Todas as rotas exigem sessão autenticada
+(cookie `HttpOnly` + `SameSite=Strict`), requisições de escrita exigem token anti-CSRF, o cabeçalho `Host`
+é validado contra a allowlist local (anti DNS rebinding), há limite de tamanho para uploads e rate limit
+nas tentativas de login e de validação da senha do certificado.
+
+---
+
+## Segurança (v1.1-alpha)
+
+Esta release incorpora uma auditoria de segurança completa (5 categorias: isolamento/controle de acesso, permissões,
+IDOR, segredos expostos e XSS) com **todos os achados corrigidos** — o relatório está em
+[`docs/security-audit/relatorio-auditoria-seguranca.pdf`](docs/security-audit/relatorio-auditoria-seguranca.pdf).
+
+**Correções aplicadas**
+
+- **Autenticação obrigatória**: senha local (hash com salt, 100k iterações), sessão em cookie `HttpOnly` +
+  `SameSite=Strict`, tela de login e logout. Escuta padrão apenas em `127.0.0.1` (flag `-host` para expor).
+- **Anti-CSRF**: token em todos os formulários e no cabeçalho `X-CSRF-Token` das requisições HTMX, com validação de
+  `Origin`/`Referer` em todo método de escrita.
+- **Anti DNS rebinding**: validação do cabeçalho `Host` contra allowlist local.
+- **Fim da assinatura/recibo falsos**: o fluxo simulado é rotulado (`MODO SIMULAÇÃO` na interface, `ASSINATURA SIMULADA`
+  no XML, status `simulado`) e **nenhum protocolo ou recibo oficial é gerado** sem transmissão real.
+- **XSS/HTML injection**: saída do teste de certificado migrada para `html/template` (escaping contextual).
+- **XML injection**: escape e validação de domínio (datas ISO, hora HHMM, UF oficial, códigos controlados) em todos os
+  campos dos geradores de eventos.
+- **Limites de entrada**: 2 MB (certificado), 5 MB (XML), 10 MB (CSV) e 12 MB por requisição de escrita.
+- **Validação por schema real**: `xmllint` + XSD oficiais embutidos, com modo degradado informado ao usuário.
+- **Rate limit**: 8 tentativas/minuto no login e 6/minuto na validação da senha do certificado A1.
+- **Hardening**: banco e certificados com permissão `0600` (diretórios `0700`), container sem privilégios (UID 10001),
+  cabeçalhos CSP/`X-Content-Type-Options`/`X-Frame-Options`/`Referrer-Policy`, erros de persistência reportados ao usuário.
+
+**Melhorias**
+
+- Filtro e contador de eventos `simulado` na fila de transmissão.
+- Mensagens de validação passam a informar exatamente o modo executado e o que divergiu.
+- Senha de acesso definível por `-senha` ou `ESOCIAL_SENHA`, com geração automática na primeira execução.
+- Suíte de testes ampliada com 13 testes de regressão de segurança (`internal/web/seguranca_test.go`).
 
 ---
 
 ## Versão e Releases
 
-**Versão Atual:** `v1.0-alpha` (Release Pré-lançamento para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
-Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.0-alpha).
+**Versão Atual:** `v1.1-alpha` (Release Pré-lançamento com **correções de segurança** e melhorias de usabilidade sobre a v1.0-alpha, para testes de conformidade com Leiaute S-1.3 NT 07/2026).  
+Download dos binários pré-compilados portáteis para Linux, Windows e macOS na aba [Releases](https://github.com/forg3/validador-esocial/releases/tag/v1.1-alpha).
 
 ---
 
 ## O que faz
 
 - **Cobertura Integral dos 36 Eventos Oficiais**: Catálogo visual estruturado por departamento (SESMT, Medicina Ocupacional, RH/DP, Folha, Jurídico e RPPS) e editor guiado com sincronização em tempo real com o XML S-1.3.
-- **Validação Estrutural Rígida**: Confere os arquivos XML diretamente contra os esquemas XSD oficiais do leiaute S-1.3 do eSocial antes de qualquer tentativa de envio.
+- **Validação Estrutural Rígida**: Confere os arquivos XML diretamente contra os esquemas XSD oficiais do leiaute S-1.3 (via `xmllint`, com modo degradado explicitamente informado quando a ferramenta não está instalada).
 - **Importação e Conferência de XML/CSV**: Recebe arquivos XML (como ASO) e realiza importação de colaboradores em lote via CSV com modelo pronto para download.
-- **Assinatura Digital Local (A1)**: Assina eventos utilizando exclusivamente certificado digital ICP-Brasil **A1** (`.pfx` / `.p12`) diretamente na máquina do usuário, mantendo a chave privada 100% segura.
-- **Transmissão Direta com WebServices Oficiais**: Envia lotes e consulta recibos nos ambientes de **Produção** e **Produção Restrita** (homologação) do eSocial.
-- **Auditoria de Eventos e Recibos**: Rastreamento do ciclo de vida dos eventos (`pronto` → `assinado` → `transmitido` → `aceito` ou `rejeitado`), registrando números de recibo e mensagens de erro governamentais.
+- **Assinatura Digital Local (A1)**: Assina eventos utilizando certificado digital ICP-Brasil **A1** (`.pfx` / `.p12`) diretamente na máquina do usuário (`internal/crypto`, XMLDSig + C14N). O fluxo de demonstração gera um envelope **explicitamente marcado como simulado** (`ASSINATURA SIMULADA`), sem validade jurídica.
+- **Transmissão ao eSocial (em integração)**: o cliente mTLS dos web services oficiais (`internal/soap`, TLS 1.2+, certificado A1) está implementado, mas **ainda não conectado à interface**. Nesta versão o envio é apenas simulado, sem protocolo e sem recibo.
+- **Auditoria de Eventos**: Rastreamento do ciclo de vida (`pronto` → `assinado` → `simulado` → `aceito`/`rejeitado`), com registro de recibo e mensagens **somente** quando houver transmissão real.
 
 ---
 
-- [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.0-alpha`).
+- [x] **Auditoria de Segurança e Hardening (v1.1-alpha)**: autenticação obrigatória, anti-CSRF, validação de Host, limites de entrada, rate limit, cabeçalhos de segurança e relatório de auditoria publicado em `docs/security-audit/`.
+- [x] **Publicação de Packages (GitHub Packages)**: Imagem de container publicada no GitHub Container Registry (`ghcr.io/forg3/validador-esocial:v1.1-alpha`).
 - [ ] **Pacotes de Distribuição (.deb, .rpm e MSI)**: Instaladores nativos para distribuições Linux e instalador Windows.
 - [ ] **Pipeline de CI/CD para Releases**: Automação de compilação cruzada (GoReleaser / GitHub Actions) para geração contínua de executáveis compactados a cada tag.
 - [ ] **Suporte a Certificados A3 (Tokens USB e Smartcards via PKCS#11)**: Integração nativa com drivers de hardware para leitura de dispositivos A3.
@@ -79,6 +133,8 @@ Download dos binários pré-compilados portáteis para Linux, Windows e macOS na
 
 ## O que não faz
 
+- **Leiautes do editor ainda não são 100% aderentes ao XSD oficial embarcado**: com a validação por schema agora ativa (xmllint + XSD S-1.3), eventos gerados pelo editor podem ser reprovados em campos como `ideVinculo` (o editor emite `ideTrabalhador`), `agNoc` (emite `agenteNoc`), códigos de órgão de classe (`ideOC` textual) e no bloco `epi`. A conferência por schema reporta exatamente o que divergiu — corrija o XML no editor antes de assinar. Adequação completa dos geradores está no roadmap.
+- **Não transmite ao eSocial nesta versão**: o envio ao webservice oficial (e a consulta de recibos) depende da conexão do cliente SOAP mTLS à interface. Enquanto isso, todo o fluxo de envio é simulado e rotulado como tal.
 - **Não suporta certificados A3 no momento**: Dispositivos físicos (cartões inteligentes e tokens USB via PKCS#11) não são suportados na versão atual. A aplicação aceita estritamente certificados em arquivo **A1** (`.pfx` / `.p12`).
 - **Não é um ERP de Folha de Pagamento**: Não calcula holerites, encargos sindicais complexos, horas extras ou rescisões trabalhistas. O software opera sobre os dados brutos necessários para a geração do evento.
 - **Não armazena chaves privadas em nuvem**: Em implantações corporativas multiusuário, o sistema não transfere certificados A1 para repositórios desprotegidos.

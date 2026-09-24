@@ -22,7 +22,7 @@ type Configuracao struct {
 	ID                   string    `json:"id"`
 	RazaoSocial          string    `json:"razao_social"`
 	CNPJ                 string    `json:"cnpj"`
-	Ambiente             int       `json:"ambiente"` // 1 = Produção, 2 = Produção Restrita
+	Ambiente             int       `json:"ambiente"`         // 1 = Produção, 2 = Produção Restrita
 	TipoCertificado      string    `json:"tipo_certificado"` // A1 ou A3
 	CertificadoPath      string    `json:"certificado_path"`
 	CertificadoValidoAte time.Time `json:"certificado_valido_ate"`
@@ -64,9 +64,13 @@ type Evento struct {
 // Abrir inicializa o banco SQLite local no diretório especificado ou cria um novo.
 func Abrir(caminho string) (*DB, error) {
 	dir := filepath.Dir(caminho)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	// 0700: o banco contém dados pessoais (CPF) e deve ser acessível apenas ao dono
+	// do processo (achado B-01).
+	if err := os.MkdirAll(dir, 0700); err != nil {
 		return nil, fmt.Errorf("falha ao criar pasta do banco: %w", err)
 	}
+	// Corrige permissões de diretórios preexistentes criados com 0755.
+	_ = os.Chmod(dir, 0700)
 
 	conn, err := sql.Open("sqlite", caminho)
 	if err != nil {
@@ -77,6 +81,13 @@ func Abrir(caminho string) (*DB, error) {
 	if _, err := conn.Exec("PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;"); err != nil {
 		conn.Close()
 		return nil, fmt.Errorf("falha ao configurar sqlite: %w", err)
+	}
+
+	// Restringe o arquivo do banco ao dono do processo (feito após a primeira
+	// consulta, quando o arquivo já existe de fato).
+	if err := os.Chmod(caminho, 0600); err != nil && !os.IsNotExist(err) {
+		conn.Close()
+		return nil, fmt.Errorf("falha ao ajustar permissoes do banco: %w", err)
 	}
 
 	db := &DB{conn: conn}
@@ -397,13 +408,14 @@ func (d *DB) AtualizarStatusEvento(id, status, recibo, protocolo, msg string) er
 
 // ResumoKPI consolida contadores para o painel de controle.
 type ResumoKPI struct {
-	TotalColaboradores int
-	EventosProntos     int
-	EventosAssinados   int
+	TotalColaboradores  int
+	EventosProntos      int
+	EventosAssinados    int
+	EventosSimulados    int
 	EventosTransmitidos int
-	EventosAceitos     int
-	EventosRejeitados  int
-	TotalEventos       int
+	EventosAceitos      int
+	EventosRejeitados   int
+	TotalEventos        int
 }
 
 // ObterResumoKPI computa os contadores para exibição no dashboard.
@@ -434,6 +446,8 @@ func (d *DB) ObterResumoKPI() (*ResumoKPI, error) {
 			kpi.EventosProntos += cnt
 		case "assinado":
 			kpi.EventosAssinados += cnt
+		case "simulado":
+			kpi.EventosSimulados += cnt
 		case "transmitido":
 			kpi.EventosTransmitidos += cnt
 		case "aceito":

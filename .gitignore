@@ -31,3 +31,6 @@
 
 # Planejamento e dados locais de marketing (nunca versionar)
 /marketing/
+
+# Configuracao local de ferramentas de IA (nunca versionar)
+/.opencode/

@@ -44,6 +44,10 @@
           Assinados ({{ .TotalAssinados }})
         </button>
         <button type="button" class="btn btn-outline btn-sm {{ if eq .FiltroStatus "aceito" }}btn-primario{{ end }}"
+                hx-get="/fila/tabela?status=simulado" hx-target="#tabela-fila">
+          Simulados ({{ .TotalSimulados }})
+        </button>
+        <button type="button" class="btn btn-outline btn-sm {{ if eq .FiltroStatus "aceito" }}btn-primario{{ end }}"
                 hx-get="/fila/tabela?status=aceito" hx-target="#tabela-fila">
           Aceitos ({{ .TotalAceitos }})
         </button>

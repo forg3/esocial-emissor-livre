@@ -15,7 +15,34 @@ import (
 	"github.com/forg3/esocial-emissor-livre/internal/web"
 )
 
-func prepararServidorTeste(t *testing.T) (*web.Servidor, *storage.DB, func()) {
+// senhaTeste é a senha local usada pelos testes (a autenticação é obrigatória
+// em todas as rotas desde a correção do achado C-01).
+const senhaTeste = "senha-teste-automatizado"
+
+// clienteAutenticado injeta o cookie de sessão e o token anti-CSRF em cada
+// requisição, simulando um operador já autenticado.
+type clienteAutenticado struct {
+	mux    http.Handler
+	cookie *http.Cookie
+	csrf   string
+}
+
+func (c *clienteAutenticado) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// O servidor valida o cabeçalho Host (anti DNS rebinding); o cliente de teste
+	// simula o acesso local padrão.
+	r.Host = "localhost:8000"
+	if c.cookie != nil {
+		r.AddCookie(c.cookie)
+	}
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		r.Header.Set("X-CSRF-Token", c.csrf)
+	}
+	c.mux.ServeHTTP(w, r)
+}
+
+func prepararServidorTeste(t *testing.T) (*web.Servidor, *storage.DB, http.Handler, func()) {
+	t.Helper()
+
 	tmpDir, err := os.MkdirTemp("", "esocial-test-*")
 	if err != nil {
 		t.Fatalf("falha ao criar temp dir: %v", err)
@@ -27,9 +54,29 @@ func prepararServidorTeste(t *testing.T) (*web.Servidor, *storage.DB, func()) {
 		t.Fatalf("falha ao abrir sqlite de teste: %v", err)
 	}
 
-	srv, err := web.NovoServidor(db)
+	srv, err := web.NovoServidorComOpcoes(db, web.OpcoesAuth{Senha: senhaTeste, Diretorio: tmpDir})
 	if err != nil {
 		t.Fatalf("falha ao instanciar servidor web: %v", err)
+	}
+
+	mux := srv.Rotas()
+	csrf := srv.TokenCSRF()
+
+	form := url.Values{"senha": {senhaTeste}, "csrf_token": {csrf}}
+	reqLogin := httptest.NewRequest("POST", "/login", strings.NewReader(form.Encode()))
+	reqLogin.Host = "localhost:8000"
+	reqLogin.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	recLogin := httptest.NewRecorder()
+	mux.ServeHTTP(recLogin, reqLogin)
+
+	var cookieSessao *http.Cookie
+	for _, c := range recLogin.Result().Cookies() {
+		if c.Name == "esocial_sessao" {
+			cookieSessao = c
+		}
+	}
+	if cookieSessao == nil {
+		t.Fatalf("login de teste falhou: status %d", recLogin.Code)
 	}
 
 	limpeza := func() {
@@ -37,14 +84,13 @@ func prepararServidorTeste(t *testing.T) (*web.Servidor, *storage.DB, func()) {
 		os.RemoveAll(tmpDir)
 	}
 
-	return srv, db, limpeza
+	return srv, db, &clienteAutenticado{mux: mux, cookie: cookieSessao, csrf: csrf}, limpeza
 }
 
 func TestRotasEstaticas(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// Testa CSS
 	req := httptest.NewRequest("GET", "/static/css/app.css", nil)
@@ -69,10 +115,9 @@ func TestRotasEstaticas(t *testing.T) {
 }
 
 func TestDashboard(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	req := httptest.NewRequest("GET", "/", nil)
 	rec := httptest.NewRecorder()
@@ -95,10 +140,9 @@ func TestDashboard(t *testing.T) {
 }
 
 func TestDashboardHTMXPartial(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	req := httptest.NewRequest("GET", "/", nil)
 	req.Header.Set("HX-Request", "true")
@@ -121,10 +165,9 @@ func TestDashboardHTMXPartial(t *testing.T) {
 }
 
 func TestConfiguracao(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// 1. GET /configuracao
 	req := httptest.NewRequest("GET", "/configuracao", nil)
@@ -165,10 +208,9 @@ func TestConfiguracao(t *testing.T) {
 }
 
 func TestColaboradoresECSV(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// 1. Download do modelo CSV
 	reqModelo := httptest.NewRequest("GET", "/colaboradores/modelo-csv", nil)
@@ -243,10 +285,9 @@ func TestColaboradoresECSV(t *testing.T) {
 }
 
 func TestEventosSSTCicloDeVidaFila(t *testing.T) {
-	srv, db, cleanup := prepararServidorTeste(t)
+	srv, db, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// Cadastra um colaborador inicial
 	colab := &storage.Colaborador{
@@ -314,9 +355,17 @@ func TestEventosSSTCicloDeVidaFila(t *testing.T) {
 		t.Errorf("POST /fila/{id}/transmitir falhou: %d", recTrans.Code)
 	}
 
+	// Após a correção do achado A-02 nenhum recibo oficial é inventado: o evento
+	// fica marcado como "simulado" e sem número de recibo.
 	evtTransmitido, _ := db.ObterEvento(evtID)
-	if evtTransmitido.Status != "aceito" || evtTransmitido.Recibo == "" {
-		t.Errorf("status esperado 'aceito' com recibo, obtido status '%s' e recibo '%s'", evtTransmitido.Status, evtTransmitido.Recibo)
+	if evtTransmitido.Status != "simulado" {
+		t.Errorf("status esperado 'simulado', obtido '%s'", evtTransmitido.Status)
+	}
+	if evtTransmitido.Recibo != "" {
+		t.Errorf("nenhum recibo deve ser gerado em modo simulação, obtido '%s'", evtTransmitido.Recibo)
+	}
+	if !strings.Contains(evtTransmitido.MensagemRetorno, "SIMULAÇÃO") {
+		t.Errorf("mensagem de retorno deve explicitar a simulação, obtido '%s'", evtTransmitido.MensagemRetorno)
 	}
 
 	// 5. Download do XML
@@ -345,10 +394,9 @@ func TestEventosSSTCicloDeVidaFila(t *testing.T) {
 }
 
 func TestAPIsBuscaRiscosECBOs(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// Busca Riscos
 	reqRisco := httptest.NewRequest("GET", "/api/riscos/busca?q=ruido", nil)
@@ -376,10 +424,9 @@ func TestAPIsBuscaRiscosECBOs(t *testing.T) {
 }
 
 func TestCatalogoEventosECategorias(t *testing.T) {
-	srv, _, cleanup := prepararServidorTeste(t)
+	srv, _, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// 1. GET /eventos (Catálogo completo)
 	req := httptest.NewRequest("GET", "/eventos", nil)
@@ -428,10 +475,9 @@ func TestCatalogoEventosECategorias(t *testing.T) {
 }
 
 func TestEditorGenerico(t *testing.T) {
-	srv, db, cleanup := prepararServidorTeste(t)
+	srv, db, handler, cleanup := prepararServidorTeste(t)
 	defer cleanup()
-
-	handler := srv.Rotas()
+	_ = srv
 
 	// 1. Abertura do editor genérico para S-1000
 	reqNovo := httptest.NewRequest("GET", "/eventos/novo/S-1000", nil)
@@ -492,4 +538,3 @@ func TestEditorGenerico(t *testing.T) {
 		t.Errorf("evento S-1000 não encontrado na lista de eventos gravados")
 	}
 }
-
