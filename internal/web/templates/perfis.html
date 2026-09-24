@@ -1,0 +1,149 @@
+{{ define "content" }}
+<div class="page-header">
+  <div>
+    <h1 style="margin: 0; font-size: var(--fs-xl);">Empresas e Certificados</h1>
+    <p style="margin: 4px 0 0 0; font-size: var(--fs-sm); color: var(--text-2);">
+      Gestão multiempresa: cada perfil tem o seu próprio CNPJ, certificado A1 e, quando aplicável, o procurador eletrônico.
+      O perfil ativo define o empregador usado na geração e assinatura dos eventos.
+    </p>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: var(--sp-4);">
+  <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+    1. Perfis cadastrados ({{ len .Perfis }})
+  </h3>
+
+  {{ if .Perfis }}
+    <table style="width: 100%; margin-top: var(--sp-3); border-collapse: collapse; font-size: 13px;">
+      <thead>
+        <tr style="background: var(--surface-2); text-align: left;">
+          <th style="padding: 8px;">Situação</th>
+          <th style="padding: 8px;">Empresa</th>
+          <th style="padding: 8px;">CNPJ</th>
+          <th style="padding: 8px;">Ambiente</th>
+          <th style="padding: 8px;">Certificado</th>
+          <th style="padding: 8px;">Procurador</th>
+          <th style="padding: 8px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .Perfis }}
+          <tr style="border-bottom: 1px solid var(--border); {{ if .Ativo }}background: var(--surface-2);{{ end }}">
+            <td style="padding: 8px;">
+              {{ if .Ativo }}
+                <span class="badge ok">Ativo</span>
+              {{ else }}
+                <span class="badge neutral">Inativo</span>
+              {{ end }}
+            </td>
+            <td style="padding: 8px;"><strong>{{ .RazaoSocial }}</strong></td>
+            <td style="padding: 8px;" class="mono">{{ formatarCNPJ .CNPJ }}</td>
+            <td style="padding: 8px;">{{ if eq .Ambiente 1 }}Produção Oficial{{ else }}Produção Restrita{{ end }}</td>
+            <td style="padding: 8px;" class="mono">
+              {{ if .CertificadoPath }}
+                {{ if .CertificadoValidoAte.IsZero }}carregado{{ else }}válido até {{ formatarData .CertificadoValidoAte }}{{ end }}
+              {{ else }}<span style="color: var(--warn-text);">sem certificado</span>{{ end }}
+            </td>
+            <td style="padding: 8px;">
+              {{ if .ProcuradorNome }}{{ .ProcuradorNome }}<br><span class="mono" style="font-size: 11px;">{{ .ProcuradorDoc }}</span>{{ else }}--{{ end }}
+            </td>
+            <td style="padding: 8px; white-space: nowrap;">
+              {{ if not .Ativo }}
+                <button type="button" class="btn btn-outline btn-sm"
+                        hx-post="/perfis/{{ .ID }}/ativar" hx-target="#conteudo">Ativar</button>
+                <button type="button" class="btn btn-outline btn-sm" style="color: var(--err-text);"
+                        hx-delete="/perfis/{{ .ID }}" hx-target="#conteudo"
+                        hx-confirm="Excluir o perfil de {{ .RazaoSocial }}?">Excluir</button>
+              {{ else }}
+                <span style="font-size: 11px; color: var(--text-2);">em uso</span>
+              {{ end }}
+            </td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  {{ else }}
+    <p style="font-size: 13px; color: var(--text-2); margin: var(--sp-3) 0 0 0;">
+      Nenhum perfil cadastrado. Cadastre a primeira empresa abaixo para habilitar a emissão de eventos.
+    </p>
+  {{ end }}
+</div>
+
+<div class="card" style="margin-bottom: var(--sp-4);">
+  <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+    2. Cadastrar / atualizar empresa
+  </h3>
+  <form action="/perfis" method="POST" hx-post="/perfis" hx-target="#conteudo">
+    <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+    <div class="form-grid" style="margin-top: var(--sp-3);">
+      <div class="campo">
+        <label for="razao_social">Razão Social <span class="req">*</span></label>
+        <input type="text" id="razao_social" name="razao_social" placeholder="EMPRESA MODELO LTDA" required>
+      </div>
+      <div class="campo">
+        <label for="cnpj">CNPJ (14 dígitos) <span class="req">*</span></label>
+        <input type="text" id="cnpj" name="cnpj" class="mono" placeholder="12345678000190" maxlength="18" required>
+      </div>
+      <div class="campo">
+        <label for="ambiente">Ambiente</label>
+        <select id="ambiente" name="ambiente">
+          <option value="2" selected>2 - Produção Restrita (testes)</option>
+          <option value="1">1 - Produção Oficial</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="tipo_certificado">Tipo de Certificado</label>
+        <select id="tipo_certificado" name="tipo_certificado">
+          <option value="A1" selected>A1 (.pfx / .p12)</option>
+          <option value="A3">A3 (token / smartcard)</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="procurador_nome">Procurador Eletrônico (nome)</label>
+        <input type="text" id="procurador_nome" name="procurador_nome" placeholder="Ex.: Contabilidade Modelo Ltda">
+      </div>
+      <div class="campo">
+        <label for="procurador_doc">Documento do Procurador (CPF/CNPJ)</label>
+        <input type="text" id="procurador_doc" name="procurador_doc" class="mono" placeholder="Somente números">
+      </div>
+    </div>
+    <div class="form-acoes" style="justify-content: flex-end; margin-top: var(--sp-3);">
+      <button type="submit" class="btn btn-primario" style="height: 40px;">Salvar empresa</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+    3. Carregar certificado A1 do perfil
+  </h3>
+
+  {{ if .Perfis }}
+    <form action="/perfis/{{ .PerfilAtivoID }}/certificado" method="POST" enctype="multipart/form-data"
+          hx-post="/perfis/{{ .PerfilAtivoID }}/certificado" hx-target="#conteudo">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+      <div class="form-grid" style="margin-top: var(--sp-3);">
+        <div class="campo">
+          <label for="arquivo_pfx">Arquivo .pfx / .p12 (perfil ativo)</label>
+          <input type="file" id="arquivo_pfx" name="arquivo_pfx" accept=".pfx,.p12,application/x-pkcs12">
+        </div>
+        <div class="campo">
+          <label for="senha_a1">Senha do Certificado</label>
+          <input type="password" id="senha_a1" name="senha_a1" autocomplete="new-password">
+        </div>
+      </div>
+      <p style="font-size: 11px; color: var(--text-2); margin: var(--sp-2) 0 0 0;">
+        O arquivo é gravado com permissão <code>0600</code> em <code>dados/certificados/&lt;perfil&gt;/</code>. A senha não é armazenada.
+      </p>
+      <div class="form-acoes" style="justify-content: flex-end; margin-top: var(--sp-3);">
+        <button type="submit" class="btn btn-primario" style="height: 40px;" {{ if not .PerfilAtivoID }}disabled{{ end }}>
+          Carregar certificado do perfil ativo
+        </button>
+      </div>
+    </form>
+  {{ else }}
+    <p style="font-size: 13px; color: var(--text-2); margin: var(--sp-3) 0 0 0;">Cadastre uma empresa para habilitar o upload de certificado.</p>
+  {{ end }}
+</div>
+{{ end }}

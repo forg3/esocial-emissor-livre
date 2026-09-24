@@ -5,6 +5,11 @@
       <h1 style="margin: 0; font-size: var(--fs-2xl);">Central de Transmissão eSocial</h1>
       <p class="muted" style="margin: 4px 0 0;">
         Fila de envio, assinatura digital com certificado e consulta de recibos oficiais de entrega SST.
+        {{ if eq .Config.ModoTransmissao "real" }}
+          <span class="badge warn" style="margin-left: 6px;">TRANSMISSÃO REAL ATIVA</span>
+        {{ else }}
+          <span class="badge neutral" style="margin-left: 6px;">MODO SIMULAÇÃO</span>
+        {{ end }}
       </p>
     </div>
 
@@ -19,7 +24,13 @@
         <span>Assinar Prontos em Lote</span>
       </button>
 
-      <button type="button" class="btn btn-primario" hx-post="/fila/lote/transmitir" hx-target="#conteudo" hx-confirm="Confirma a transmissão do lote de eventos assinados para o ambiente do eSocial?">
+      {{ if eq .Config.ModoTransmissao "real" }}
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label for="senha_a1" style="font-size: 11px; color: var(--text-2); font-weight: 600;">Senha do certificado:</label>
+          <input type="password" id="senha_a1" name="senha_a1" autocomplete="off" style="height: 32px; width: 150px; font-size: 12px;">
+        </div>
+      {{ end }}
+      <button type="button" class="btn btn-primario" hx-post="/fila/lote/transmitir" hx-include="#senha_a1" hx-target="#conteudo" hx-confirm="Confirma a transmissão do lote de eventos assinados para o ambiente do eSocial?">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
         <span>Transmitir Lote ao eSocial</span>
       </button>

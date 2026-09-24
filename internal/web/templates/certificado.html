@@ -151,6 +151,29 @@
     </div>
   </div>
 
+  <!-- MODO DE TRANSMISSÃO -->
+  <div class="card" style="margin-top: var(--sp-4); border-left: 3px solid {{ if eq .Config.ModoTransmissao "real" }}var(--ok){{ else }}var(--warn){{ end }};">
+    <h3 style="margin-top: 0; font-size: var(--fs-base); color: var(--navy);">Modo de transmissão ao eSocial</h3>
+    <p style="font-size: 12px; color: var(--text-2); line-height: 1.6; margin-top: 6px;">
+      {{ if eq .Config.ModoTransmissao "real" }}
+        <strong>REAL:</strong> os eventos assinados são enviados ao webservice oficial do eSocial (mTLS com o certificado A1).
+        A senha do certificado é solicitada a cada envio e não é armazenada.
+      {{ else }}
+        <strong>SIMULADO (padrão):</strong> nenhum dado é enviado ao governo e nenhum recibo oficial é gerado.
+        Habilite o modo real somente com certificado A1 válido e após testar em Produção Restrita.
+      {{ end }}
+    </p>
+    <form action="/configuracao/modo-transmissao" method="POST" hx-post="/configuracao/modo-transmissao" hx-target="#conteudo"
+          style="display: flex; gap: 8px; align-items: center; margin-top: var(--sp-3);">
+      <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+      <select name="modo_transmissao" style="height: 36px; max-width: 320px;">
+        <option value="simulado" {{ if ne .Config.ModoTransmissao "real" }}selected{{ end }}>Simulado (sem envio ao governo)</option>
+        <option value="real" {{ if eq .Config.ModoTransmissao "real" }}selected{{ end }}>Real (webservice oficial do eSocial)</option>
+      </select>
+      <button type="submit" class="btn btn-outline btn-sm" style="height: 36px;">Aplicar modo</button>
+    </form>
+  </div>
+
   <!-- AVISO DE CONFORMIDADE ICP-BRASIL -->
   <div class="card" style="margin-top: var(--sp-4); background: var(--surface-2); border-left: 3px solid var(--teal);">
     <div style="display: flex; align-items: flex-start; gap: 12px;">
