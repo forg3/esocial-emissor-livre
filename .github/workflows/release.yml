@@ -156,7 +156,7 @@ jobs:
       - name: Compilar Binário Nativo Linux
         run: |
           mkdir -p dist
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.versao=${{ github.ref_name }}" -o dist/validador-esocial cmd/server
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.versao=${{ github.ref_name }}" -o dist/validador-esocial ./cmd/server
 
       - name: Autenticar no GitHub Container Registry (ghcr.io)
         uses: docker/login-action@v4
