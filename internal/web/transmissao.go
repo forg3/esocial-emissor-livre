@@ -229,3 +229,85 @@ func (s *Servidor) handleDefinirModoTransmissao(w http.ResponseWriter, r *http.R
 		MensagemFlash: msg,
 	})
 }
+
+// -----------------------------------------------------------------------------
+// CERTIFICADOS A3 (TOKEN USB / SMARTCARD VIA PKCS#11)
+// -----------------------------------------------------------------------------
+
+// DadosTesteTokenA3 alimenta o retorno do teste de token no partial de certificado.
+type DadosTesteTokenA3 struct {
+	Disponivel bool
+	Mensagem   string
+	Titular    string
+	Documento  string
+	ValidoAte  string
+	Emissor    string
+}
+
+// handleTestarTokenA3 verifica o acesso ao token PKCS#11 e o certificado do hardware.
+func (s *Servidor) handleTestarTokenA3(w http.ResponseWriter, r *http.Request) {
+	modulo := strings.TrimSpace(r.FormValue("modulo_pkcs11"))
+	slot := strings.TrimSpace(r.FormValue("slot_pkcs11"))
+	pin := r.FormValue("pin_a3")
+
+	if modulo == "" {
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe:   "warn",
+			Titulo:   "Informe o módulo PKCS#11",
+			Mensagem: "Informe o caminho da biblioteca PKCS#11 do fabricante do token (ex.: /usr/lib/opensc-pkcs11.so).",
+		})
+		return
+	}
+
+	if !crypto.PKCS11Disponivel() {
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe: "warn",
+			Titulo: "Driver PKCS#11 não incluído nesta compilação",
+			Mensagem: "Esta build suporta apenas certificados A1. Para usar token/smartcard (A3), compile com " +
+				"a tag de build pkcs11: go build -tags pkcs11 ./cmd/server (requer a biblioteca PKCS#11 do fabricante).",
+			Itens: []ItemTesteCertificado{
+				{Rotulo: "Módulo informado", Valor: modulo},
+				{Rotulo: "Como habilitar", Valor: "go build -tags pkcs11 ./cmd/server"},
+			},
+		})
+		return
+	}
+
+	if !s.permitirTesteCertificado(r) {
+		w.Header().Set("Retry-After", "60")
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe:   "err",
+			Titulo:   "Muitas tentativas",
+			Mensagem: "Limite de tentativas de acesso ao token atingido. Aguarde um minuto.",
+		})
+		return
+	}
+
+	cert, err := crypto.AbrirTokenA3(crypto.ConfiguracaoTokenA3{
+		Modulo: modulo,
+		Slot:   slot,
+		PIN:    pin,
+	})
+	if err != nil {
+		s.renderTesteCertificado(w, DadosTesteCertificado{
+			Classe:   "err",
+			Titulo:   "Falha ao acessar o token A3",
+			Mensagem: err.Error(),
+			Itens:    []ItemTesteCertificado{{Rotulo: "Módulo", Valor: modulo}},
+		})
+		return
+	}
+
+	diasRestantes := int(time.Until(cert.ValidoAte()).Hours() / 24)
+	s.renderTesteCertificado(w, DadosTesteCertificado{
+		Classe:   "ok",
+		Titulo:   "Token A3 operacional",
+		Mensagem: "Certificado do hardware lido com sucesso. A chave privada permanece no token e a assinatura é delegada ao dispositivo.",
+		Itens: []ItemTesteCertificado{
+			{Rotulo: "Titular", Valor: cert.RazaoSocial()},
+			{Rotulo: "Documento", Valor: cert.CNPJ()},
+			{Rotulo: "Vigência", Valor: fmt.Sprintf("%s até %s (%d dias restantes)",
+				cert.ValidoDe().Format("02/01/2006"), cert.ValidoAte().Format("02/01/2006"), diasRestantes)},
+		},
+	})
+}
