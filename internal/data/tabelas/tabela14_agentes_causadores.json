@@ -1,205 +1,997 @@
 {
-  "fonte": "eSocial Leiaute S-1.3 - Tabela 14 - Agente Causador do Acidente de Trabalho (subconjunto verificado; a tabela oficial completa deve ser consultada no portal do eSocial)",
-  "itens": [
-    {
-      "codigo": "302010200",
-      "descricao": "Rua e estrada - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010250",
-      "descricao": "Calçada ou caminho para pedestre - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010300",
-      "descricao": "Piso de edifício - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010350",
-      "descricao": "Escada permanente cujos degraus permitem apoio integral do pé"
-    },
-    {
-      "codigo": "302010400",
-      "descricao": "Rampa - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010450",
-      "descricao": "Passarela ou plataforma permanentes - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010500",
-      "descricao": "Piso de mina - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010550",
-      "descricao": "Chão - superfície utilizada para sustentar pessoas"
-    },
-    {
-      "codigo": "302010600",
-      "descricao": "Piso de andaime e plataforma desmontável"
-    },
-    {
-      "codigo": "302010650",
-      "descricao": "Piso de veículo"
-    },
-    {
-      "codigo": "302010700",
-      "descricao": "Telhado"
-    },
-    {
-      "codigo": "302010900",
-      "descricao": "Superfície de sustentação, NIC"
-    },
-    {
-      "codigo": "302030900",
-      "descricao": "Escada móvel ou fixada, NIC"
-    },
-    {
-      "codigo": "302050100",
-      "descricao": "Edifício - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050200",
-      "descricao": "Depósito fixo (tanque, silo, paiol, etc.)"
-    },
-    {
-      "codigo": "302050300",
-      "descricao": "Cais, doca - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050400",
-      "descricao": "Dique, barragem - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050500",
-      "descricao": "Ponte, viaduto - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050600",
-      "descricao": "Arquibancada, estádio - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050700",
-      "descricao": "Andaime, plataforma - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050800",
-      "descricao": "Torre, poste - edifício ou estrutura"
-    },
-    {
-      "codigo": "302050900",
-      "descricao": "Edifício ou estrutura, NIC"
-    },
-    {
-      "codigo": "302070100",
-      "descricao": "Escavação (para edifício, estrada, etc.)"
-    },
-    {
-      "codigo": "302070300",
-      "descricao": "Canal, fosso"
-    },
-    {
-      "codigo": "302070500",
-      "descricao": "Poço, entrada, galeria, etc., de mina"
-    },
-    {
-      "codigo": "302070700",
-      "descricao": "Túnel"
-    },
-    {
-      "codigo": "302070900",
-      "descricao": "Escavação, fosso, túnel, NIC"
-    },
-    {
-      "codigo": "302090000",
-      "descricao": "Superfície e estrutura, NIC"
-    },
-    {
-      "codigo": "303010040",
-      "descricao": "Martelo, malho, marreta - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010080",
-      "descricao": "Machadinha, enxó - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010120",
-      "descricao": "Faca, facão - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010160",
-      "descricao": "Tesoura, tesourão - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010200",
-      "descricao": "Formão, cinzel - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010240",
-      "descricao": "Serra, serrote - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010280",
-      "descricao": "Alicate, torques, tenaz - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010320",
-      "descricao": "Plaina - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010360",
-      "descricao": "Lima, grosa - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010400",
-      "descricao": "Punção, ponteiro, vazador, talhadeira - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010440",
-      "descricao": "Pua, trado, verruma, máquina de furar manual"
-    },
-    {
-      "codigo": "303010480",
-      "descricao": "Chave de parafuso - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010520",
-      "descricao": "Chave de porca ou de abertura regulável, chave de boca"
-    },
-    {
-      "codigo": "303010560",
-      "descricao": "Alavanca, pé-de-cabra - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010600",
-      "descricao": "Corda, cabo, corrente - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010640",
-      "descricao": "Machado - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010680",
-      "descricao": "Enxada, enxadão, sacho - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010720",
-      "descricao": "Pá, cavadeira - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010760",
-      "descricao": "Picareta - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010800",
-      "descricao": "Garfo, ancinho, forcado - ferramenta manual sem força motriz"
-    },
-    {
-      "codigo": "303010900",
-      "descricao": "Ferramenta manual sem força motriz, NIC"
-    },
-    {
-      "codigo": "303015050",
-      "descricao": "Martelete, socador - ferramenta portátil com força motriz ou aquecimento"
-    }
-  ]
+ "fonte": "eSocial leiaute S-1.3 (NT 07/2026), Tabela 14 - Agente Causador do Acidente de Trabalho. Tabela completa, extraída de https://www.gov.br/esocial/pt-br/documentacao-tecnica/leiautes-esocial-versao-s-1-3-nt-07-2026/tabelas.html, consultada em 21/09/2026 (cópia em docs/pesquisa/risco-epi/fontes/esocial/leiaute-s-1.3-nt-07-2026-tabelas.html).",
+ "itens": [
+  {
+   "codigo": "302010200",
+   "descricao": "Rua e estrada - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010250",
+   "descricao": "Calçada ou caminho para pedestre - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010300",
+   "descricao": "Piso de edifício - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010350",
+   "descricao": "Escada permanente cujos degraus permitem apoio integral do pé, degrau - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010400",
+   "descricao": "Rampa - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010450",
+   "descricao": "Passarela ou plataforma permanentes - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010500",
+   "descricao": "Piso de mina - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010550",
+   "descricao": "Chão - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010600",
+   "descricao": "Piso de andaime e plataforma desmontável - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010650",
+   "descricao": "Piso de veiculo - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302010700",
+   "descricao": "Telhado"
+  },
+  {
+   "codigo": "302010900",
+   "descricao": "Superfície de sustentação, NIC - superfície utilizada para sustentar pessoas"
+  },
+  {
+   "codigo": "302030900",
+   "descricao": "Escada móvel ou fixada, NIC"
+  },
+  {
+   "codigo": "302050100",
+   "descricao": "Edifício - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050200",
+   "descricao": "Depósito fixo (tanque, silo, paiol, etc.) - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050300",
+   "descricao": "Cais, doca - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050400",
+   "descricao": "Dique, barragem - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050500",
+   "descricao": "Ponte, viaduto - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050600",
+   "descricao": "Arquibancada, estádio - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050700",
+   "descricao": "Andaime, plataforma - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050800",
+   "descricao": "Torre, poste - edifício ou estrutura"
+  },
+  {
+   "codigo": "302050900",
+   "descricao": "Edifício ou estrutura (exceto piso, superfície de sustentação ou área de circulação), NIC"
+  },
+  {
+   "codigo": "302070100",
+   "descricao": "Escavação (para edifício, estrada, etc.)"
+  },
+  {
+   "codigo": "302070300",
+   "descricao": "Canal, fosso"
+  },
+  {
+   "codigo": "302070500",
+   "descricao": "Poço, entrada, galeria, etc. de mina"
+  },
+  {
+   "codigo": "302070700",
+   "descricao": "Túnel"
+  },
+  {
+   "codigo": "302070900",
+   "descricao": "Escavação, fosso, túnel, NIC"
+  },
+  {
+   "codigo": "302090000",
+   "descricao": "Superfície e estrutura, NIC"
+  },
+  {
+   "codigo": "303010040",
+   "descricao": "Martelo, malho, marreta - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010080",
+   "descricao": "Machadinha, enxó - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010120",
+   "descricao": "Faca, facão - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010160",
+   "descricao": "Tesoura, tesourão - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010200",
+   "descricao": "Formão, cinzel - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010240",
+   "descricao": "Serra, serrote - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010280",
+   "descricao": "Alicate, torques, tenaz - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010320",
+   "descricao": "Plaina - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010360",
+   "descricao": "Lima, grosa - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010400",
+   "descricao": "Punção, ponteiro, vazador, talhadeira - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010440",
+   "descricao": "Pua, trado, verruma, máquina de furar manual - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010480",
+   "descricao": "Chave de parafuso - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010520",
+   "descricao": "Chave de porca ou de abertura regulável, chave de boca - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010560",
+   "descricao": "Alavanca, pé-de-cabra - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010600",
+   "descricao": "Corda, cabo, corrente - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010640",
+   "descricao": "Machado - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010680",
+   "descricao": "Enxada, enxadão, sacho - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010720",
+   "descricao": "Pá, cavadeira - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010760",
+   "descricao": "Picareta - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010800",
+   "descricao": "Garfo, ancinho, forcado - ferramenta manual sem força motriz"
+  },
+  {
+   "codigo": "303010900",
+   "descricao": "Ferramenta manual sem força motriz, NIC"
+  },
+  {
+   "codigo": "303015050",
+   "descricao": "Martelete, socador - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015100",
+   "descricao": "Talhadeira - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015150",
+   "descricao": "Cortadeira, guilhotina - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015200",
+   "descricao": "Serra - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015250",
+   "descricao": "Punção, ponteiro, vazador - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015300",
+   "descricao": "Perfuratriz - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015350",
+   "descricao": "Rebitadeira - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015400",
+   "descricao": "Máquina de aparafusar - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015450",
+   "descricao": "Esmeril - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015500",
+   "descricao": "Politriz, enceradeira - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015550",
+   "descricao": "Ferro de passar - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015600",
+   "descricao": "Ferramenta de soldagem - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015650",
+   "descricao": "Maçarico - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015700",
+   "descricao": "Ferramenta acionada por explosivo - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015750",
+   "descricao": "Jato de areia - ferramenta portátil com força motriz ou aquecimento"
+  },
+  {
+   "codigo": "303015900",
+   "descricao": "Ferramenta portátil com força motriz ou aquecimento, NIC"
+  },
+  {
+   "codigo": "303020040",
+   "descricao": "Serra - máquina"
+  },
+  {
+   "codigo": "303020080",
+   "descricao": "Tesoura, guilhotina, máquina de cortar - máquina"
+  },
+  {
+   "codigo": "303020120",
+   "descricao": "Laminadora, calandra - máquina"
+  },
+  {
+   "codigo": "303020160",
+   "descricao": "Furadeira, broqueadeira, torno, fresa - máquina"
+  },
+  {
+   "codigo": "303020200",
+   "descricao": "Prensa - máquina"
+  },
+  {
+   "codigo": "303020240",
+   "descricao": "Plaina, tupia - máquina"
+  },
+  {
+   "codigo": "303020280",
+   "descricao": "Máquina de fundir, de forjar, de soldar"
+  },
+  {
+   "codigo": "303020320",
+   "descricao": "Britador, moinho - máquina"
+  },
+  {
+   "codigo": "303020360",
+   "descricao": "Misturador, batedeira, agitador - máquina"
+  },
+  {
+   "codigo": "303020400",
+   "descricao": "Peneira mecânica, máquina separadora - máquina"
+  },
+  {
+   "codigo": "303020440",
+   "descricao": "Politriz, lixadora, esmeril - máquina"
+  },
+  {
+   "codigo": "303020480",
+   "descricao": "Máquina de terraplenagem e construção de estrada"
+  },
+  {
+   "codigo": "303020520",
+   "descricao": "Máquina de mineração e perfuração (de túnel, poço, etc.)"
+  },
+  {
+   "codigo": "303020560",
+   "descricao": "Máquina agrícola"
+  },
+  {
+   "codigo": "303020600",
+   "descricao": "Máquina têxtil"
+  },
+  {
+   "codigo": "303020640",
+   "descricao": "Máquina de costurar e de pespontar"
+  },
+  {
+   "codigo": "303020680",
+   "descricao": "Máquina de imprimir"
+  },
+  {
+   "codigo": "303020720",
+   "descricao": "Máquina de escritório"
+  },
+  {
+   "codigo": "303020760",
+   "descricao": "Máquina de embalar ou empacotar"
+  },
+  {
+   "codigo": "303020900",
+   "descricao": "Máquina, NIC"
+  },
+  {
+   "codigo": "303025300",
+   "descricao": "Transportador por gravidade"
+  },
+  {
+   "codigo": "303025600",
+   "descricao": "Transportador com força motriz"
+  },
+  {
+   "codigo": "303025900",
+   "descricao": "Transportador, NIC"
+  },
+  {
+   "codigo": "303030050",
+   "descricao": "Guindaste - equipamento de guindar"
+  },
+  {
+   "codigo": "303030100",
+   "descricao": "Ponte rolante - equipamento de guindar"
+  },
+  {
+   "codigo": "303030150",
+   "descricao": "Elevador - equipamento de guindar"
+  },
+  {
+   "codigo": "303030200",
+   "descricao": "Elevador de caçamba para mineração - equipamento de guindar"
+  },
+  {
+   "codigo": "303030250",
+   "descricao": "Pá mecânica, draga - equipamento de guindar"
+  },
+  {
+   "codigo": "303030300",
+   "descricao": "Talha - equipamento de guindar"
+  },
+  {
+   "codigo": "303030350",
+   "descricao": "Pau de carga - equipamento de guindar"
+  },
+  {
+   "codigo": "303030400",
+   "descricao": "Macaco (mecânico, hidráulico, pneumático) - equipamento de guindar"
+  },
+  {
+   "codigo": "303030450",
+   "descricao": "Guincho pneumático - equipamento de guindar"
+  },
+  {
+   "codigo": "303030500",
+   "descricao": "Guincho elétrico - equipamento de guindar"
+  },
+  {
+   "codigo": "303030900",
+   "descricao": "Equipamento de guindar, NIC"
+  },
+  {
+   "codigo": "303035300",
+   "descricao": "Correia - dispositivo de transmissão de energia mecânica"
+  },
+  {
+   "codigo": "303035400",
+   "descricao": "Corrente, corda, cabo - dispositivo de transmissão de energia mecânica"
+  },
+  {
+   "codigo": "303035500",
+   "descricao": "Tambor, polia, roldana - dispositivo de transmissão de energia mecânica"
+  },
+  {
+   "codigo": "303035600",
+   "descricao": "Embreagem de fricção - dispositivo de transmissão de energia mecânica"
+  },
+  {
+   "codigo": "303035700",
+   "descricao": "Engrenagem - dispositivo de transmissão de energia mecânica"
+  },
+  {
+   "codigo": "303035900",
+   "descricao": "Dispositivo de transmissão de energia mecânica, NIC"
+  },
+  {
+   "codigo": "303040100",
+   "descricao": "Gerador - equipamento elétrico"
+  },
+  {
+   "codigo": "303040200",
+   "descricao": "Condutor - equipamento elétrico"
+  },
+  {
+   "codigo": "303040300",
+   "descricao": "Transformador, conversor - equipamento elétrico"
+  },
+  {
+   "codigo": "303040400",
+   "descricao": "Painel de controle, barramento, chave, interruptor, disjuntor, fusível - equipamento elétrico"
+  },
+  {
+   "codigo": "303040500",
+   "descricao": "Reostato, dispositivo de partida e aparelho de controle, capacitor, retificador, bateria de acumuladores - equipamento elétrico"
+  },
+  {
+   "codigo": "303040600",
+   "descricao": "Motor elétrico - equipamento elétrico"
+  },
+  {
+   "codigo": "303040700",
+   "descricao": "Equipamento magnético - equipamento elétrico"
+  },
+  {
+   "codigo": "303040750",
+   "descricao": "Equipamento eletrolítico - equipamento elétrico"
+  },
+  {
+   "codigo": "303040800",
+   "descricao": "Equipamento de aquecimento elétrico - equipamento elétrico"
+  },
+  {
+   "codigo": "303040900",
+   "descricao": "Equipamento elétrico, NIC"
+  },
+  {
+   "codigo": "303045200",
+   "descricao": "Motor (combustão interna, vapor)"
+  },
+  {
+   "codigo": "303045400",
+   "descricao": "Bomba"
+  },
+  {
+   "codigo": "303045600",
+   "descricao": "Turbina"
+  },
+  {
+   "codigo": "303045900",
+   "descricao": "Motor, bomba, turbina, NIC"
+  },
+  {
+   "codigo": "303050200",
+   "descricao": "Caldeira"
+  },
+  {
+   "codigo": "303050400",
+   "descricao": "Vaso sob pressão (para líquido, gás ou vapor)"
+  },
+  {
+   "codigo": "303050600",
+   "descricao": "Tubo sob pressão (mangueira ou tubo para liquido, gás ou vapor)"
+  },
+  {
+   "codigo": "303050900",
+   "descricao": "Caldeira, vaso sob pressão, NIC"
+  },
+  {
+   "codigo": "303055200",
+   "descricao": "Caixão pneumático - equipamento para trabalho em ambiente de pressão anormal"
+  },
+  {
+   "codigo": "303055400",
+   "descricao": "Escafandro - equipamento para trabalho em ambiente de pressão anormal"
+  },
+  {
+   "codigo": "303055600",
+   "descricao": "Equipamento de mergulho - equipamento para trabalho em ambiente de pressão anormal"
+  },
+  {
+   "codigo": "303055900",
+   "descricao": "Equipamento para trabalho em ambiente de pressão anormal, NIC"
+  },
+  {
+   "codigo": "303060000",
+   "descricao": "Forno, estufa, retorta, aquecedor de ambiente, fogão, etc. (exceto quando a lesão principal for choque elétrico ou eletroplessão) - equipamento de aquecimento"
+  },
+  {
+   "codigo": "303065000",
+   "descricao": "Equipamento emissor de radiação não ionizante"
+  },
+  {
+   "codigo": "303065300",
+   "descricao": "Equipamento de iluminação - equipamento emissor de radiação não ionizante"
+  },
+  {
+   "codigo": "303065600",
+   "descricao": "Arco elétrico - equipamento emissor de radiação não ionizante"
+  },
+  {
+   "codigo": "303065900",
+   "descricao": "Equipamento emissor de radiação não ionizante, NIC"
+  },
+  {
+   "codigo": "303066300",
+   "descricao": "Equipamento de iluminação"
+  },
+  {
+   "codigo": "303066600",
+   "descricao": "Arco elétrico"
+  },
+  {
+   "codigo": "303070200",
+   "descricao": "Equipamento de raios X - equipamento ou substância emissor de radiação ionizante"
+  },
+  {
+   "codigo": "303070400",
+   "descricao": "Reator (inclui combustível e resíduo) - equipamento ou substância emissor de radiação ionizante"
+  },
+  {
+   "codigo": "303070600",
+   "descricao": "Fonte de radioisótopo - equipamento ou substância emissor de radiação ionizante"
+  },
+  {
+   "codigo": "303070900",
+   "descricao": "Equipamento ou substância emissor de radiação ionizante, NIC"
+  },
+  {
+   "codigo": "303075100",
+   "descricao": "Bicicleta"
+  },
+  {
+   "codigo": "303075150",
+   "descricao": "Triciclo"
+  },
+  {
+   "codigo": "303075200",
+   "descricao": "Motocicleta, motoneta"
+  },
+  {
+   "codigo": "303075250",
+   "descricao": "Veículo rodoviário motorizado"
+  },
+  {
+   "codigo": "303075300",
+   "descricao": "Veículo sobre trilho"
+  },
+  {
+   "codigo": "303075350",
+   "descricao": "Veículo aquático"
+  },
+  {
+   "codigo": "303075400",
+   "descricao": "Aeronave"
+  },
+  {
+   "codigo": "303075450",
+   "descricao": "Empilhadeira"
+  },
+  {
+   "codigo": "303075500",
+   "descricao": "Rebocador mecânico, mula mecânica"
+  },
+  {
+   "codigo": "303075550",
+   "descricao": "Carro de mão"
+  },
+  {
+   "codigo": "303075600",
+   "descricao": "Trator"
+  },
+  {
+   "codigo": "303075650",
+   "descricao": "Veículo de terraplenagem"
+  },
+  {
+   "codigo": "303075700",
+   "descricao": "Veículo de tração animal"
+  },
+  {
+   "codigo": "303075750",
+   "descricao": "Veículo deslizante"
+  },
+  {
+   "codigo": "303075800",
+   "descricao": "Veículo funicular (tração por cabo)"
+  },
+  {
+   "codigo": "303075900",
+   "descricao": "Veículo, NIC"
+  },
+  {
+   "codigo": "303090000",
+   "descricao": "Ferramenta, máquina, equipamento, veículo, NIC"
+  },
+  {
+   "codigo": "305004100",
+   "descricao": "Composto metálico (de chumbo, mercúrio, zinco, cadmio, cromo, etc.)"
+  },
+  {
+   "codigo": "305004150",
+   "descricao": "Composto de arsênio"
+  },
+  {
+   "codigo": "305004200",
+   "descricao": "Gás carbônico (dióxido de carbono, CO2)"
+  },
+  {
+   "codigo": "305004250",
+   "descricao": "Monóxido de carbono (CO)"
+  },
+  {
+   "codigo": "305004300",
+   "descricao": "Óxidos de nitrogênio (vapores nitrosos)"
+  },
+  {
+   "codigo": "305004350",
+   "descricao": "Ácido"
+  },
+  {
+   "codigo": "305004400",
+   "descricao": "Álcali"
+  },
+  {
+   "codigo": "305004450",
+   "descricao": "Composto de fósforo"
+  },
+  {
+   "codigo": "305004500",
+   "descricao": "Dissulfeto de carbono"
+  },
+  {
+   "codigo": "305004550",
+   "descricao": "Cianeto ou composto de cianogênio"
+  },
+  {
+   "codigo": "305004600",
+   "descricao": "Álcool"
+  },
+  {
+   "codigo": "305004650",
+   "descricao": "Tetracloreto de carbono"
+  },
+  {
+   "codigo": "305004700",
+   "descricao": "Composto orgânico halogenado (tricloretileno, percloretileno, cloreto de metilo, substâncias refrigerantes)"
+  },
+  {
+   "codigo": "305004750",
+   "descricao": "Composto aromático (benzol, toluol, xilol, anilina, etc.)"
+  },
+  {
+   "codigo": "305004900",
+   "descricao": "Substância química, NIC"
+  },
+  {
+   "codigo": "305008500",
+   "descricao": "Água (usar quando o estado líquido contribuir preponderantemente para a ocorrência)"
+  },
+  {
+   "codigo": "305008900",
+   "descricao": "Líquido, NIC"
+  },
+  {
+   "codigo": "305020000",
+   "descricao": "Partículas não identificadas"
+  },
+  {
+   "codigo": "305024100",
+   "descricao": "Pele, crina, pelo, lã (em bruto) - produto animal"
+  },
+  {
+   "codigo": "305024300",
+   "descricao": "Pena - produto animal"
+  },
+  {
+   "codigo": "305024500",
+   "descricao": "Couro cru ou curtido - produto animal"
+  },
+  {
+   "codigo": "305024700",
+   "descricao": "Osso - produto animal"
+  },
+  {
+   "codigo": "305024900",
+   "descricao": "Produto animal, NIC"
+  },
+  {
+   "codigo": "305028000",
+   "descricao": "Madeira (toro, madeira serrada, pranchão, poste, barrote, ripa e produto de madeira)"
+  },
+  {
+   "codigo": "305032000",
+   "descricao": "Produto mineral metálico - produto de mineração em bruto ou beneficiado, como minério e concentrado de minério"
+  },
+  {
+   "codigo": "305032500",
+   "descricao": "Metal (inclui liga ferrosa e não ferrosa, tubo, placa, perfil, trilho, vergalhão, arame, porca, rebite, prego, etc., metal fundido, lingote e sucata de fundição, exceto minério)"
+  },
+  {
+   "codigo": "305036000",
+   "descricao": "Produto mineral não metálico - produto de mineração, escavação, desbarrancamento, etc., como detrito, argila, areia, cascalho, pedra, etc."
+  },
+  {
+   "codigo": "305040100",
+   "descricao": "Petróleo bruto, bruto reduzido"
+  },
+  {
+   "codigo": "305040150",
+   "descricao": "Asfalto, alcatrão, piche"
+  },
+  {
+   "codigo": "305040200",
+   "descricao": "Óleo combustível"
+  },
+  {
+   "codigo": "305040250",
+   "descricao": "Parafina, óleo lubrificante e de corte, graxas"
+  },
+  {
+   "codigo": "305040300",
+   "descricao": "Gasóleo, óleo diesel"
+  },
+  {
+   "codigo": "305040350",
+   "descricao": "Querosene"
+  },
+  {
+   "codigo": "305040400",
+   "descricao": "Nafta e solvente de nafta (éter de petróleo, álcool mineral, solvente aromático, etc.)"
+  },
+  {
+   "codigo": "305040450",
+   "descricao": "Gasolina (exceto quando a ocorrência for causada preponderantemente por composto de chumbo)"
+  },
+  {
+   "codigo": "305040500",
+   "descricao": "Hidrocarboneto gasoso (inclui gás liquefeito, gás encanado de nafta, gás natural)"
+  },
+  {
+   "codigo": "305040600",
+   "descricao": "Carvão"
+  },
+  {
+   "codigo": "305040650",
+   "descricao": "Coque"
+  },
+  {
+   "codigo": "305040700",
+   "descricao": "Gás encanado de carvão"
+  },
+  {
+   "codigo": "305040900",
+   "descricao": "Produto de petróleo e de carvão, NIC"
+  },
+  {
+   "codigo": "305044000",
+   "descricao": "Vidraria, fibra de vidro, lâmina, etc., exceto frasco, garrafa"
+  },
+  {
+   "codigo": "305048000",
+   "descricao": "Cerâmica"
+  },
+  {
+   "codigo": "305048300",
+   "descricao": "Tijolo e telha - cerâmica"
+  },
+  {
+   "codigo": "305048400",
+   "descricao": "Louça de mesa e outros utensílios (de porcelana, barro, etc.) - cerâmica"
+  },
+  {
+   "codigo": "305048500",
+   "descricao": "Tubo, manilha - cerâmica"
+  },
+  {
+   "codigo": "305048600",
+   "descricao": "Revestimento cerâmico (azulejo, mosaico, etc.) - cerâmica"
+  },
+  {
+   "codigo": "305048700",
+   "descricao": "Louca sanitária (pia, vaso sanitário, etc.) - cerâmica"
+  },
+  {
+   "codigo": "305048900",
+   "descricao": "Cerâmica, NIC"
+  },
+  {
+   "codigo": "305052000",
+   "descricao": "Têxteis (inclui fibras animais após o primeiro desengorduramento e limpeza, fibras vegetais e sintéticas (exceto vidro), fio, linha, tecido, passamanaria, feltro e produtos têxteis em geral)"
+  },
+  {
+   "codigo": "305056000",
+   "descricao": "Plástico (inclui pó, folha, trefilado, barra, perfil, etc.; não inclui produto a ser usado na fabricação de plástico)"
+  },
+  {
+   "codigo": "305060000",
+   "descricao": "Papel e pasta para papel"
+  },
+  {
+   "codigo": "305064000",
+   "descricao": "Produto alimentício (inclui carne, leite e derivados, legumes, frutas, cereais e derivados)"
+  },
+  {
+   "codigo": "305064300",
+   "descricao": "Carne e derivados"
+  },
+  {
+   "codigo": "305064400",
+   "descricao": "Leite e derivados"
+  },
+  {
+   "codigo": "305064500",
+   "descricao": "Legume, verdura e derivados"
+  },
+  {
+   "codigo": "305064600",
+   "descricao": "Fruta e derivados"
+  },
+  {
+   "codigo": "305064700",
+   "descricao": "Cereal e derivados"
+  },
+  {
+   "codigo": "305064900",
+   "descricao": "Produto alimentício (inclusive de origem animal), NIC"
+  },
+  {
+   "codigo": "305068300",
+   "descricao": "Medicamento em geral (exceto produto biológico)"
+  },
+  {
+   "codigo": "305068600",
+   "descricao": "Produto biológico (soro, toxina, antitoxina, vacina, plasma) - medicamento"
+  },
+  {
+   "codigo": "305072000",
+   "descricao": "Produto de limpeza, sabão, detergente"
+  },
+  {
+   "codigo": "305076000",
+   "descricao": "Sucata, entulho, resíduo"
+  },
+  {
+   "codigo": "305090000",
+   "descricao": "Substância química, material, produto, NIC"
+  },
+  {
+   "codigo": "306020000",
+   "descricao": "Animal vivo"
+  },
+  {
+   "codigo": "306040000",
+   "descricao": "Vegetal - planta, árvore, em estado natural, não beneficiada (não inclui grão debulhado, fruto colhido, toro mesmo com galho)"
+  },
+  {
+   "codigo": "306060000",
+   "descricao": "Agente infeccioso ou parasitário (inclui bactéria, fungo, organismo parasitário, vírus, etc.; não inclui produto químico, preparado farmacêutico ou alimento)"
+  },
+  {
+   "codigo": "306090000",
+   "descricao": "Ser vivo, NIC"
+  },
+  {
+   "codigo": "307030100",
+   "descricao": "Cadeira banco - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030200",
+   "descricao": "Mesa, carteira, exceto mesa elástica desmontável - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030250",
+   "descricao": "Mesa elástica desmontável - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030300",
+   "descricao": "Balcão, bancada - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030400",
+   "descricao": "Arquivo, fichário, estante - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030500",
+   "descricao": "Tapete, forração de piso, capacho - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030600",
+   "descricao": "Luminária, globo, lâmpada - mobiliário e acessórios"
+  },
+  {
+   "codigo": "307030900",
+   "descricao": "Mobiliário e acessórios, NIC"
+  },
+  {
+   "codigo": "307040100",
+   "descricao": "Caixa, engradado, caixote - embalagem, recipiente (vazio ou cheio)"
+  },
+  {
+   "codigo": "307040300",
+   "descricao": "Frasco, garrafa - embalagem, recipiente (vazio ou cheio)"
+  },
+  {
+   "codigo": "307040500",
+   "descricao": "Barril, barrica, barrilete, tambor - embalagem, recipiente (vazio ou cheio)"
+  },
+  {
+   "codigo": "307040700",
+   "descricao": "Tanque, cilindro (transportáveis e não sob pressão) - embalagem, recipiente (vazio ou cheio)"
+  },
+  {
+   "codigo": "307040900",
+   "descricao": "Embalagem, recipiente (vazio ou cheio), NIC"
+  },
+  {
+   "codigo": "307050900",
+   "descricao": "Vestuário, NIC"
+  },
+  {
+   "codigo": "307070000",
+   "descricao": "Área ou ambiente de trabalho (o agente do acidente ocorrido em consequência de fenômeno atmosférico, meteoro, etc., assim como da ação da radiação solar, deverá ser incluído neste item)"
+  },
+  {
+   "codigo": "309000000",
+   "descricao": "Agente do acidente, NIC"
+  },
+  {
+   "codigo": "309500000",
+   "descricao": "Agente do acidente inexistente"
+  },
+  {
+   "codigo": "354000000",
+   "descricao": "Energia"
+  },
+  {
+   "codigo": "354010300",
+   "descricao": "Pressão ambiente alta (trabalho em caixão pneumático, mergulho)"
+  },
+  {
+   "codigo": "354010600",
+   "descricao": "Pressão ambiente baixa (ar rarefeito)"
+  },
+  {
+   "codigo": "354020000",
+   "descricao": "Ruído"
+  },
+  {
+   "codigo": "354040000",
+   "descricao": "Fogo, chama, material incandescente ou quente, fumaça"
+  },
+  {
+   "codigo": "354050300",
+   "descricao": "Temperatura ambiente (não inclui a de objeto ou substância quente)"
+  },
+  {
+   "codigo": "355016000",
+   "descricao": "Aerodispersoides"
+  },
+  {
+   "codigo": "355016600",
+   "descricao": "Neblina"
+  },
+  {
+   "codigo": "355016800",
+   "descricao": "Gás e vapor"
+  }
+ ]
 }

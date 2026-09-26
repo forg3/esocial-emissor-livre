@@ -161,7 +161,7 @@ func ValidarXSD(xmlBytes []byte, tipoEvento string) error {
 		}
 		tmpXML.Close()
 
-		cmd := exec.Command("xmllint", "--noout", "--schema", caminhoXSD, tmpXML.Name())
+		cmd := exec.Command("xmllint", "--noout", "--nonet", "--schema", caminhoXSD, tmpXML.Name())
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			msgErro := strings.TrimSpace(string(out))

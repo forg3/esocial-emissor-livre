@@ -188,7 +188,13 @@ func (s *Servidor) handleUploadCertificadoPerfil(w http.ResponseWriter, r *http.
 	}
 	_ = os.Chmod(destinoDir, 0700)
 
-	caminho := filepath.Join(destinoDir, header.Filename)
+	// Nome fixo: o nome escolhido por quem envia não decide onde o arquivo vai parar.
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+	if ext != ".pfx" && ext != ".p12" {
+		s.handlePerfisComFlash(w, r, "Envie o certificado A1 em arquivo .pfx ou .p12.", true)
+		return
+	}
+	caminho := filepath.Join(destinoDir, "certificado"+ext)
 	destino, err := os.OpenFile(caminho, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		s.handlePerfisComFlash(w, r, "Falha ao gravar o certificado: "+err.Error(), true)

@@ -41,8 +41,6 @@ var (
 	oidDadosPJ = asn1.ObjectIdentifier{2, 16, 76, 1, 3, 3}
 	// OID 2.16.76.1.3.14: CNPJ direto do titular
 	oidCNPJ = asn1.ObjectIdentifier{2, 16, 76, 1, 3, 14}
-	// OID 2.16.76.1.3.1: CPF do titular da pessoa física (e-CPF)
-	oidCPF = asn1.ObjectIdentifier{2, 16, 76, 1, 3, 1}
 )
 
 // Certificado é a interface universal para manipulação de certificados digitais

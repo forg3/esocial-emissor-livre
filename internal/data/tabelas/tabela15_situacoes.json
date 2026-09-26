@@ -1,35 +1,245 @@
 {
-  "fonte": "eSocial Leiaute S-1.3 - Tabela 15 - Situação Geradora do Acidente de Trabalho / Agente Causador e Situação Geradora de Doença Profissional (subconjunto dos códigos mais utilizados; a tabela oficial completa deve ser consultada no portal do eSocial)",
-  "itens": [
-    { "codigo": "200004300", "descricao": "Impacto de pessoa contra objeto parado" },
-    { "codigo": "200004600", "descricao": "Impacto de pessoa contra objeto em movimento" },
-    { "codigo": "200008300", "descricao": "Impacto sofrido por pessoa, de objeto que cai" },
-    { "codigo": "200008600", "descricao": "Impacto sofrido por pessoa, de objeto projetado" },
-    { "codigo": "200008900", "descricao": "Impacto sofrido por pessoa, NIC" },
-    { "codigo": "200012200", "descricao": "Queda de pessoa com diferença de nível de andaime, passagem, plataforma, etc." },
-    { "codigo": "200012300", "descricao": "Queda de pessoa com diferença de nível de escada móvel ou fixada" },
-    { "codigo": "200012600", "descricao": "Queda de pessoa com diferença de nível em escada permanente" },
-    { "codigo": "200012700", "descricao": "Queda de pessoa com diferença de nível em poço, escavação, abertura no piso, etc." },
-    { "codigo": "200012900", "descricao": "Queda de pessoa com diferença de nível, NIC" },
-    { "codigo": "200016300", "descricao": "Queda de pessoa em mesmo nível em passagem ou superfície de sustentação" },
-    { "codigo": "200016600", "descricao": "Queda de pessoa em mesmo nível sobre ou contra alguma coisa" },
-    { "codigo": "200020100", "descricao": "Aprisionamento em, sob ou entre objetos em movimento convergente (calandra) ou de encaixe" },
-    { "codigo": "200020300", "descricao": "Aprisionamento em, sob ou entre um objeto parado e outro em movimento" },
-    { "codigo": "200020500", "descricao": "Aprisionamento em, sob ou entre dois ou mais objetos em movimento" },
-    { "codigo": "200020700", "descricao": "Aprisionamento em, sob ou entre desabamento ou desmoronamento de edificação, barreira, etc." },
-    { "codigo": "200024300", "descricao": "Atrito ou abrasão por encostar, pisar, ajoelhar ou sentar em objeto" },
-    { "codigo": "200024400", "descricao": "Atrito ou abrasão por manusear objeto" },
-    { "codigo": "200024600", "descricao": "Atrito ou abrasão por corpo estranho no olho" },
-    { "codigo": "200028300", "descricao": "Reação do corpo a seus movimentos - movimento involuntário (escorregão sem queda, etc.)" },
-    { "codigo": "200028600", "descricao": "Reação do corpo a seus movimentos - movimento voluntário" },
-    { "codigo": "200032200", "descricao": "Esforço excessivo ao erguer objeto" },
-    { "codigo": "200032400", "descricao": "Esforço excessivo ao empurrar ou puxar objeto" },
-    { "codigo": "200032600", "descricao": "Esforço excessivo ao manejar, sacudir ou arremessar objeto" },
-    { "codigo": "200032900", "descricao": "Esforço excessivo, NIC" },
-    { "codigo": "200036000", "descricao": "Exposição a energia elétrica" },
-    { "codigo": "200040300", "descricao": "Contato com objeto ou substância a temperatura muito alta" },
-    { "codigo": "200040600", "descricao": "Contato com objeto ou substância a temperatura muito baixa" },
-    { "codigo": "200044300", "descricao": "Exposição à temperatura ambiente elevada" },
-    { "codigo": "200048200", "descricao": "Inalação de substância cáustica, tóxica ou nociva" }
-  ]
+ "fonte": "eSocial leiaute S-1.3 (NT 07/2026), Tabela 15 - Situação Geradora do Acidente de Trabalho / Agente Causador e Situação Geradora de Doença Profissional. Tabela completa, extraída de https://www.gov.br/esocial/pt-br/documentacao-tecnica/leiautes-esocial-versao-s-1-3-nt-07-2026/tabelas.html, consultada em 21/09/2026 (cópia em docs/pesquisa/risco-epi/fontes/esocial/leiaute-s-1.3-nt-07-2026-tabelas.html).",
+ "itens": [
+  {
+   "codigo": "200004300",
+   "descricao": "Impacto de pessoa contra objeto parado"
+  },
+  {
+   "codigo": "200004600",
+   "descricao": "Impacto de pessoa contra objeto em movimento"
+  },
+  {
+   "codigo": "200008300",
+   "descricao": "Impacto sofrido por pessoa, de objeto que cai"
+  },
+  {
+   "codigo": "200008600",
+   "descricao": "Impacto sofrido por pessoa, de objeto projetado"
+  },
+  {
+   "codigo": "200008900",
+   "descricao": "Impacto sofrido por pessoa, NIC"
+  },
+  {
+   "codigo": "200012200",
+   "descricao": "Queda de pessoa com diferença de nível de andaime, passagem, plataforma, etc"
+  },
+  {
+   "codigo": "200012300",
+   "descricao": "Queda de pessoa com diferença de nível de escada móvel ou fixada cujos degraus não permitem o apoio integral do pé"
+  },
+  {
+   "codigo": "200012400",
+   "descricao": "Queda de pessoa com diferença de nível de material empilhado"
+  },
+  {
+   "codigo": "200012500",
+   "descricao": "Queda de pessoa com diferença de nível de veículo"
+  },
+  {
+   "codigo": "200012600",
+   "descricao": "Queda de pessoa com diferença de nível em escada permanente cujos degraus permitem apoio integral do pé"
+  },
+  {
+   "codigo": "200012700",
+   "descricao": "Queda de pessoa com diferença de nível em poço, escavação, abertura no piso, etc. (da borda da abertura)"
+  },
+  {
+   "codigo": "200012900",
+   "descricao": "Queda de pessoa com diferença de nível, NIC"
+  },
+  {
+   "codigo": "200016300",
+   "descricao": "Queda de pessoa em mesmo nível em passagem ou superfície de sustentação"
+  },
+  {
+   "codigo": "200016600",
+   "descricao": "Queda de pessoa em mesmo nível sobre ou contra alguma coisa"
+  },
+  {
+   "codigo": "200016900",
+   "descricao": "Queda de pessoa em mesmo nível, NIC"
+  },
+  {
+   "codigo": "200020100",
+   "descricao": "Aprisionamento em, sob ou entre objetos em movimento convergente (calandra) ou de encaixe"
+  },
+  {
+   "codigo": "200020300",
+   "descricao": "Aprisionamento em, sob ou entre um objeto parado e outro em movimento"
+  },
+  {
+   "codigo": "200020500",
+   "descricao": "Aprisionamento em, sob ou entre dois ou mais objetos em movimento (sem encaixe)"
+  },
+  {
+   "codigo": "200020700",
+   "descricao": "Aprisionamento em, sob ou entre desabamento ou desmoronamento de edificação, barreira, etc"
+  },
+  {
+   "codigo": "200020900",
+   "descricao": "Aprisionamento em, sob ou entre, NIC"
+  },
+  {
+   "codigo": "200024300",
+   "descricao": "Atrito ou abrasão por encostar, pisar, ajoelhar ou sentar em objeto (não em vibração)"
+  },
+  {
+   "codigo": "200024400",
+   "descricao": "Atrito ou abrasão por manusear objeto (não em vibração)"
+  },
+  {
+   "codigo": "200024500",
+   "descricao": "Atrito ou abrasão por objeto em vibração"
+  },
+  {
+   "codigo": "200024600",
+   "descricao": "Atrito ou abrasão por corpo estranho no olho"
+  },
+  {
+   "codigo": "200024700",
+   "descricao": "Atrito ou abrasão por compressão repetitiva"
+  },
+  {
+   "codigo": "200024900",
+   "descricao": "Atrito ou abrasão, NIC"
+  },
+  {
+   "codigo": "200028300",
+   "descricao": "Reação do corpo a seus movimentos - movimento involuntário (escorregão sem queda, etc.)"
+  },
+  {
+   "codigo": "200028600",
+   "descricao": "Reação do corpo a seus movimentos - movimento voluntário"
+  },
+  {
+   "codigo": "200032200",
+   "descricao": "Esforço excessivo ao erguer objeto"
+  },
+  {
+   "codigo": "200032400",
+   "descricao": "Esforço excessivo ao empurrar ou puxar objeto"
+  },
+  {
+   "codigo": "200032600",
+   "descricao": "Esforço excessivo ao manejar, sacudir ou arremessar objeto"
+  },
+  {
+   "codigo": "200032900",
+   "descricao": "Esforço excessivo, NIC"
+  },
+  {
+   "codigo": "200036000",
+   "descricao": "Exposição à energia elétrica"
+  },
+  {
+   "codigo": "200040300",
+   "descricao": "Contato com objeto ou substância a temperatura muito alta"
+  },
+  {
+   "codigo": "200040600",
+   "descricao": "Contato com objeto ou substância a temperatura muito baixa"
+  },
+  {
+   "codigo": "200044300",
+   "descricao": "Exposição à temperatura ambiente elevada"
+  },
+  {
+   "codigo": "200044600",
+   "descricao": "Exposição à temperatura ambiente baixa"
+  },
+  {
+   "codigo": "200048200",
+   "descricao": "Inalação de substância cáustica, tóxica ou nociva"
+  },
+  {
+   "codigo": "200048400",
+   "descricao": "Ingestão de substancia cáustica, tóxica ou nociva"
+  },
+  {
+   "codigo": "200048600",
+   "descricao": "Absorção (por contato) de substância cáustica, tóxica ou nociva"
+  },
+  {
+   "codigo": "200048900",
+   "descricao": "Inalação, ingestão e absorção, NIC"
+  },
+  {
+   "codigo": "200052000",
+   "descricao": "Imersão"
+  },
+  {
+   "codigo": "200056000",
+   "descricao": "Exposição à radiação não ionizante"
+  },
+  {
+   "codigo": "200060000",
+   "descricao": "Exposição à radiação ionizante"
+  },
+  {
+   "codigo": "200064000",
+   "descricao": "Exposição ao ruído"
+  },
+  {
+   "codigo": "200068000",
+   "descricao": "Exposição à vibração"
+  },
+  {
+   "codigo": "200072000",
+   "descricao": "Exposição à pressão ambiente"
+  },
+  {
+   "codigo": "200072300",
+   "descricao": "Exposição à pressão ambiente elevada"
+  },
+  {
+   "codigo": "200072600",
+   "descricao": "Exposição à pressão ambiente baixa"
+  },
+  {
+   "codigo": "200076200",
+   "descricao": "Exposição à poluição da água"
+  },
+  {
+   "codigo": "200076400",
+   "descricao": "Exposição à poluição do ar"
+  },
+  {
+   "codigo": "200076600",
+   "descricao": "Exposição à poluição do solo"
+  },
+  {
+   "codigo": "200076900",
+   "descricao": "Exposição à poluição, NIC"
+  },
+  {
+   "codigo": "200080200",
+   "descricao": "Ataque de ser vivo por mordedura, picada, chifrada, coice, etc"
+  },
+  {
+   "codigo": "200080400",
+   "descricao": "Ataque de ser vivo com peçonha"
+  },
+  {
+   "codigo": "200080600",
+   "descricao": "Ataque de ser vivo com transmissão de doença"
+  },
+  {
+   "codigo": "200080900",
+   "descricao": "Ataque de ser vivo (inclusive do homem), NIC"
+  },
+  {
+   "codigo": "200080901",
+   "descricao": "Contato com pessoas doentes ou material infectocontagiante - agentes biológicos"
+  },
+  {
+   "codigo": "209000000",
+   "descricao": "Tipo, NIC"
+  },
+  {
+   "codigo": "209500000",
+   "descricao": "Tipo inexistente"
+  }
+ ]
 }

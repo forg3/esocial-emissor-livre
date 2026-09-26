@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
@@ -473,9 +472,3 @@ func extrairRecibosEventosXML(xmlStr string) []ReciboEvento {
 	return recibos
 }
 
-// Interface XML struct opcional para parse estrito quando necessário
-type soapFault struct {
-	XMLName xml.Name `xml:"Fault"`
-	Code    string   `xml:"faultcode"`
-	String  string   `xml:"faultstring"`
-}

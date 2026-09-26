@@ -5,7 +5,7 @@
       <h1 style="margin: 0; font-size: var(--fs-2xl);">Central de Transmissão eSocial</h1>
       <p class="muted" style="margin: 4px 0 0;">
         Fila de envio, assinatura digital com certificado e consulta de recibos oficiais de entrega SST.
-        {{ if eq .Config.ModoTransmissao "real" }}
+        {{ if or (eq .Config.ModoTransmissao "real") .Config.CertificadoPath }}
           <span class="badge warn" style="margin-left: 6px;">TRANSMISSÃO REAL ATIVA</span>
         {{ else }}
           <span class="badge neutral" style="margin-left: 6px;">MODO SIMULAÇÃO</span>
@@ -19,7 +19,7 @@
         <span>Voltar ao Dashboard</span>
       </a>
 
-      <button type="button" class="btn btn-outline" hx-post="/fila/lote/assinar" hx-target="#conteudo" hx-confirm="Deseja assinar todos os eventos em status 'pronto' utilizando o certificado digital configurado?">
+      <button type="button" class="btn btn-outline" hx-post="/fila/lote/assinar" hx-include="#senha_a1" hx-target="#conteudo" hx-confirm="Assinar todos os eventos em status 'pronto'? Com a senha do certificado A1 preenchida, a assinatura é real; sem ela, é simulada.">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
         <span>Assinar Prontos em Lote</span>
       </button>

@@ -58,7 +58,7 @@
           {{ if or (eq .Status "pronto") (eq .Status "rejeitado") }}
           <button type="button" class="btn btn-outline btn-sm" style="color: var(--info-text); border-color: var(--info);"
                   title="Assinar com Certificado Digital"
-                  hx-post="/fila/{{ .ID }}/assinar" hx-target="#conteudo">
+                  hx-post="/fila/{{ .ID }}/assinar" hx-include="#senha_a1" hx-target="#conteudo">
             Assinar
           </button>
           {{ end }}

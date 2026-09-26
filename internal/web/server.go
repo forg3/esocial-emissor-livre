@@ -550,7 +550,16 @@ func (s *Servidor) handleUploadCertificado(w http.ResponseWriter, r *http.Reques
 			destinoDir := "./dados/certificados"
 			_ = os.MkdirAll(destinoDir, 0700)
 			_ = os.Chmod(destinoDir, 0700) // corrige permissões preexistentes (achado B-01)
-			caminhoDest := filepath.Join(destinoDir, header.Filename)
+			// Nome fixo: o nome escolhido por quem envia não decide onde o arquivo vai parar.
+			ext := strings.ToLower(filepath.Ext(header.Filename))
+			if ext != ".pfx" && ext != ".p12" {
+				s.render(w, r, "certificado", DadosViewConfiguracao{
+					Titulo: "Certificado & Empresa", MenuAtivo: "configuracao", Config: cfg,
+					MensagemFlash: "Envie o certificado A1 em arquivo .pfx ou .p12.", FlashErro: true,
+				})
+				return
+			}
+			caminhoDest := filepath.Join(destinoDir, "certificado-empresa"+ext)
 
 			// 0600: a chave privada não deve ser legível por outros usuários locais (achado B-01).
 			destFile, err := os.OpenFile(caminhoDest, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
@@ -1443,6 +1452,11 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 		CriadoEm:      time.Now(),
 		AtualizadoEm:  time.Now(),
 	}
+	// XML de terceiro (clínica): confere antes de pôr na fila como pronto.
+	if errVal := validarXMLEvento("S-2220", xmlStr); errVal != nil {
+		evento.Status = "rejeitado"
+		evento.MensagemRetorno = "XML importado reprovado na validação: " + errVal.Error()
+	}
 
 	if err := s.db.SalvarEvento(evento); err != nil {
 		colabsErro, _ := s.db.ListarColaboradores()
@@ -1458,7 +1472,11 @@ func (s *Servidor) handleImportarXMLASO(w http.ResponseWriter, r *http.Request) 
 		})
 		return
 	}
-	s.handleFilaComFlash(w, r, fmt.Sprintf("XML de ASO importado com sucesso para %s (ID: %s)!", colabNome, idEvento), false)
+	if evento.Status == "rejeitado" {
+		s.handleFilaComFlash(w, r, fmt.Sprintf("XML de ASO de %s registrado como REJEITADO (ID: %s): %s", colabNome, idEvento, evento.MensagemRetorno), true)
+		return
+	}
+	s.handleFilaComFlash(w, r, fmt.Sprintf("XML de ASO importado e validado para %s (ID: %s)!", colabNome, idEvento), false)
 }
 
 // -------------------------------------------------------------
@@ -1853,6 +1871,54 @@ func (s *Servidor) handleValidarEvento(w http.ResponseWriter, r *http.Request) {
 	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s aprovado nas checagens estruturais básicas (sem schema XSD para este tipo).", id), false)
 }
 
+// validarXMLEvento aplica a mesma conferência da fila: XSD oficial quando existe schema para o
+// tipo; checagens estruturais básicas quando não existe.
+func validarXMLEvento(tipo, xml string) error {
+	if _, semSchema := esocial.ObterNomeXSD(tipo); semSchema == nil {
+		return esocial.ValidarXSD([]byte(xml), tipo)
+	}
+	if valido, erros := ValidarEventoXSD(tipo, xml); !valido {
+		return fmt.Errorf("%s", strings.Join(erros, "; "))
+	}
+	return nil
+}
+
+// assinarEvento revalida o XML e assina. Com certificado A1 configurado e a senha informada, a
+// assinatura XMLDSig é REAL (crypto.AssinarXML); sem senha, o envelope continua SIMULADO e dito
+// como tal. Evento rejeitado nunca é assinado (pente fino de 26/09/2026).
+func (s *Servidor) assinarEvento(cfg *storage.Configuracao, e *storage.Evento, senha string) (string, error) {
+	if e.Status == "rejeitado" {
+		return "", fmt.Errorf("evento %s está rejeitado: corrija e valide antes de assinar", e.ID)
+	}
+	if err := validarXMLEvento(e.Tipo, e.XMLGerado); err != nil {
+		msg := "Reprovado na validação antes da assinatura: " + err.Error()
+		_ = s.db.AtualizarStatusEvento(e.ID, "rejeitado", "", "", msg)
+		return "", fmt.Errorf("%s", msg)
+	}
+	if senha != "" && cfg.CertificadoPath != "" {
+		cert, err := crypto.CarregarA1Arquivo(cfg.CertificadoPath, senha)
+		if err != nil {
+			return "", fmt.Errorf("não foi possível abrir o certificado A1 (senha incorreta ou arquivo inválido): %v", err)
+		}
+		assinado, err := crypto.AssinarXML([]byte(e.XMLGerado), cert)
+		if err != nil {
+			return "", fmt.Errorf("falha ao assinar com o certificado A1: %v", err)
+		}
+		e.XMLAssinado = string(assinado)
+		e.MensagemRetorno = fmt.Sprintf("Assinado com certificado A1 de %s (válido até %s).",
+			cert.RazaoSocial(), cert.ValidoAte().Format("02/01/2006"))
+	} else {
+		e.XMLAssinado = SimularAssinatura(e.XMLGerado, cfg.RazaoSocial)
+		e.MensagemRetorno = "ASSINATURA SIMULADA: envelope XMLDSig demonstrativo gerado localmente, SEM certificado digital aplicado e SEM validade jurídica. Informe a senha do certificado A1 para assinar de verdade."
+	}
+	e.Status = "assinado"
+	e.AtualizadoEm = time.Now()
+	if err := s.db.SalvarEvento(e); err != nil {
+		return "", fmt.Errorf("falha ao gravar o evento assinado: %v", err)
+	}
+	return e.MensagemRetorno, nil
+}
+
 func (s *Servidor) handleAssinarEvento(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
 	id := r.PathValue("id")
@@ -1861,21 +1927,12 @@ func (s *Servidor) handleAssinarEvento(w http.ResponseWriter, r *http.Request) {
 		s.handleFilaComFlash(w, r, "Evento não localizado.", true)
 		return
 	}
-
-	// Achado A-02: o envelope gerado é explicitamente identificado como SIMULADO.
-	// Nenhuma assinatura com valor jurídico é produzida enquanto o certificado não
-	// for aplicado pelo fluxo real de assinatura.
-	assinado := SimularAssinatura(evento.XMLGerado, cfg.RazaoSocial)
-	evento.XMLAssinado = assinado
-	evento.Status = "assinado"
-	evento.MensagemRetorno = "ASSINATURA SIMULADA: envelope XMLDSig demonstrativo gerado localmente, SEM certificado digital aplicado e SEM validade jurídica."
-	evento.AtualizadoEm = time.Now()
-
-	if err := s.db.SalvarEvento(evento); err != nil {
-		s.handleFilaComFlash(w, r, "Falha ao gravar a assinatura simulada: "+err.Error(), true)
+	msg, err := s.assinarEvento(cfg, evento, strings.TrimSpace(r.FormValue("senha_a1")))
+	if err != nil {
+		s.handleFilaComFlash(w, r, err.Error(), true)
 		return
 	}
-	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s recebeu assinatura SIMULADA (demonstração, sem validade jurídica).", id), false)
+	s.handleFilaComFlash(w, r, fmt.Sprintf("Evento %s: %s", id, msg), strings.Contains(msg, "SIMULADA"))
 }
 
 func (s *Servidor) handleTransmitirEvento(w http.ResponseWriter, r *http.Request) {
@@ -1949,29 +2006,33 @@ func (s *Servidor) handleExcluirEvento(w http.ResponseWriter, r *http.Request) {
 func (s *Servidor) handleAssinarLote(w http.ResponseWriter, r *http.Request) {
 	cfg, _ := s.db.ObterConfiguracao()
 	todos, _ := s.db.ListarEventos()
+	senha := strings.TrimSpace(r.FormValue("senha_a1"))
 
-	qtd := 0
-	falhas := 0
-	for _, e := range todos {
-		if e.Status == "pronto" || e.Status == "rejeitado" {
-			assinado := SimularAssinatura(e.XMLGerado, cfg.RazaoSocial)
-			e.XMLAssinado = assinado
-			e.Status = "assinado"
-			e.MensagemRetorno = "ASSINATURA SIMULADA em lote: envelope demonstrativo, sem certificado aplicado e sem validade jurídica."
-			e.AtualizadoEm = time.Now()
-			if err := s.db.SalvarEvento(&e); err != nil {
-				falhas++
-				continue
-			}
-			qtd++
+	qtd, falhas, simulados := 0, 0, 0
+	for i := range todos {
+		e := &todos[i]
+		if e.Status != "pronto" { // rejeitado não é assinado; já assinado não é reassinado em lote
+			continue
 		}
+		msg, err := s.assinarEvento(cfg, e, senha)
+		if err != nil {
+			falhas++
+			continue
+		}
+		if strings.Contains(msg, "SIMULADA") {
+			simulados++
+		}
+		qtd++
 	}
 
-	msg := fmt.Sprintf("Lote processado: %d eventos com assinatura SIMULADA (sem validade jurídica).", qtd)
-	if falhas > 0 {
-		msg += fmt.Sprintf(" %d evento(s) falharam ao gravar.", falhas)
+	msg := fmt.Sprintf("Lote processado: %d evento(s) assinado(s)", qtd)
+	if simulados > 0 {
+		msg += fmt.Sprintf(", %d com assinatura SIMULADA (sem validade jurídica — informe a senha do certificado A1)", simulados)
 	}
-	s.handleFilaComFlash(w, r, msg, falhas > 0)
+	if falhas > 0 {
+		msg += fmt.Sprintf("; %d reprovado(s) na validação ou com falha", falhas)
+	}
+	s.handleFilaComFlash(w, r, msg+".", falhas > 0 || simulados > 0)
 }
 
 func (s *Servidor) handleTransmitirLote(w http.ResponseWriter, r *http.Request) {

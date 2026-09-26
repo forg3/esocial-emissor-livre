@@ -512,7 +512,8 @@ func TestPermissaoDoArquivoDeCertificado(t *testing.T) {
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 
-	info, err := os.Stat(filepath.Join("dados", "certificados", "certificado.pfx"))
+	// Nome fixo desde o pente fino de 26/09/2026: o nome enviado não decide o caminho.
+	info, err := os.Stat(filepath.Join("dados", "certificados", "certificado-empresa.pfx"))
 	if err != nil {
 		t.Fatalf("arquivo de certificado não foi gravado: %v (resposta: %d)", err, rec.Code)
 	}

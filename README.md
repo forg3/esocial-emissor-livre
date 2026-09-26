@@ -13,7 +13,7 @@
 
 Software web livre, leve e direto para elaboração, validação estrutural (XSD) e assinatura digital (XMLDSig A1) dos eventos do **eSocial** (versão S-1.3), com execução local e autenticação obrigatória.
 
-> **Estado atual (v1.1.1-alpha):** a assinatura com certificado A1 é real; o **envio ao webservice oficial ainda é simulado** — nenhum dado é transmitido ao governo e **nenhum recibo oficial é gerado**. Eventos processados nesse fluxo ficam com o status `simulado` e a interface exibe o aviso "MODO SIMULAÇÃO". Não utilize os comprovantes para cumprimento de obrigação acessória até a integração real ser habilitada.
+> **Estado atual (após o pente fino de 26/09/2026):** a assinatura com certificado A1 é **real quando a senha do certificado é informada** na fila (sem senha, o envelope é simulado e marcado como tal). O envio ao webservice oficial fica em **modo simulado por padrão** e só é real no modo "Real" em Certificado & Empresa — ainda **não testado com certificado de verdade em produção restrita**. Não use comprovantes simulados para cumprimento de obrigação acessória. Relatório: [`docs/security-audit/pente-fino-2026-09-26.md`](docs/security-audit/pente-fino-2026-09-26.md).
 
 ---
 

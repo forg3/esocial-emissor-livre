@@ -1,109 +1,121 @@
 {
-  "fonte": "eSocial Leiaute S-1.3 - Tabela 17 - Descrição da Natureza da Lesão (códigos oficiais)",
-  "itens": [
-    {
-      "codigo": "702000000",
-      "descricao": "Lesão imediata"
-    },
-    {
-      "codigo": "702005000",
-      "descricao": "Escoriação, abrasão (ferimento superficial)"
-    },
-    {
-      "codigo": "702010000",
-      "descricao": "Corte, laceração, ferida contusa, punctura (ferida aberta)"
-    },
-    {
-      "codigo": "702015000",
-      "descricao": "Contusão, esmagamento (superfície cutânea intacta)"
-    },
-    {
-      "codigo": "702020000",
-      "descricao": "Distensão, torção"
-    },
-    {
-      "codigo": "702025000",
-      "descricao": "Inflamação de articulação, tendão ou músculo (sinovite, tenossinovite, etc.)"
-    },
-    {
-      "codigo": "702030000",
-      "descricao": "Luxação"
-    },
-    {
-      "codigo": "702035000",
-      "descricao": "Fratura"
-    },
-    {
-      "codigo": "702040000",
-      "descricao": "Queimadura ou escaldadura por temperatura elevada / contato com substância quente"
-    },
-    {
-      "codigo": "702042000",
-      "descricao": "Queimadura química (ação corrosiva de produto químico)"
-    },
-    {
-      "codigo": "702045000",
-      "descricao": "Efeito de radiação (imediato)"
-    },
-    {
-      "codigo": "702048000",
-      "descricao": "Congelamento, geladura e outros efeitos da exposição à baixa temperatura"
-    },
-    {
-      "codigo": "702050000",
-      "descricao": "Asfixia, estrangulamento, afogamento"
-    },
-    {
-      "codigo": "702055000",
-      "descricao": "Intermação, insolação, cãibra, exaustão e outros efeitos da temperatura ambiente elevada"
-    },
-    {
-      "codigo": "702060000",
-      "descricao": "Choque elétrico e eletroplessão (eletrocussão)"
-    },
-    {
-      "codigo": "702065000",
-      "descricao": "Hérnia de qualquer natureza, ruptura"
-    },
-    {
-      "codigo": "702070000",
-      "descricao": "Amputação ou enucleação"
-    },
-    {
-      "codigo": "702075000",
-      "descricao": "Perda ou diminuição de sentido (audição, visão, olfato, paladar e tato)"
-    },
-    {
-      "codigo": "702080000",
-      "descricao": "Concussão cerebral"
-    },
-    {
-      "codigo": "702090000",
-      "descricao": "Lesão imediata, NIC"
-    },
-    {
-      "codigo": "704020000",
-      "descricao": "Doença contagiosa ou infecciosa (tuberculose, brucelose, etc.)"
-    },
-    {
-      "codigo": "704030000",
-      "descricao": "Pneumoconiose (silicose, asbestose, etc.)"
-    },
-    {
-      "codigo": "704040000",
-      "descricao": "Dermatose (erupção, inflamação da pele, inclusive furúnculo, etc.)"
-    },
-    {
-      "codigo": "704050000",
-      "descricao": "Envenenamento sistêmico por inalação, ingestão ou absorção cutânea"
-    },
-    {
-      "codigo": "704060000",
-      "descricao": "Perda ou diminuição mediatas de sentido"
-    },
-    {
-      "codigo": "704070000",
-      "descricao": "Efeito de radiação (mediato)"
-    }
-  ]
+ "fonte": "eSocial leiaute S-1.3 (NT 07/2026), Tabela 17 - Descrição da Natureza da Lesão. Tabela completa, extraída de https://www.gov.br/esocial/pt-br/documentacao-tecnica/leiautes-esocial-versao-s-1-3-nt-07-2026/tabelas.html, consultada em 21/09/2026 (cópia em docs/pesquisa/risco-epi/fontes/esocial/leiaute-s-1.3-nt-07-2026-tabelas.html).",
+ "itens": [
+  {
+   "codigo": "702000000",
+   "descricao": "Lesão imediata"
+  },
+  {
+   "codigo": "702005000",
+   "descricao": "Escoriação, abrasão (ferimento superficial)"
+  },
+  {
+   "codigo": "702010000",
+   "descricao": "Corte, laceração, ferida contusa, punctura (ferida aberta)"
+  },
+  {
+   "codigo": "702015000",
+   "descricao": "Contusão, esmagamento (superfície cutânea intacta)"
+  },
+  {
+   "codigo": "702020000",
+   "descricao": "Distensão, torção"
+  },
+  {
+   "codigo": "702025000",
+   "descricao": "Inflamação de articulação, tendão ou músculo (inclui sinovite, tenossionovite, etc.; não inclui distensão, torção ou suas consequências)"
+  },
+  {
+   "codigo": "702030000",
+   "descricao": "Luxação"
+  },
+  {
+   "codigo": "702035000",
+   "descricao": "Fratura"
+  },
+  {
+   "codigo": "702040000",
+   "descricao": "Queimadura ou escaldadura - efeito de temperatura elevada ou efeito do contato com substância quente (inclui queimadura por eletricidade, mas não inclui choque elétrico; não inclui queimadura por substância química, efeito de radiação, queimadura de sol, incapacidade sistêmica como intermação, queimadura por atrito, etc.)"
+  },
+  {
+   "codigo": "702042000",
+   "descricao": "Queimadura química (lesão de tecido provocada pela ação corrosiva de produto químico, suas emanações, etc.)"
+  },
+  {
+   "codigo": "702045000",
+   "descricao": "Efeito de radiação (imediato) - queimadura de sol e toda forma de lesão de tecido, osso ou fluido orgânico, por exposição à radiação"
+  },
+  {
+   "codigo": "702048000",
+   "descricao": "Congelamento, geladura e outros efeitos da exposição à baixa temperatura"
+  },
+  {
+   "codigo": "702050000",
+   "descricao": "Asfixia, estrangulamento, afogamento"
+  },
+  {
+   "codigo": "702055000",
+   "descricao": "Intermação, insolação, cãibra, exaustão e outros efeitos da temperatura ambiente elevada (não inclui queimadura de sol ou outros efeitos de radiação)"
+  },
+  {
+   "codigo": "702060000",
+   "descricao": "Choque elétrico e eletroplessão (eletrocussão)"
+  },
+  {
+   "codigo": "702065000",
+   "descricao": "Hérnia de qualquer natureza, ruptura"
+  },
+  {
+   "codigo": "702070000",
+   "descricao": "Amputação ou enucleação"
+  },
+  {
+   "codigo": "702075000",
+   "descricao": "Perda ou diminuição de sentido (audição, visão, olfato, paladar e tato, desde que não seja sequela de outra lesão)"
+  },
+  {
+   "codigo": "702080000",
+   "descricao": "Concussão cerebral"
+  },
+  {
+   "codigo": "702090000",
+   "descricao": "Lesão imediata, NIC"
+  },
+  {
+   "codigo": "704020000",
+   "descricao": "Doença contagiosa ou infecciosa (tuberculose, brucelose, etc.)"
+  },
+  {
+   "codigo": "704030000",
+   "descricao": "Pneumoconiose (silicose, asbestose, etc.)"
+  },
+  {
+   "codigo": "704040000",
+   "descricao": "Dermatose (erupção, inflamação da pele, inclusive furúnculo, etc.) - geralmente provocada pelo contato direto com substâncias ou agentes sensibilizantes ou irritantes, tais como medicamentos, óleos, agentes biológicos, plantas, madeiras ou metais (não inclui lesão provocada pela ação corrosiva de produtos químicos, queimadura por contato com substâncias quentes, efeito de exposição à radiação, efeito de exposição a baixas temperaturas ou inflamação ou irritação causada por fricção ou impacto)"
+  },
+  {
+   "codigo": "704050000",
+   "descricao": "Envenenamento sistêmico - condição mórbida sistêmica provocada por inalação, ingestão ou absorção cutânea de substância tóxica, que afete o metabolismo, o funcionamento do sistema nervoso, do aparelho circulatório, do aparelho digestivo, do aparelho respiratório, dos órgãos de excreção, do sistema musculoesquelético, etc. (inclui ação de produto químico, medicamento, metal ou peçonha; não inclui efeito de radiação, pneumoconiose, efeito corrosivo de produto químico, irritação cutânea, septicemia ou caso de ferida infectada)"
+  },
+  {
+   "codigo": "704060000",
+   "descricao": "Perda ou diminuição mediatas de sentido (audição, visão, olfato, paladar e tato, desde que não seja sequela de outra lesão)"
+  },
+  {
+   "codigo": "704070000",
+   "descricao": "Efeito de radiação (mediato) - queimadura do sol e toda forma de lesão de tecido, osso, ou fluido orgânico por exposição à radiação."
+  },
+  {
+   "codigo": "704090000",
+   "descricao": "Doença, NIC"
+  },
+  {
+   "codigo": "706050000",
+   "descricao": "Lesões múltiplas"
+  },
+  {
+   "codigo": "706090000",
+   "descricao": "Outras lesões, NIC"
+  }
+ ]
 }

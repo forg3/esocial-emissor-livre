@@ -1,85 +1,5805 @@
 {
-  "fonte": "eSocial Leiaute S-1.3 - Tabela 27 - Procedimentos Diagnósticos (subconjunto verificado; a tabela oficial completa deve ser consultada no portal do eSocial)",
-  "itens": [
-    {
-      "codigo": "0295",
-      "descricao": "Avaliação clínica ocupacional (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0286",
-      "descricao": "Avaliação clínica com ênfase cardiocirculatória (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0287",
-      "descricao": "Avaliação clínica com ênfase dermatológica (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0288",
-      "descricao": "Avaliação clínica com ênfase gastrointestinal (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0289",
-      "descricao": "Avaliação clínica com ênfase mental (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0290",
-      "descricao": "Avaliação clínica com ênfase neurológica (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0291",
-      "descricao": "Avaliação clínica com ênfase neurossensorial (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0292",
-      "descricao": "Avaliação clínica com ênfase ortopédica (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0293",
-      "descricao": "Avaliação clínica com ênfase respiratória (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0294",
-      "descricao": "Avaliação clínica com ênfase urogenital (anamnese e exame físico)"
-    },
-    {
-      "codigo": "0296",
-      "descricao": "Avaliação da acuidade visual"
-    },
-    {
-      "codigo": "0297",
-      "descricao": "Avaliação da estereopsia"
-    },
-    {
-      "codigo": "0298",
-      "descricao": "Avaliação da visão de cores"
-    },
-    {
-      "codigo": "0299",
-      "descricao": "Avaliação do campo visual"
-    },
-    {
-      "codigo": "0300",
-      "descricao": "Avaliação psicossocial"
-    },
-    {
-      "codigo": "0281",
-      "descricao": "Audiometria tonal ocupacional"
-    },
-    {
-      "codigo": "0282",
-      "descricao": "Audiometria de tronco cerebral (PEA) BERA"
-    },
-    {
-      "codigo": "0283",
-      "descricao": "Audiometria tonal limiar com testes de discriminação"
-    },
-    {
-      "codigo": "0284",
-      "descricao": "Audiometria vocal - Pesquisa de limiar de discriminação"
-    },
-    {
-      "codigo": "0285",
-      "descricao": "Audiometria vocal - Pesquisa de limiar de inteligibilidade"
-    }
-  ]
+ "fonte": "eSocial leiaute S-1.3 (NT 07/2026), Tabela 27 - Procedimentos Diagnósticos. Tabela completa, extraída de https://www.gov.br/esocial/pt-br/documentacao-tecnica/leiautes-esocial-versao-s-1-3-nt-07-2026/tabelas.html, consultada em 21/09/2026 (cópia em docs/pesquisa/risco-epi/fontes/esocial/leiaute-s-1.3-nt-07-2026-tabelas.html).",
+ "itens": [
+  {
+   "codigo": "0001",
+   "descricao": "1,1-dicloro-2,2-bis (P-clorofeniletileno)"
+  },
+  {
+   "codigo": "0002",
+   "descricao": "1,1,1-tricloroetano"
+  },
+  {
+   "codigo": "0003",
+   "descricao": "1,2 dihidroxi-4-(N-acetilcisteinil)-butano"
+  },
+  {
+   "codigo": "0004",
+   "descricao": "1,25-dihidroxi vitamina D"
+  },
+  {
+   "codigo": "0005",
+   "descricao": "1,2-ciclo-hexanediol"
+  },
+  {
+   "codigo": "0006",
+   "descricao": "1,2-dibromo-3-cloropropano"
+  },
+  {
+   "codigo": "0007",
+   "descricao": "1,2-diclorobenzeno"
+  },
+  {
+   "codigo": "0008",
+   "descricao": "1,2-gliceril dinitrato"
+  },
+  {
+   "codigo": "0009",
+   "descricao": "1,3-gliceril dinitrato"
+  },
+  {
+   "codigo": "0010",
+   "descricao": "1,5-diaminonaftaleno"
+  },
+  {
+   "codigo": "1398",
+   "descricao": "11-desoxicorticosterona"
+  },
+  {
+   "codigo": "1399",
+   "descricao": "17-alfa-hidroxiprogesterona"
+  },
+  {
+   "codigo": "0011",
+   "descricao": "17-cetogênicos (17-CGS)"
+  },
+  {
+   "codigo": "0012",
+   "descricao": "17-cetosteroides"
+  },
+  {
+   "codigo": "0013",
+   "descricao": "17-cetosteroides relação alfa/beta"
+  },
+  {
+   "codigo": "0014",
+   "descricao": "17-cetosteroides totais (17-CTS)"
+  },
+  {
+   "codigo": "0015",
+   "descricao": "17-hidroxicorticosteroides (17-OHS)"
+  },
+  {
+   "codigo": "0016",
+   "descricao": "17-hidroxipregnenolona"
+  },
+  {
+   "codigo": "0017",
+   "descricao": "1-etoxi-2-propanol"
+  },
+  {
+   "codigo": "0018",
+   "descricao": "1-hidroxipireno"
+  },
+  {
+   "codigo": "0019",
+   "descricao": "1-metoxi-2-propanol"
+  },
+  {
+   "codigo": "0020",
+   "descricao": "1-naftol + 2-naftol"
+  },
+  {
+   "codigo": "0021",
+   "descricao": "2-amino-4-nitrofenol"
+  },
+  {
+   "codigo": "0022",
+   "descricao": "2,2'-dicloro-4,4'metileno dianilina"
+  },
+  {
+   "codigo": "0023",
+   "descricao": "2,2-dimetil-1,3benzodioxol"
+  },
+  {
+   "codigo": "0024",
+   "descricao": "2,4-dinitroaminotolueno"
+  },
+  {
+   "codigo": "0025",
+   "descricao": "2,4-hidroxibifenil"
+  },
+  {
+   "codigo": "0026",
+   "descricao": "2,5-diclorofenol"
+  },
+  {
+   "codigo": "0027",
+   "descricao": "2,5-heptanediona"
+  },
+  {
+   "codigo": "0028",
+   "descricao": "2,5-hexanediona + 4,5-dihidroxi-2-hexanona"
+  },
+  {
+   "codigo": "0029",
+   "descricao": "2,5-hexanodiona urinária"
+  },
+  {
+   "codigo": "0030",
+   "descricao": "2,6-dinitroaminotolueno"
+  },
+  {
+   "codigo": "0031",
+   "descricao": "2-butanona"
+  },
+  {
+   "codigo": "0032",
+   "descricao": "2-dimetilamino-4-hidroxi-5,6-dimetilpirimidina"
+  },
+  {
+   "codigo": "0033",
+   "descricao": "2-etil, 5-hidroxi-hexil-ftalato"
+  },
+  {
+   "codigo": "0034",
+   "descricao": "2-etil-5-oxi-hexil-ftalato"
+  },
+  {
+   "codigo": "0035",
+   "descricao": "2-etilfenol"
+  },
+  {
+   "codigo": "0036",
+   "descricao": "2-fenil 2-propanol"
+  },
+  {
+   "codigo": "0037",
+   "descricao": "2-isopropoxifenol"
+  },
+  {
+   "codigo": "0038",
+   "descricao": "2-metilamino-4-hidroxi-5,6-dimetilpirimidina"
+  },
+  {
+   "codigo": "0039",
+   "descricao": "2-metilpentano sanguíneo"
+  },
+  {
+   "codigo": "0040",
+   "descricao": "2-naftilamina"
+  },
+  {
+   "codigo": "0041",
+   "descricao": "3,4-diclorocatecol"
+  },
+  {
+   "codigo": "0042",
+   "descricao": "3-alfa androstanediol glucoronídeo (3-ALFADIOL)"
+  },
+  {
+   "codigo": "0043",
+   "descricao": "3-hidroxibenzopireno"
+  },
+  {
+   "codigo": "0044",
+   "descricao": "3-hidroxicarbofurano urinário"
+  },
+  {
+   "codigo": "0045",
+   "descricao": "3-metil histidina"
+  },
+  {
+   "codigo": "0046",
+   "descricao": "3-metil pentano sanguíneo"
+  },
+  {
+   "codigo": "0047",
+   "descricao": "4,4-diaminodiciclohexil metano (DDHM)"
+  },
+  {
+   "codigo": "0049",
+   "descricao": "4,4-diaminodifenilmetano"
+  },
+  {
+   "codigo": "0050",
+   "descricao": "4,4'-metileno bis-2-cloroanilina (MbOCA)"
+  },
+  {
+   "codigo": "0048",
+   "descricao": "4,4'-metilenodianilina (MDA)"
+  },
+  {
+   "codigo": "0051",
+   "descricao": "4,5-diclorocatecol"
+  },
+  {
+   "codigo": "0052",
+   "descricao": "4,6-dinitro-o-cresol (DNOC) sanguíneo"
+  },
+  {
+   "codigo": "0053",
+   "descricao": "4-amino-2,6-dinitrotolueno"
+  },
+  {
+   "codigo": "0054",
+   "descricao": "4-amino-2-nitrofenol"
+  },
+  {
+   "codigo": "0055",
+   "descricao": "4-amino-bifenil"
+  },
+  {
+   "codigo": "0056",
+   "descricao": "4-clorocatecol"
+  },
+  {
+   "codigo": "0057",
+   "descricao": "4-cloro-o-toluidina (derivados)"
+  },
+  {
+   "codigo": "0058",
+   "descricao": "4-etilfenol"
+  },
+  {
+   "codigo": "0059",
+   "descricao": "4-metilpentan-2-ona"
+  },
+  {
+   "codigo": "0060",
+   "descricao": "5,6-dimetil-2-(metilamino)pirimidin-4-ol"
+  },
+  {
+   "codigo": "0061",
+   "descricao": "5-hidroximetil-pirrolidona"
+  },
+  {
+   "codigo": "0062",
+   "descricao": "5-hydroxi-N-metilpirrolidona"
+  },
+  {
+   "codigo": "0063",
+   "descricao": "5-nucleotidase"
+  },
+  {
+   "codigo": "0064",
+   "descricao": "Aberrações cromossômicas (pesquisa)"
+  },
+  {
+   "codigo": "0065",
+   "descricao": "Absidia (pesquisa)"
+  },
+  {
+   "codigo": "0066",
+   "descricao": "Acanthamoeba (pesquisa)"
+  },
+  {
+   "codigo": "0067",
+   "descricao": "Acetaminofen"
+  },
+  {
+   "codigo": "0068",
+   "descricao": "Acetilcolinesterase eritrocitária"
+  },
+  {
+   "codigo": "0069",
+   "descricao": "Acetilcolinesterase plasmática"
+  },
+  {
+   "codigo": "0070",
+   "descricao": "Acetona sanguínea"
+  },
+  {
+   "codigo": "0071",
+   "descricao": "Acetona urinária"
+  },
+  {
+   "codigo": "0072",
+   "descricao": "Acidez titulável na urina"
+  },
+  {
+   "codigo": "0074",
+   "descricao": "Ácido 2,4,5-triclorofenoxiacético (2,4,5-T) urinário"
+  },
+  {
+   "codigo": "0075",
+   "descricao": "Ácido 2,4-diclorofenoxiacético (2,4-D) urinário"
+  },
+  {
+   "codigo": "0073",
+   "descricao": "Ácido 2,4-dinitrobenzoico"
+  },
+  {
+   "codigo": "0076",
+   "descricao": "Ácido 2-hidroxi-3-butenil mercaptúrico"
+  },
+  {
+   "codigo": "0077",
+   "descricao": "Ácido 2-hidroxipropil mercaptúrico"
+  },
+  {
+   "codigo": "0078",
+   "descricao": "Ácido 2-tiotiazolidina"
+  },
+  {
+   "codigo": "0079",
+   "descricao": "Ácido 2-tiotiazolidina-4-carboxílico (TTCA)"
+  },
+  {
+   "codigo": "0080",
+   "descricao": "Ácido 3,4-dihidroxibutil mercaptúrico"
+  },
+  {
+   "codigo": "0081",
+   "descricao": "Ácido 3-fenoxibenzoico"
+  },
+  {
+   "codigo": "0082",
+   "descricao": "Ácido 3-hidroxipropil mercaptúrico"
+  },
+  {
+   "codigo": "0083",
+   "descricao": "Ácido 4-cloro-2-metilfenoxiacético (MCPA) urinário"
+  },
+  {
+   "codigo": "0084",
+   "descricao": "Ácido 4-fluoro-3-fenoxibenzoico"
+  },
+  {
+   "codigo": "0085",
+   "descricao": "Ácido 5 hidróxi-indolacético"
+  },
+  {
+   "codigo": "0086",
+   "descricao": "Ácido acético"
+  },
+  {
+   "codigo": "0087",
+   "descricao": "Ácido ascórbico (vitamina C)"
+  },
+  {
+   "codigo": "0088",
+   "descricao": "Ácido beta hidroxi-butírico"
+  },
+  {
+   "codigo": "0089",
+   "descricao": "Ácido butoxi-acético"
+  },
+  {
+   "codigo": "0090",
+   "descricao": "Ácido cacodílico"
+  },
+  {
+   "codigo": "0091",
+   "descricao": "Ácido cis- 3-(2,2-diclorovinil)-2,2-dimetilciclopropanocarboxilico"
+  },
+  {
+   "codigo": "0092",
+   "descricao": "Ácido cis-3-(2,2-dibromovinil)-2,2-dimetilciclopropanocarboxilico"
+  },
+  {
+   "codigo": "0093",
+   "descricao": "Ácido cítrico na urina"
+  },
+  {
+   "codigo": "0094",
+   "descricao": "Ácido dehidroabiético"
+  },
+  {
+   "codigo": "0095",
+   "descricao": "Ácido delta aminolevulínico (ALA-U)"
+  },
+  {
+   "codigo": "0096",
+   "descricao": "Ácido delta aminolevulínico desidratase (ALA-D)"
+  },
+  {
+   "codigo": "0097",
+   "descricao": "Ácido d-glucárico"
+  },
+  {
+   "codigo": "0098",
+   "descricao": "Ácido dimetilarsínico"
+  },
+  {
+   "codigo": "0099",
+   "descricao": "Ácido dimetilbenzoico"
+  },
+  {
+   "codigo": "0100",
+   "descricao": "Ácido etoxiacético"
+  },
+  {
+   "codigo": "0101",
+   "descricao": "Ácido fenilfosfórico urinário"
+  },
+  {
+   "codigo": "0102",
+   "descricao": "Ácido fenilglioxílico"
+  },
+  {
+   "codigo": "0103",
+   "descricao": "Ácido fenil-mercaptúrico"
+  },
+  {
+   "codigo": "0104",
+   "descricao": "Ácido fólico eritrocitário"
+  },
+  {
+   "codigo": "0105",
+   "descricao": "Ácido fórmico"
+  },
+  {
+   "codigo": "0106",
+   "descricao": "Ácido furoico"
+  },
+  {
+   "codigo": "0107",
+   "descricao": "Ácido glioxílico"
+  },
+  {
+   "codigo": "0108",
+   "descricao": "Ácido hidroxietil-mercaptúrico"
+  },
+  {
+   "codigo": "0109",
+   "descricao": "Ácido hipúrico"
+  },
+  {
+   "codigo": "0110",
+   "descricao": "Ácido homo vanílico"
+  },
+  {
+   "codigo": "0111",
+   "descricao": "Ácido homogentísico urinário"
+  },
+  {
+   "codigo": "0112",
+   "descricao": "Ácido láctico (lactato)"
+  },
+  {
+   "codigo": "0113",
+   "descricao": "Ácido mandélico"
+  },
+  {
+   "codigo": "0114",
+   "descricao": "Ácido mercaptúrico acrilamida"
+  },
+  {
+   "codigo": "0115",
+   "descricao": "Ácido metil malônico"
+  },
+  {
+   "codigo": "0116",
+   "descricao": "Ácido metilhipúrico"
+  },
+  {
+   "codigo": "0117",
+   "descricao": "Ácido metoxiacético (2-metoxiacético)"
+  },
+  {
+   "codigo": "0118",
+   "descricao": "Ácido metoxi-propiônico (ácido isobutírico)"
+  },
+  {
+   "codigo": "0119",
+   "descricao": "Ácido monometilarsônico"
+  },
+  {
+   "codigo": "0120",
+   "descricao": "Ácido orótico"
+  },
+  {
+   "codigo": "0121",
+   "descricao": "Ácido oxálico"
+  },
+  {
+   "codigo": "0122",
+   "descricao": "Ácido perfluorooctanoico"
+  },
+  {
+   "codigo": "0123",
+   "descricao": "Ácido perfluorooctanossulfônico"
+  },
+  {
+   "codigo": "0124",
+   "descricao": "Ácido pirúvico"
+  },
+  {
+   "codigo": "0125",
+   "descricao": "Ácido S-(3-cloro-2-hidroxipropil) mercaptúrico"
+  },
+  {
+   "codigo": "0126",
+   "descricao": "Ácido S(n-Propil)mercaptúrico"
+  },
+  {
+   "codigo": "0127",
+   "descricao": "Ácido salicílico"
+  },
+  {
+   "codigo": "0128",
+   "descricao": "Ácido siálico"
+  },
+  {
+   "codigo": "0129",
+   "descricao": "Ácido tioglicólico"
+  },
+  {
+   "codigo": "0130",
+   "descricao": "Ácido trans, trans-mucônico"
+  },
+  {
+   "codigo": "0131",
+   "descricao": "Ácido trans-3-(2,2-diclorovinil)-2,2-dimetilciclopropanocarboxilico"
+  },
+  {
+   "codigo": "0132",
+   "descricao": "Ácido trans-crisantemum-dicarboxilico"
+  },
+  {
+   "codigo": "0133",
+   "descricao": "Ácido tricloroacético"
+  },
+  {
+   "codigo": "0134",
+   "descricao": "Ácido trifluoroacético"
+  },
+  {
+   "codigo": "0135",
+   "descricao": "Ácido úrico"
+  },
+  {
+   "codigo": "0136",
+   "descricao": "Ácido valproico"
+  },
+  {
+   "codigo": "0137",
+   "descricao": "Ácido vanilmandélico (VMA)"
+  },
+  {
+   "codigo": "0138",
+   "descricao": "Ácido β-hidroxietoxi acético"
+  },
+  {
+   "codigo": "1400",
+   "descricao": "Ácidos biliares"
+  },
+  {
+   "codigo": "0139",
+   "descricao": "Ácidos graxos livres"
+  },
+  {
+   "codigo": "0140",
+   "descricao": "Ácidos orgânicos (perfil quantitativo)"
+  },
+  {
+   "codigo": "0141",
+   "descricao": "Acilcarnitinas (perfil qualitativo)"
+  },
+  {
+   "codigo": "1401",
+   "descricao": "Acilcarnitinas (perfil quantitativo)"
+  },
+  {
+   "codigo": "0142",
+   "descricao": "Actinobacillus (pesquisa)"
+  },
+  {
+   "codigo": "0143",
+   "descricao": "Actinomadura (pesquisa)"
+  },
+  {
+   "codigo": "0144",
+   "descricao": "Actinomyces (pesquisa)"
+  },
+  {
+   "codigo": "0145",
+   "descricao": "Adenilatoquinase"
+  },
+  {
+   "codigo": "0146",
+   "descricao": "Adenovírus - IgG"
+  },
+  {
+   "codigo": "0147",
+   "descricao": "Adenovírus - IgM"
+  },
+  {
+   "codigo": "0148",
+   "descricao": "Adrenocorticotrófico, hormônio (ACTH)"
+  },
+  {
+   "codigo": "0149",
+   "descricao": "Adutos de DNA (pesquisa)"
+  },
+  {
+   "codigo": "0150",
+   "descricao": "Adutos de proteínas (pesquisa)"
+  },
+  {
+   "codigo": "0151",
+   "descricao": "Aflatoxinas (pesquisa)"
+  },
+  {
+   "codigo": "0152",
+   "descricao": "Agente da doença crônica emaciante (pesquisa)"
+  },
+  {
+   "codigo": "0153",
+   "descricao": "Agente da doença de Creutzfeldt-Jakob esporádica (pesquisa)"
+  },
+  {
+   "codigo": "0154",
+   "descricao": "Agente da doença de Creutzfeldt-Jakob familiar (pesquisa)"
+  },
+  {
+   "codigo": "0155",
+   "descricao": "Agente da doença de Creutzfeldt-Jakob iatrogênica (pesquisa)"
+  },
+  {
+   "codigo": "0156",
+   "descricao": "Agente da doença de Creutzfeldt-Jakob variante (pesquisa)"
+  },
+  {
+   "codigo": "0157",
+   "descricao": "Agente da encefalopatia espongiforme bovina (BSE) (pesquisa)"
+  },
+  {
+   "codigo": "0158",
+   "descricao": "Agente da encefalopatia espongiforme bovina tipo-H (pesquisa)"
+  },
+  {
+   "codigo": "0159",
+   "descricao": "Agente da encefalopatia espongiforme em ungulados exóticos (pesquisa)"
+  },
+  {
+   "codigo": "0160",
+   "descricao": "Agente da encefalopatia espongiforme felina (pesquisa)"
+  },
+  {
+   "codigo": "0161",
+   "descricao": "Agente da insônia fatal esporádica (pesquisa)"
+  },
+  {
+   "codigo": "0162",
+   "descricao": "Agente da insônia fatal familiar de Gerstmann-Sträussler-Scheinker (pesquisa)"
+  },
+  {
+   "codigo": "0163",
+   "descricao": "Agente da Kuru (pesquisa)"
+  },
+  {
+   "codigo": "0164",
+   "descricao": "Agente da prionopatia variante protease-resistente (pesquisa)"
+  },
+  {
+   "codigo": "0165",
+   "descricao": "Agente do tremor epizoótico ( scrapie disease ) (pesquisa)"
+  },
+  {
+   "codigo": "0166",
+   "descricao": "Agente do tremor epizoótico ( scrapie disease ) atípico (pesquisa)"
+  },
+  {
+   "codigo": "0167",
+   "descricao": "Ajellomyces (pesquisa)"
+  },
+  {
+   "codigo": "0168",
+   "descricao": "Albumina"
+  },
+  {
+   "codigo": "0169",
+   "descricao": "Albumina S-metilcisteína"
+  },
+  {
+   "codigo": "0170",
+   "descricao": "Alcaligenes (pesquisa)"
+  },
+  {
+   "codigo": "0171",
+   "descricao": "Alcaptonúria"
+  },
+  {
+   "codigo": "0172",
+   "descricao": "Aldolase"
+  },
+  {
+   "codigo": "0173",
+   "descricao": "Aldosterona"
+  },
+  {
+   "codigo": "0174",
+   "descricao": "Alérgenos - Perfil antigênico (painel C/36 antígenos)"
+  },
+  {
+   "codigo": "0176",
+   "descricao": "Alfa-1-antitripsina, dosagem no soro"
+  },
+  {
+   "codigo": "0177",
+   "descricao": "Alfa-1-glicoproteína ácida"
+  },
+  {
+   "codigo": "0175",
+   "descricao": "Alfa-1-microglobulina na urina"
+  },
+  {
+   "codigo": "0178",
+   "descricao": "Alfa-2-antiplasmina, teste funcional"
+  },
+  {
+   "codigo": "0179",
+   "descricao": "Alfa-2-macroglobulina"
+  },
+  {
+   "codigo": "0180",
+   "descricao": "Alfa-amilase"
+  },
+  {
+   "codigo": "0181",
+   "descricao": "Alfa-fetoproteína"
+  },
+  {
+   "codigo": "0182",
+   "descricao": "Alfa-hexaclorociclo-hexano"
+  },
+  {
+   "codigo": "0183",
+   "descricao": "Alumínio plasmático"
+  },
+  {
+   "codigo": "0184",
+   "descricao": "Alumínio urinário"
+  },
+  {
+   "codigo": "0185",
+   "descricao": "Amebíase - IgG"
+  },
+  {
+   "codigo": "0186",
+   "descricao": "Amebíase - IgM"
+  },
+  {
+   "codigo": "0187",
+   "descricao": "Amilase"
+  },
+  {
+   "codigo": "0188",
+   "descricao": "Aminoácidos, fracionamento e quantificação"
+  },
+  {
+   "codigo": "0189",
+   "descricao": "Amiodarona"
+  },
+  {
+   "codigo": "0190",
+   "descricao": "Amitriptilina"
+  },
+  {
+   "codigo": "0191",
+   "descricao": "Amônia"
+  },
+  {
+   "codigo": "0192",
+   "descricao": "AMP cíclico"
+  },
+  {
+   "codigo": "0193",
+   "descricao": "Ancylostoma (pesquisa)"
+  },
+  {
+   "codigo": "0194",
+   "descricao": "Androstenediona"
+  },
+  {
+   "codigo": "0195",
+   "descricao": "Anfetaminas"
+  },
+  {
+   "codigo": "0196",
+   "descricao": "Angiostrongylus (pesquisa)"
+  },
+  {
+   "codigo": "0197",
+   "descricao": "Anilina sanguínea"
+  },
+  {
+   "codigo": "0198",
+   "descricao": "Anilina urinária"
+  },
+  {
+   "codigo": "0199",
+   "descricao": "Anilina-hemoglobina"
+  },
+  {
+   "codigo": "0200",
+   "descricao": "Anisakis (pesquisa)"
+  },
+  {
+   "codigo": "0201",
+   "descricao": "Anti-12-hidroxi-endrin urinário"
+  },
+  {
+   "codigo": "0202",
+   "descricao": "Anti-actina"
+  },
+  {
+   "codigo": "0203",
+   "descricao": "Antibiograma"
+  },
+  {
+   "codigo": "0204",
+   "descricao": "Antibióticos, dosagem no soro"
+  },
+  {
+   "codigo": "0205",
+   "descricao": "Anticandida - IgG e IgM"
+  },
+  {
+   "codigo": "0206",
+   "descricao": "Anticardiolipina - IgA"
+  },
+  {
+   "codigo": "0207",
+   "descricao": "Anticardiolipina - IgG"
+  },
+  {
+   "codigo": "0208",
+   "descricao": "Anticardiolipina - IgM"
+  },
+  {
+   "codigo": "0209",
+   "descricao": "Anticentrômero"
+  },
+  {
+   "codigo": "0210",
+   "descricao": "Anticoagulante lúpico"
+  },
+  {
+   "codigo": "0211",
+   "descricao": "Anticorpo anti A e B"
+  },
+  {
+   "codigo": "0212",
+   "descricao": "Anticorpo anti saccharamyces - ASCA"
+  },
+  {
+   "codigo": "0213",
+   "descricao": "Anticorpo anti-DNAse B"
+  },
+  {
+   "codigo": "0214",
+   "descricao": "Anticorpo anti-hormônio do crescimento"
+  },
+  {
+   "codigo": "0215",
+   "descricao": "Anticorpo antimieloperoxidase, MPO"
+  },
+  {
+   "codigo": "0216",
+   "descricao": "Anticorpo anti-receptor de TSH (TRAB)"
+  },
+  {
+   "codigo": "0217",
+   "descricao": "Anticorpo antivírus da hepatite E"
+  },
+  {
+   "codigo": "0218",
+   "descricao": "Anticorpos antiendomisio - IgG, IgM, IgA"
+  },
+  {
+   "codigo": "0219",
+   "descricao": "Anticorpos anti-ilhota de langherans"
+  },
+  {
+   "codigo": "0220",
+   "descricao": "Anticorpos anti-influenza A - IgG"
+  },
+  {
+   "codigo": "0221",
+   "descricao": "Anticorpos anti-influenza A - IgM"
+  },
+  {
+   "codigo": "0222",
+   "descricao": "Anticorpos anti-influenza B - IgG"
+  },
+  {
+   "codigo": "0223",
+   "descricao": "Anticorpos anti-influenza B - IgM"
+  },
+  {
+   "codigo": "0224",
+   "descricao": "Anticorpos antiinsulina"
+  },
+  {
+   "codigo": "0225",
+   "descricao": "Anticorpos antiplaquetários, citometria de fluxo"
+  },
+  {
+   "codigo": "0226",
+   "descricao": "Anticorpos antitireoide (tireoglobulina)"
+  },
+  {
+   "codigo": "0227",
+   "descricao": "Anticorpos irregulares"
+  },
+  {
+   "codigo": "1402",
+   "descricao": "Anticorpos naturais - Isoaglutininas"
+  },
+  {
+   "codigo": "0228",
+   "descricao": "Anticortex supra-renal"
+  },
+  {
+   "codigo": "0229",
+   "descricao": "Antidesoxiribonuclease B"
+  },
+  {
+   "codigo": "0230",
+   "descricao": "Anti-DMP"
+  },
+  {
+   "codigo": "0231",
+   "descricao": "Anti-DNA"
+  },
+  {
+   "codigo": "0232",
+   "descricao": "Antiescleroderma"
+  },
+  {
+   "codigo": "0233",
+   "descricao": "Antifígado"
+  },
+  {
+   "codigo": "0235",
+   "descricao": "Antígeno carcinoembriogênico (CEA)"
+  },
+  {
+   "codigo": "0236",
+   "descricao": "Antígeno de diferenciação celular"
+  },
+  {
+   "codigo": "0237",
+   "descricao": "Antígeno específico prostático livre (PSA livre)"
+  },
+  {
+   "codigo": "0238",
+   "descricao": "Antígeno específico prostático total (PSA)"
+  },
+  {
+   "codigo": "0239",
+   "descricao": "Antígenos fúngicos, pesquisa"
+  },
+  {
+   "codigo": "0240",
+   "descricao": "Antígenos metílicos solúveis do BCG"
+  },
+  {
+   "codigo": "0241",
+   "descricao": "Antigliadina (glúten) - IgA"
+  },
+  {
+   "codigo": "0242",
+   "descricao": "Antigliadina (glúten) - IgG"
+  },
+  {
+   "codigo": "0243",
+   "descricao": "Antigliadina (glúten) - IgM"
+  },
+  {
+   "codigo": "0244",
+   "descricao": "Anti-hialuronidase"
+  },
+  {
+   "codigo": "0245",
+   "descricao": "Anti-JO1"
+  },
+  {
+   "codigo": "0246",
+   "descricao": "Anti-LA/SSB"
+  },
+  {
+   "codigo": "0247",
+   "descricao": "Anti-LKM-1"
+  },
+  {
+   "codigo": "0248",
+   "descricao": "Antimembrana basal"
+  },
+  {
+   "codigo": "0249",
+   "descricao": "Antimicrossomal"
+  },
+  {
+   "codigo": "0250",
+   "descricao": "Antimitocondria"
+  },
+  {
+   "codigo": "0251",
+   "descricao": "Antimitocondria, M2"
+  },
+  {
+   "codigo": "0252",
+   "descricao": "Antimônio urinário"
+  },
+  {
+   "codigo": "0253",
+   "descricao": "Antimúsculo cardíaco"
+  },
+  {
+   "codigo": "0254",
+   "descricao": "Antimúsculo estriado"
+  },
+  {
+   "codigo": "0255",
+   "descricao": "Antimúsculo liso"
+  },
+  {
+   "codigo": "0256",
+   "descricao": "Antineutrófilos (anca) C"
+  },
+  {
+   "codigo": "0257",
+   "descricao": "Antineutrófilos (anca) P"
+  },
+  {
+   "codigo": "0258",
+   "descricao": "Antiparietal"
+  },
+  {
+   "codigo": "0259",
+   "descricao": "Antiperoxidase tireoideana"
+  },
+  {
+   "codigo": "0260",
+   "descricao": "Anti-RNP"
+  },
+  {
+   "codigo": "0261",
+   "descricao": "Anti-Ro/SSA"
+  },
+  {
+   "codigo": "0262",
+   "descricao": "Anti-Sm"
+  },
+  {
+   "codigo": "0263",
+   "descricao": "Anti-TPO"
+  },
+  {
+   "codigo": "0264",
+   "descricao": "Antitrombina III"
+  },
+  {
+   "codigo": "0265",
+   "descricao": "Antrax (pesquisa)"
+  },
+  {
+   "codigo": "0266",
+   "descricao": "Apolipoproteína A (Apo A)"
+  },
+  {
+   "codigo": "0267",
+   "descricao": "Apolipoproteína B (Apo B)"
+  },
+  {
+   "codigo": "0268",
+   "descricao": "Apolipoproteína E"
+  },
+  {
+   "codigo": "0270",
+   "descricao": "Arcanobacterium (pesquisa)"
+  },
+  {
+   "codigo": "0271",
+   "descricao": "Arsênico +III urinário"
+  },
+  {
+   "codigo": "0272",
+   "descricao": "Arsênico +V urinário"
+  },
+  {
+   "codigo": "0273",
+   "descricao": "Arsênico capilar"
+  },
+  {
+   "codigo": "0274",
+   "descricao": "Arsênico inorgânico urinário"
+  },
+  {
+   "codigo": "1433",
+   "descricao": "Arsênico sanguíneo"
+  },
+  {
+   "codigo": "0275",
+   "descricao": "Arsênio - Metabólitos metilados urinários"
+  },
+  {
+   "codigo": "0276",
+   "descricao": "Ascaris (pesquisa)"
+  },
+  {
+   "codigo": "0277",
+   "descricao": "Aslo"
+  },
+  {
+   "codigo": "0278",
+   "descricao": "Aspergillus (pesquisa)"
+  },
+  {
+   "codigo": "0279",
+   "descricao": "Aspergilus , reação sorológica"
+  },
+  {
+   "codigo": "0280",
+   "descricao": "Ativador tissular de plasminogênio (TPA)"
+  },
+  {
+   "codigo": "0282",
+   "descricao": "Audiometria de tronco cerebral (PEA) BERA"
+  },
+  {
+   "codigo": "0283",
+   "descricao": "Audiometria tonal limiar com testes de discriminação"
+  },
+  {
+   "codigo": "0281",
+   "descricao": "Audiometria tonal ocupacional"
+  },
+  {
+   "codigo": "0284",
+   "descricao": "Audiometria vocal - Pesquisa de limiar de discriminação"
+  },
+  {
+   "codigo": "0285",
+   "descricao": "Audiometria vocal - Pesquisa de limiar de inteligibilidade"
+  },
+  {
+   "codigo": "0286",
+   "descricao": "Avaliação clínica com ênfase cardiocirculatória (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0287",
+   "descricao": "Avaliação clínica com ênfase dermatológica (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0288",
+   "descricao": "Avaliação clínica com ênfase gastrointestinal (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0289",
+   "descricao": "Avaliação clínica com ênfase mental (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0290",
+   "descricao": "Avaliação clínica com ênfase neurológca (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0291",
+   "descricao": "Avaliação clínica com ênfase neurossensorial (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0292",
+   "descricao": "Avaliação clínica com ênfase ortopédica (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0293",
+   "descricao": "Avaliação clínica com ênfase respiratória (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0294",
+   "descricao": "Avaliação clínica com ênfase urogenital (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0295",
+   "descricao": "Avaliação clínica ocupacional (anamnese e exame físico)"
+  },
+  {
+   "codigo": "0296",
+   "descricao": "Avaliação da acuidade visual"
+  },
+  {
+   "codigo": "0297",
+   "descricao": "Avaliação da estereopsia"
+  },
+  {
+   "codigo": "0298",
+   "descricao": "Avaliação da visão de cores"
+  },
+  {
+   "codigo": "0299",
+   "descricao": "Avaliação do campo visual"
+  },
+  {
+   "codigo": "0300",
+   "descricao": "Avaliação psicossocial"
+  },
+  {
+   "codigo": "0301",
+   "descricao": "Azida sódica, teste da"
+  },
+  {
+   "codigo": "0302",
+   "descricao": "B.A.A.R. (Ziehl ou fluorescência)"
+  },
+  {
+   "codigo": "0303",
+   "descricao": "Babesia (pesquisa)"
+  },
+  {
+   "codigo": "0304",
+   "descricao": "Bacillus (pesquisa)"
+  },
+  {
+   "codigo": "0305",
+   "descricao": "Bacterioscopia"
+  },
+  {
+   "codigo": "0306",
+   "descricao": "Bacteroides (pesquisa)"
+  },
+  {
+   "codigo": "0307",
+   "descricao": "Balantidium (pesquisa)"
+  },
+  {
+   "codigo": "0308",
+   "descricao": "Barbitúricos, antidepressivos tricíclicos"
+  },
+  {
+   "codigo": "0309",
+   "descricao": "Bário urinário"
+  },
+  {
+   "codigo": "0310",
+   "descricao": "Bartituratos"
+  },
+  {
+   "codigo": "0311",
+   "descricao": "Bartonella (pesquisa)"
+  },
+  {
+   "codigo": "0312",
+   "descricao": "Benzeno urinário"
+  },
+  {
+   "codigo": "0313",
+   "descricao": "Benzidina eritrocitária"
+  },
+  {
+   "codigo": "0314",
+   "descricao": "Benzidina urinária"
+  },
+  {
+   "codigo": "0315",
+   "descricao": "Benzodiazepínicos e similares"
+  },
+  {
+   "codigo": "1434",
+   "descricao": "Berílio sanguíneo"
+  },
+  {
+   "codigo": "0316",
+   "descricao": "Berílio urinário"
+  },
+  {
+   "codigo": "0317",
+   "descricao": "Beta mercapto-lactato-disulfidúria"
+  },
+  {
+   "codigo": "0318",
+   "descricao": "Beta-2-microglobulina"
+  },
+  {
+   "codigo": "0319",
+   "descricao": "Beta-glicuronidase"
+  },
+  {
+   "codigo": "0320",
+   "descricao": "Beta-hexaclorociclo-hexano"
+  },
+  {
+   "codigo": "0321",
+   "descricao": "Bilirrubinas (direta, indireta e total)"
+  },
+  {
+   "codigo": "0322",
+   "descricao": "Biotinidase atividade"
+  },
+  {
+   "codigo": "0323",
+   "descricao": "Bisfenol A (4,4-isopropiledenedifenol)"
+  },
+  {
+   "codigo": "0324",
+   "descricao": "Bismuto plasmático"
+  },
+  {
+   "codigo": "0325",
+   "descricao": "Bismuto urinário"
+  },
+  {
+   "codigo": "0326",
+   "descricao": "Blastocystis (pesquisa)"
+  },
+  {
+   "codigo": "0327",
+   "descricao": "Blastomicose, reação sorológica"
+  },
+  {
+   "codigo": "0328",
+   "descricao": "Blastomyces (pesquisa)"
+  },
+  {
+   "codigo": "0329",
+   "descricao": "Bocavírus humano (pesquisa)"
+  },
+  {
+   "codigo": "0330",
+   "descricao": "Boro"
+  },
+  {
+   "codigo": "0331",
+   "descricao": "Borrelia (pesquisa)"
+  },
+  {
+   "codigo": "0332",
+   "descricao": "Brachispira (pesquisa)"
+  },
+  {
+   "codigo": "0333",
+   "descricao": "Brometo"
+  },
+  {
+   "codigo": "0334",
+   "descricao": "Bromofós sanguíneo"
+  },
+  {
+   "codigo": "0335",
+   "descricao": "Bromofós urinário"
+  },
+  {
+   "codigo": "0336",
+   "descricao": "Brucela - IgG"
+  },
+  {
+   "codigo": "0337",
+   "descricao": "Brucela - IgM"
+  },
+  {
+   "codigo": "0338",
+   "descricao": "Brucela, prova rápida"
+  },
+  {
+   "codigo": "0339",
+   "descricao": "Brucella (pesquisa)"
+  },
+  {
+   "codigo": "0340",
+   "descricao": "Brugia (pesquisa)"
+  },
+  {
+   "codigo": "0341",
+   "descricao": "Bunyavírus germiston (pesquisa)"
+  },
+  {
+   "codigo": "0342",
+   "descricao": "Burkholderia (pesquisa)"
+  },
+  {
+   "codigo": "0343",
+   "descricao": "Buta-2-ona"
+  },
+  {
+   "codigo": "0344",
+   "descricao": "Butanol sanguíneo"
+  },
+  {
+   "codigo": "1429",
+   "descricao": "Butilcolinesterase no plasma ou soro"
+  },
+  {
+   "codigo": "0345",
+   "descricao": "C1q"
+  },
+  {
+   "codigo": "0346",
+   "descricao": "C3 proativador"
+  },
+  {
+   "codigo": "0347",
+   "descricao": "C3A (fator B)"
+  },
+  {
+   "codigo": "0348",
+   "descricao": "CA 50"
+  },
+  {
+   "codigo": "0349",
+   "descricao": "CA-242"
+  },
+  {
+   "codigo": "0350",
+   "descricao": "CA-27-29"
+  },
+  {
+   "codigo": "0351",
+   "descricao": "Cádmio sanguíneo"
+  },
+  {
+   "codigo": "0352",
+   "descricao": "Cádmio urinário"
+  },
+  {
+   "codigo": "0354",
+   "descricao": "Cálcio iônico"
+  },
+  {
+   "codigo": "1435",
+   "descricao": "Cálcio sanguíneo"
+  },
+  {
+   "codigo": "1436",
+   "descricao": "Cálcio urinário"
+  },
+  {
+   "codigo": "0355",
+   "descricao": "Calcitonina"
+  },
+  {
+   "codigo": "0356",
+   "descricao": "Campylobacter (pesquisa)"
+  },
+  {
+   "codigo": "0357",
+   "descricao": "Campylobacter (pesquisa)"
+  },
+  {
+   "codigo": "0358",
+   "descricao": "Candida (pesquisa)"
+  },
+  {
+   "codigo": "0359",
+   "descricao": "Capacidade de fixação de ferro"
+  },
+  {
+   "codigo": "0360",
+   "descricao": "Capillaria (pesquisa)"
+  },
+  {
+   "codigo": "0362",
+   "descricao": "Carbamazepina"
+  },
+  {
+   "codigo": "0361",
+   "descricao": "Carbendazim"
+  },
+  {
+   "codigo": "0363",
+   "descricao": "Carbofuranfenol"
+  },
+  {
+   "codigo": "0364",
+   "descricao": "Carboxihemoglobina"
+  },
+  {
+   "codigo": "0365",
+   "descricao": "Cardiobacterium (pesquisa)"
+  },
+  {
+   "codigo": "0366",
+   "descricao": "Carnitina livre"
+  },
+  {
+   "codigo": "0367",
+   "descricao": "Carnitina total e frações"
+  },
+  {
+   "codigo": "0368",
+   "descricao": "Caroteno"
+  },
+  {
+   "codigo": "0369",
+   "descricao": "Catecolaminas"
+  },
+  {
+   "codigo": "0370",
+   "descricao": "Catecolaminas fracionadas - Dopamina, epinefrina, norepinefrina na urina"
+  },
+  {
+   "codigo": "0371",
+   "descricao": "Caxumba - IgG"
+  },
+  {
+   "codigo": "0372",
+   "descricao": "Caxumba - IgM"
+  },
+  {
+   "codigo": "0373",
+   "descricao": "CEE vírus, pesquisa"
+  },
+  {
+   "codigo": "0374",
+   "descricao": "Células LE"
+  },
+  {
+   "codigo": "0375",
+   "descricao": "Ceruloplasmina"
+  },
+  {
+   "codigo": "0376",
+   "descricao": "Césio urinário"
+  },
+  {
+   "codigo": "0377",
+   "descricao": "Chagas - IgG"
+  },
+  {
+   "codigo": "0378",
+   "descricao": "Chagas - IgM"
+  },
+  {
+   "codigo": "0379",
+   "descricao": "Chlamydia - IgG"
+  },
+  {
+   "codigo": "0380",
+   "descricao": "Chlamydia - IgM"
+  },
+  {
+   "codigo": "0381",
+   "descricao": "Chlamydia, cultura"
+  },
+  {
+   "codigo": "0382",
+   "descricao": "Chlamydophila (pesquisa)"
+  },
+  {
+   "codigo": "0383",
+   "descricao": "Chlormequat"
+  },
+  {
+   "codigo": "0384",
+   "descricao": "Chumbo dietila"
+  },
+  {
+   "codigo": "0385",
+   "descricao": "Chumbo sanguíneo"
+  },
+  {
+   "codigo": "0386",
+   "descricao": "Chumbo total"
+  },
+  {
+   "codigo": "0387",
+   "descricao": "Chumbo urinário"
+  },
+  {
+   "codigo": "0388",
+   "descricao": "Cianeto (cianureto) sanguíneo"
+  },
+  {
+   "codigo": "0389",
+   "descricao": "Ciclofosfamida"
+  },
+  {
+   "codigo": "0390",
+   "descricao": "Ciclo-hexanodiol"
+  },
+  {
+   "codigo": "0391",
+   "descricao": "Ciclo-hexanol"
+  },
+  {
+   "codigo": "0392",
+   "descricao": "Ciclosporina"
+  },
+  {
+   "codigo": "0393",
+   "descricao": "Cisticercose, AC"
+  },
+  {
+   "codigo": "0394",
+   "descricao": "Cistinúria"
+  },
+  {
+   "codigo": "0395",
+   "descricao": "cis-δ4 tetrahidroftalimida (THPI)"
+  },
+  {
+   "codigo": "0396",
+   "descricao": "Citomegalovírus - shell vial"
+  },
+  {
+   "codigo": "0397",
+   "descricao": "Citomegalovírus - IgG"
+  },
+  {
+   "codigo": "0398",
+   "descricao": "Citomegalovírus - IgM"
+  },
+  {
+   "codigo": "1437",
+   "descricao": "Citopatologia"
+  },
+  {
+   "codigo": "0399",
+   "descricao": "Cladophialophora (pesquisa)"
+  },
+  {
+   "codigo": "0400",
+   "descricao": "Cladosporium (pesquisa)"
+  },
+  {
+   "codigo": "0401",
+   "descricao": "Clamídia, pesquisa"
+  },
+  {
+   "codigo": "0402",
+   "descricao": "Clearance de ácido úrico"
+  },
+  {
+   "codigo": "0403",
+   "descricao": "Clearance de creatinina"
+  },
+  {
+   "codigo": "0404",
+   "descricao": "Clearance de fosfato"
+  },
+  {
+   "codigo": "0405",
+   "descricao": "Clearance de ureia"
+  },
+  {
+   "codigo": "0406",
+   "descricao": "Clearance osmolar"
+  },
+  {
+   "codigo": "0407",
+   "descricao": "Clomipramina"
+  },
+  {
+   "codigo": "0408",
+   "descricao": "Clonorchis (pesquisa)"
+  },
+  {
+   "codigo": "0409",
+   "descricao": "Cloreto de metileno sanguíneo"
+  },
+  {
+   "codigo": "0410",
+   "descricao": "Cloro"
+  },
+  {
+   "codigo": "0411",
+   "descricao": "Clorofenol"
+  },
+  {
+   "codigo": "0412",
+   "descricao": "Clorofórmio"
+  },
+  {
+   "codigo": "0413",
+   "descricao": "Clostridium (pesquisa)"
+  },
+  {
+   "codigo": "0414",
+   "descricao": "Clostridium difficile , toxina A"
+  },
+  {
+   "codigo": "0415",
+   "descricao": "Coagulograma"
+  },
+  {
+   "codigo": "0416",
+   "descricao": "Cobalto sanguíneo"
+  },
+  {
+   "codigo": "0417",
+   "descricao": "Cobalto urinário"
+  },
+  {
+   "codigo": "0418",
+   "descricao": "Cobre sanguíneo"
+  },
+  {
+   "codigo": "0419",
+   "descricao": "Cobre urinário"
+  },
+  {
+   "codigo": "0420",
+   "descricao": "Cocaína"
+  },
+  {
+   "codigo": "0421",
+   "descricao": "Coccidioides (pesquisa)"
+  },
+  {
+   "codigo": "0422",
+   "descricao": "Cólera (pesquisa)"
+  },
+  {
+   "codigo": "0423",
+   "descricao": "Colesterol (HDL)"
+  },
+  {
+   "codigo": "0424",
+   "descricao": "Colesterol (LDL)"
+  },
+  {
+   "codigo": "0425",
+   "descricao": "Colesterol (VLDL)"
+  },
+  {
+   "codigo": "0426",
+   "descricao": "Colesterol total"
+  },
+  {
+   "codigo": "0427",
+   "descricao": "Complemento C2"
+  },
+  {
+   "codigo": "0428",
+   "descricao": "Complemento C3"
+  },
+  {
+   "codigo": "0429",
+   "descricao": "Complemento C4"
+  },
+  {
+   "codigo": "0430",
+   "descricao": "Complemento C5"
+  },
+  {
+   "codigo": "0431",
+   "descricao": "Complemento CH-100"
+  },
+  {
+   "codigo": "0432",
+   "descricao": "Complemento CH-50"
+  },
+  {
+   "codigo": "0433",
+   "descricao": "Composto S (11-desoxicortisol)"
+  },
+  {
+   "codigo": "0434",
+   "descricao": "Consumo de protrombina"
+  },
+  {
+   "codigo": "0435",
+   "descricao": "Contagem de eosinófilos"
+  },
+  {
+   "codigo": "0436",
+   "descricao": "Contagem sanguínea diferencial"
+  },
+  {
+   "codigo": "0437",
+   "descricao": "Contagem sedimentar de Addis"
+  },
+  {
+   "codigo": "0438",
+   "descricao": "Contracaecum (pesquisa)"
+  },
+  {
+   "codigo": "0439",
+   "descricao": "Coombs direto"
+  },
+  {
+   "codigo": "0440",
+   "descricao": "Coombs indireto"
+  },
+  {
+   "codigo": "0441",
+   "descricao": "Coprológico funcional (caracteres, pH, digestibilidade, amônia, ácidos orgânicos e interpretação)"
+  },
+  {
+   "codigo": "0442",
+   "descricao": "Coproporfirina III na urina"
+  },
+  {
+   "codigo": "0443",
+   "descricao": "Coproporfirinas"
+  },
+  {
+   "codigo": "0444",
+   "descricao": "Coronavírus (pesquisa)"
+  },
+  {
+   "codigo": "0445",
+   "descricao": "Coronavírus humano 229E (pesquisa)"
+  },
+  {
+   "codigo": "0446",
+   "descricao": "Coronavírus relacionado à MERS (pesquisa)"
+  },
+  {
+   "codigo": "0447",
+   "descricao": "Coronavírus relacionado à SARS (pesquisa)"
+  },
+  {
+   "codigo": "1419",
+   "descricao": "Coronavírus/COVID-19 - SARS-CoV-2 - IgA"
+  },
+  {
+   "codigo": "1420",
+   "descricao": "Coronavírus/COVID-19 - SARS-CoV-2 - IgG"
+  },
+  {
+   "codigo": "1421",
+   "descricao": "Coronavírus/COVID-19 - SARS-CoV-2 - IgM"
+  },
+  {
+   "codigo": "1422",
+   "descricao": "Coronavírus/COVID-19 - SARS-CoV-2 - Pesquisa de antígeno"
+  },
+  {
+   "codigo": "1423",
+   "descricao": "Coronavírus/COVID-19 - SARS-CoV-2 - RT-PCR"
+  },
+  {
+   "codigo": "0448",
+   "descricao": "Corpos cetônicos na urina"
+  },
+  {
+   "codigo": "0449",
+   "descricao": "Corpúsculos de Donovani"
+  },
+  {
+   "codigo": "0450",
+   "descricao": "Cortisol"
+  },
+  {
+   "codigo": "0451",
+   "descricao": "Cortisol livre"
+  },
+  {
+   "codigo": "0452",
+   "descricao": "Corynebacterium (pesquisa)"
+  },
+  {
+   "codigo": "0453",
+   "descricao": "Cotinina"
+  },
+  {
+   "codigo": "0454",
+   "descricao": "Coxiella (pesquisa)"
+  },
+  {
+   "codigo": "0455",
+   "descricao": "Creatina"
+  },
+  {
+   "codigo": "0456",
+   "descricao": "Creatinina"
+  },
+  {
+   "codigo": "0457",
+   "descricao": "Creatino fosfoquinase - Fração MB"
+  },
+  {
+   "codigo": "0458",
+   "descricao": "Creatino fosfoquinase total (CK)"
+  },
+  {
+   "codigo": "0459",
+   "descricao": "Cresol urinário"
+  },
+  {
+   "codigo": "0460",
+   "descricao": "Crioaglutinina"
+  },
+  {
+   "codigo": "0461",
+   "descricao": "Crioglobulinas"
+  },
+  {
+   "codigo": "0462",
+   "descricao": "Criptococo (tinta da China), pesquisa de"
+  },
+  {
+   "codigo": "0463",
+   "descricao": "Cromatografia de açúcares na urina"
+  },
+  {
+   "codigo": "0464",
+   "descricao": "Cromatografia de aminoácidos"
+  },
+  {
+   "codigo": "0465",
+   "descricao": "Cromo eritrocitário"
+  },
+  {
+   "codigo": "0466",
+   "descricao": "Cromo sanguíneo"
+  },
+  {
+   "codigo": "0467",
+   "descricao": "Cromo urinário"
+  },
+  {
+   "codigo": "0468",
+   "descricao": "Cromossomo philadelfia"
+  },
+  {
+   "codigo": "0469",
+   "descricao": "Cryptococcus (pesquisa)"
+  },
+  {
+   "codigo": "0470",
+   "descricao": "Cryptosporidium (pesquisa)"
+  },
+  {
+   "codigo": "0471",
+   "descricao": "Cultura bacteriana"
+  },
+  {
+   "codigo": "1403",
+   "descricao": "Cultura de urina (urocultura)"
+  },
+  {
+   "codigo": "0472",
+   "descricao": "Cultura nas fezes: salmonela, shigellae e E. coli enteropatogênicas, enteroinvasora (sorol. incluída) + campylobacter SP. + E. coli enterohemorrágica"
+  },
+  {
+   "codigo": "0473",
+   "descricao": "Cultura para bactérias anaeróbicas"
+  },
+  {
+   "codigo": "0474",
+   "descricao": "Cultura para Criptosporidium"
+  },
+  {
+   "codigo": "0475",
+   "descricao": "Cultura para fungos"
+  },
+  {
+   "codigo": "0476",
+   "descricao": "Cultura para mycobacterium"
+  },
+  {
+   "codigo": "0477",
+   "descricao": "Cultura quantitativa de secreções pulmonares"
+  },
+  {
+   "codigo": "0478",
+   "descricao": "Curva glicêmica"
+  },
+  {
+   "codigo": "0479",
+   "descricao": "Curva insulínica"
+  },
+  {
+   "codigo": "0480",
+   "descricao": "Cyclospora (pesquisa)"
+  },
+  {
+   "codigo": "0481",
+   "descricao": "Dehidroepiandrosterona (DHEA)"
+  },
+  {
+   "codigo": "0482",
+   "descricao": "Dehidrotestosterona (DHT)"
+  },
+  {
+   "codigo": "0483",
+   "descricao": "Dengue - IgG"
+  },
+  {
+   "codigo": "0484",
+   "descricao": "Dengue - IgM"
+  },
+  {
+   "codigo": "0485",
+   "descricao": "Desidrogenase alfa-hidroxibutírica"
+  },
+  {
+   "codigo": "0486",
+   "descricao": "Desidrogenase glutâmica"
+  },
+  {
+   "codigo": "0487",
+   "descricao": "Desidrogenase isocítrica"
+  },
+  {
+   "codigo": "0488",
+   "descricao": "Desidrogenase láctica"
+  },
+  {
+   "codigo": "0489",
+   "descricao": "Desipramina"
+  },
+  {
+   "codigo": "0490",
+   "descricao": "Desoxicorticosterona"
+  },
+  {
+   "codigo": "0491",
+   "descricao": "Dialdeído malônico"
+  },
+  {
+   "codigo": "0492",
+   "descricao": "Diclorodifenil tricloroetano (DDT) sanguíneo"
+  },
+  {
+   "codigo": "0493",
+   "descricao": "Diclorodifenildicloroetileno (DDE) sanguíneo"
+  },
+  {
+   "codigo": "0494",
+   "descricao": "Dicloroetano"
+  },
+  {
+   "codigo": "0495",
+   "descricao": "Dicloroeteno"
+  },
+  {
+   "codigo": "0496",
+   "descricao": "Diclorometano"
+  },
+  {
+   "codigo": "0497",
+   "descricao": "Dicrocoelium (pesquisa)"
+  },
+  {
+   "codigo": "0498",
+   "descricao": "Dieldrin sanguíneo"
+  },
+  {
+   "codigo": "0499",
+   "descricao": "Dientamoeba (pesquisa)"
+  },
+  {
+   "codigo": "0500",
+   "descricao": "Dietilditiofosfato"
+  },
+  {
+   "codigo": "0501",
+   "descricao": "Dietilditiofosfato urinário (DEDTP)"
+  },
+  {
+   "codigo": "0502",
+   "descricao": "Dietilestilbestrol"
+  },
+  {
+   "codigo": "0503",
+   "descricao": "Dietilfosfato"
+  },
+  {
+   "codigo": "0504",
+   "descricao": "Dietilfosfato urinário (DEP)"
+  },
+  {
+   "codigo": "0505",
+   "descricao": "Dietilltiofosfato urinário (DETP)"
+  },
+  {
+   "codigo": "0506",
+   "descricao": "Dietiltiofosfato"
+  },
+  {
+   "codigo": "0507",
+   "descricao": "Digitoxina ou digoxina"
+  },
+  {
+   "codigo": "0508",
+   "descricao": "Dímero D"
+  },
+  {
+   "codigo": "0509",
+   "descricao": "Dimetilditiofosfato"
+  },
+  {
+   "codigo": "0510",
+   "descricao": "Dimetilditiofosfato urinário (DMDTP)"
+  },
+  {
+   "codigo": "0511",
+   "descricao": "Dimetilfosfato"
+  },
+  {
+   "codigo": "0512",
+   "descricao": "Dimetilfosfato urinário (DMP)"
+  },
+  {
+   "codigo": "0513",
+   "descricao": "Dimetil-selênio respiratório (ar expirado)"
+  },
+  {
+   "codigo": "0514",
+   "descricao": "Dimetiltiofosfato"
+  },
+  {
+   "codigo": "0515",
+   "descricao": "Dimetiltiofosfato urinário (DMTP)"
+  },
+  {
+   "codigo": "0516",
+   "descricao": "Di-n-butil fosfato"
+  },
+  {
+   "codigo": "0517",
+   "descricao": "Dinitrato-etileno-glicol"
+  },
+  {
+   "codigo": "0518",
+   "descricao": "Dinitrofenol"
+  },
+  {
+   "codigo": "0519",
+   "descricao": "Dinoseb"
+  },
+  {
+   "codigo": "0520",
+   "descricao": "Dipetalonema (pesquisa)"
+  },
+  {
+   "codigo": "0521",
+   "descricao": "Diphyllobothrium (pesquisa)"
+  },
+  {
+   "codigo": "0522",
+   "descricao": "Diquat urinário"
+  },
+  {
+   "codigo": "0523",
+   "descricao": "Dissulfeto de carbono"
+  },
+  {
+   "codigo": "0524",
+   "descricao": "DNCB Teste de Contato"
+  },
+  {
+   "codigo": "0525",
+   "descricao": "Doppler colorido arterial de membro inferior"
+  },
+  {
+   "codigo": "0526",
+   "descricao": "Doppler colorido arterial de membro superior"
+  },
+  {
+   "codigo": "0527",
+   "descricao": "Dosagem de receptor de progesterona ou de estrogênio"
+  },
+  {
+   "codigo": "0528",
+   "descricao": "Dracunculus (pesquisa)"
+  },
+  {
+   "codigo": "0529",
+   "descricao": "Ebola (pesquisa)"
+  },
+  {
+   "codigo": "0530",
+   "descricao": "ECG (Eletrocardiograma) convencional de até 12 derivações"
+  },
+  {
+   "codigo": "0531",
+   "descricao": "ECG (Eletrocardiograma) de alta resolução"
+  },
+  {
+   "codigo": "0532",
+   "descricao": "Echinococcus (pesquisa)"
+  },
+  {
+   "codigo": "0533",
+   "descricao": "Echovírus (painel), sorologia para"
+  },
+  {
+   "codigo": "0534",
+   "descricao": "Echovírus (pesquisa)"
+  },
+  {
+   "codigo": "0535",
+   "descricao": "Edwardsiella (pesquisa)"
+  },
+  {
+   "codigo": "0536",
+   "descricao": "EEG (Eletroencefalograma) de rotina"
+  },
+  {
+   "codigo": "0537",
+   "descricao": "Ehrlichia (pesquisa)"
+  },
+  {
+   "codigo": "0538",
+   "descricao": "Eikenella (pesquisa)"
+  },
+  {
+   "codigo": "0540",
+   "descricao": "Eletroforese de glicoproteínas"
+  },
+  {
+   "codigo": "0541",
+   "descricao": "Eletroforese de lipoproteínas"
+  },
+  {
+   "codigo": "0539",
+   "descricao": "Eletroforese de proteínas"
+  },
+  {
+   "codigo": "0542",
+   "descricao": "Eletroforese de proteínas urinárias"
+  },
+  {
+   "codigo": "0543",
+   "descricao": "Eletroneuromiografia de MMII"
+  },
+  {
+   "codigo": "0544",
+   "descricao": "Eletroneuromiografia de MMSS"
+  },
+  {
+   "codigo": "0545",
+   "descricao": "Elizabethkingia (pesquisa)"
+  },
+  {
+   "codigo": "0546",
+   "descricao": "Emmonsia (pesquisa)"
+  },
+  {
+   "codigo": "0547",
+   "descricao": "Encefalite japonesa B (pesquisa)"
+  },
+  {
+   "codigo": "0548",
+   "descricao": "Encephalitozoon (pesquisa)"
+  },
+  {
+   "codigo": "0549",
+   "descricao": "Endotoxinas (pesquisa)"
+  },
+  {
+   "codigo": "0550",
+   "descricao": "Endrin sanguíneo"
+  },
+  {
+   "codigo": "0551",
+   "descricao": "Enolase"
+  },
+  {
+   "codigo": "0552",
+   "descricao": "Entamoeba (pesquisa)"
+  },
+  {
+   "codigo": "0553",
+   "descricao": "Enterobacter (pesquisa)"
+  },
+  {
+   "codigo": "0554",
+   "descricao": "Enterobius (pesquisa)"
+  },
+  {
+   "codigo": "0555",
+   "descricao": "Enterococcus (pesquisa)"
+  },
+  {
+   "codigo": "0556",
+   "descricao": "Enterocytozoon (pesquisa)"
+  },
+  {
+   "codigo": "0557",
+   "descricao": "Enterovírus humano A, B e C (pesquisa)"
+  },
+  {
+   "codigo": "0558",
+   "descricao": "Enzima conversora da angiotensina (ECA)"
+  },
+  {
+   "codigo": "0559",
+   "descricao": "Enzimas eritrocitárias"
+  },
+  {
+   "codigo": "0560",
+   "descricao": "Epidermophyton (pesquisa)"
+  },
+  {
+   "codigo": "0561",
+   "descricao": "Equinococose (hidatidose), reação"
+  },
+  {
+   "codigo": "0562",
+   "descricao": "Ergoespirometria ou teste cardiopulmonar de exercício completo (espirometria forçada, consumo de O2, produção de CO2 e derivados, ECG, oximetria)"
+  },
+  {
+   "codigo": "0563",
+   "descricao": "Eritropoietina"
+  },
+  {
+   "codigo": "0564",
+   "descricao": "Erysipelothrix (pesquisa)"
+  },
+  {
+   "codigo": "0565",
+   "descricao": "Escândio urinário"
+  },
+  {
+   "codigo": "0566",
+   "descricao": "Escherichia (pesquisa)"
+  },
+  {
+   "codigo": "0567",
+   "descricao": "Escherichia coli (pesquisa)"
+  },
+  {
+   "codigo": "0568",
+   "descricao": "Espermograma"
+  },
+  {
+   "codigo": "0569",
+   "descricao": "Esplenograma (citologia)"
+  },
+  {
+   "codigo": "0570",
+   "descricao": "Esporotricose, reação sorológica"
+  },
+  {
+   "codigo": "0571",
+   "descricao": "Esporotriquina"
+  },
+  {
+   "codigo": "0572",
+   "descricao": "Estanho urinário"
+  },
+  {
+   "codigo": "0573",
+   "descricao": "Estireno sanguíneo"
+  },
+  {
+   "codigo": "1427",
+   "descricao": "Estireno urinário"
+  },
+  {
+   "codigo": "0574",
+   "descricao": "Estradiol"
+  },
+  {
+   "codigo": "0575",
+   "descricao": "Estreptozima"
+  },
+  {
+   "codigo": "0576",
+   "descricao": "Estriol"
+  },
+  {
+   "codigo": "0577",
+   "descricao": "Estrogênios totais (fenolesteroides)"
+  },
+  {
+   "codigo": "0578",
+   "descricao": "Estrona"
+  },
+  {
+   "codigo": "0579",
+   "descricao": "Estrôncio urinário"
+  },
+  {
+   "codigo": "0580",
+   "descricao": "Etanol"
+  },
+  {
+   "codigo": "0581",
+   "descricao": "Etilenotioureia (ETU)"
+  },
+  {
+   "codigo": "0582",
+   "descricao": "Etossuximida"
+  },
+  {
+   "codigo": "0583",
+   "descricao": "Exame a fresco de amostra biológica"
+  },
+  {
+   "codigo": "0584",
+   "descricao": "Exame bacteriológico de fezes"
+  },
+  {
+   "codigo": "0585",
+   "descricao": "Exame de fundo de olho"
+  },
+  {
+   "codigo": "1432",
+   "descricao": "Exame oftalmológico com avaliação de retina e/ou cristalino"
+  },
+  {
+   "codigo": "0586",
+   "descricao": "Exophiala (pesquisa)"
+  },
+  {
+   "codigo": "0587",
+   "descricao": "Falcização, teste de"
+  },
+  {
+   "codigo": "0588",
+   "descricao": "Fasciola (pesquisa)"
+  },
+  {
+   "codigo": "0589",
+   "descricao": "Fasciolopsis (pesquisa)"
+  },
+  {
+   "codigo": "0590",
+   "descricao": "Fator 4 plaquetário"
+  },
+  {
+   "codigo": "0591",
+   "descricao": "Fator antinúcleo (FAN)"
+  },
+  {
+   "codigo": "0592",
+   "descricao": "Fator II"
+  },
+  {
+   "codigo": "0593",
+   "descricao": "Fator IX"
+  },
+  {
+   "codigo": "0594",
+   "descricao": "Fator reumatoide"
+  },
+  {
+   "codigo": "0595",
+   "descricao": "Fator V"
+  },
+  {
+   "codigo": "0597",
+   "descricao": "Fator VII"
+  },
+  {
+   "codigo": "0598",
+   "descricao": "Fator VIII"
+  },
+  {
+   "codigo": "0599",
+   "descricao": "Fator VIII, dosagem do antígeno (Von Willebrand)"
+  },
+  {
+   "codigo": "0600",
+   "descricao": "Fator VIII, dosagem do inibidor"
+  },
+  {
+   "codigo": "0601",
+   "descricao": "Fator X"
+  },
+  {
+   "codigo": "0602",
+   "descricao": "Fator XI"
+  },
+  {
+   "codigo": "0603",
+   "descricao": "Fator XII"
+  },
+  {
+   "codigo": "0604",
+   "descricao": "Fator XIII"
+  },
+  {
+   "codigo": "0605",
+   "descricao": "Fenilalanina"
+  },
+  {
+   "codigo": "0606",
+   "descricao": "Fenilcetonúria"
+  },
+  {
+   "codigo": "0607",
+   "descricao": "Fenitoína"
+  },
+  {
+   "codigo": "0608",
+   "descricao": "Fenobarbital"
+  },
+  {
+   "codigo": "0609",
+   "descricao": "Fenol"
+  },
+  {
+   "codigo": "0610",
+   "descricao": "Fenotipagem do sistema Rh-Hr (anti Rho(D) + anti Rh(C) + anti Rh(E)"
+  },
+  {
+   "codigo": "0611",
+   "descricao": "Fenotipagem do sistema RH-HR (D, C, E, C E C)"
+  },
+  {
+   "codigo": "0612",
+   "descricao": "Ferritina"
+  },
+  {
+   "codigo": "0613",
+   "descricao": "Ferro sérico (sangue)"
+  },
+  {
+   "codigo": "1438",
+   "descricao": "Ferro urinário"
+  },
+  {
+   "codigo": "0614",
+   "descricao": "Fibrinogênio, teste funcional"
+  },
+  {
+   "codigo": "0615",
+   "descricao": "Filária (pesquisa)"
+  },
+  {
+   "codigo": "0616",
+   "descricao": "Filaria (sorologia)"
+  },
+  {
+   "codigo": "0617",
+   "descricao": "Filobasidiella (pesquisa)"
+  },
+  {
+   "codigo": "0618",
+   "descricao": "Flavobacterium (pesquisa)"
+  },
+  {
+   "codigo": "0619",
+   "descricao": "Flavovírus, pesquisa"
+  },
+  {
+   "codigo": "0620",
+   "descricao": "Fluazifop urinário"
+  },
+  {
+   "codigo": "0621",
+   "descricao": "Flufenoxuron sanguíneo"
+  },
+  {
+   "codigo": "0622",
+   "descricao": "Flúor sanguíneo"
+  },
+  {
+   "codigo": "0623",
+   "descricao": "Flúor urinário"
+  },
+  {
+   "codigo": "0624",
+   "descricao": "Fluoreto urinário"
+  },
+  {
+   "codigo": "0625",
+   "descricao": "Fluoribacter (pesquisa)"
+  },
+  {
+   "codigo": "0626",
+   "descricao": "Folículo estimulante, hormônio (FSH)"
+  },
+  {
+   "codigo": "0627",
+   "descricao": "Fonsecaea (pesquisa)"
+  },
+  {
+   "codigo": "1439",
+   "descricao": "Formaldeído sanguíneo"
+  },
+  {
+   "codigo": "1440",
+   "descricao": "Formaldeído urinário"
+  },
+  {
+   "codigo": "0629",
+   "descricao": "Fosfatase ácida fração prostática"
+  },
+  {
+   "codigo": "0630",
+   "descricao": "Fosfatase ácida total"
+  },
+  {
+   "codigo": "0631",
+   "descricao": "Fosfatase alcalina"
+  },
+  {
+   "codigo": "0632",
+   "descricao": "Fosfatase alcalina fração óssea"
+  },
+  {
+   "codigo": "0633",
+   "descricao": "Fosfatase alcalina termo-estável"
+  },
+  {
+   "codigo": "0634",
+   "descricao": "Fosfina sanguínea"
+  },
+  {
+   "codigo": "0635",
+   "descricao": "Fosfofructoquinase"
+  },
+  {
+   "codigo": "0636",
+   "descricao": "Fosfoglicerato quinase"
+  },
+  {
+   "codigo": "0637",
+   "descricao": "Fosfolipídios"
+  },
+  {
+   "codigo": "0638",
+   "descricao": "Fósforo"
+  },
+  {
+   "codigo": "0639",
+   "descricao": "Francisella (pesquisa)"
+  },
+  {
+   "codigo": "1404",
+   "descricao": "FREI (linfogranuloma venéreo) IDeR"
+  },
+  {
+   "codigo": "0640",
+   "descricao": "Frutosaminas"
+  },
+  {
+   "codigo": "0641",
+   "descricao": "Frutose"
+  },
+  {
+   "codigo": "0642",
+   "descricao": "Frutosúria"
+  },
+  {
+   "codigo": "0643",
+   "descricao": "Fungos, pesquisa a fresco"
+  },
+  {
+   "codigo": "0644",
+   "descricao": "Fusarium (pesquisa)"
+  },
+  {
+   "codigo": "0645",
+   "descricao": "Fusobacterium (pesquisa)"
+  },
+  {
+   "codigo": "0646",
+   "descricao": "Gad-Ab-antidescarboxilase do ácido glutâmico"
+  },
+  {
+   "codigo": "0647",
+   "descricao": "Gadolínio urinário"
+  },
+  {
+   "codigo": "0648",
+   "descricao": "Galactose"
+  },
+  {
+   "codigo": "0649",
+   "descricao": "Galactose 1-fosfatouridil transferase"
+  },
+  {
+   "codigo": "0650",
+   "descricao": "Galactosúria"
+  },
+  {
+   "codigo": "0651",
+   "descricao": "Gálio urinário"
+  },
+  {
+   "codigo": "0652",
+   "descricao": "Gama-glutamil transferase (gama-GT)"
+  },
+  {
+   "codigo": "0653",
+   "descricao": "Gardnerella (pesquisa)"
+  },
+  {
+   "codigo": "0654",
+   "descricao": "Gastrina"
+  },
+  {
+   "codigo": "0655",
+   "descricao": "Geotrichum (pesquisa)"
+  },
+  {
+   "codigo": "0656",
+   "descricao": "Giardia (pesquisa)"
+  },
+  {
+   "codigo": "0657",
+   "descricao": "Giardia (sorologia)"
+  },
+  {
+   "codigo": "0658",
+   "descricao": "Glicemia"
+  },
+  {
+   "codigo": "0659",
+   "descricao": "Glicemia após sobrecarga com dextrosol ou glicose"
+  },
+  {
+   "codigo": "0660",
+   "descricao": "Gliceraldeído, 3-fosfato desidrogenase"
+  },
+  {
+   "codigo": "0661",
+   "descricao": "Glicose 6-fosfato desidrogenase"
+  },
+  {
+   "codigo": "0662",
+   "descricao": "Glicose fosfato isomerase"
+  },
+  {
+   "codigo": "1441",
+   "descricao": "Glicose urinária"
+  },
+  {
+   "codigo": "0663",
+   "descricao": "Glifosato"
+  },
+  {
+   "codigo": "0664",
+   "descricao": "Globulina"
+  },
+  {
+   "codigo": "0665",
+   "descricao": "Globulina de ligação de hormônios sexuais (SHBG)"
+  },
+  {
+   "codigo": "0666",
+   "descricao": "Globulina transportadora da tiroxina (TBG)"
+  },
+  {
+   "codigo": "0667",
+   "descricao": "Glucagon"
+  },
+  {
+   "codigo": "0668",
+   "descricao": "Glutation"
+  },
+  {
+   "codigo": "0669",
+   "descricao": "Glutation peroxidase"
+  },
+  {
+   "codigo": "0670",
+   "descricao": "Gonococo - IgG"
+  },
+  {
+   "codigo": "0671",
+   "descricao": "Gonococo - IgM"
+  },
+  {
+   "codigo": "0672",
+   "descricao": "Grupo ABO, classificação reversa"
+  },
+  {
+   "codigo": "0673",
+   "descricao": "Grupo sanguíneo ABO, e fator Rho (inclui Du)"
+  },
+  {
+   "codigo": "0674",
+   "descricao": "Haemophilus (pesquisa)"
+  },
+  {
+   "codigo": "0675",
+   "descricao": "Háfnio urinário"
+  },
+  {
+   "codigo": "0676",
+   "descricao": "Ham, teste de (hemólise ácida)"
+  },
+  {
+   "codigo": "0677",
+   "descricao": "Hansen, pesquisa de"
+  },
+  {
+   "codigo": "0678",
+   "descricao": "Haptoglobina"
+  },
+  {
+   "codigo": "0679",
+   "descricao": "Heinz, corpúsculos"
+  },
+  {
+   "codigo": "0680",
+   "descricao": "Helicobacter (pesquisa)"
+  },
+  {
+   "codigo": "0681",
+   "descricao": "Helicobacter pylori - IgA"
+  },
+  {
+   "codigo": "0682",
+   "descricao": "Helicobacter pylori - IgG"
+  },
+  {
+   "codigo": "0683",
+   "descricao": "Helicobacter pylori - IgM"
+  },
+  {
+   "codigo": "0684",
+   "descricao": "Hemácias fetais"
+  },
+  {
+   "codigo": "0685",
+   "descricao": "Hematócrito"
+  },
+  {
+   "codigo": "0686",
+   "descricao": "Hemocultura"
+  },
+  {
+   "codigo": "0687",
+   "descricao": "Hemoglobina"
+  },
+  {
+   "codigo": "0688",
+   "descricao": "Hemoglobina (eletroforese ou HPLC)"
+  },
+  {
+   "codigo": "0689",
+   "descricao": "Hemoglobina glicada (A1 total)"
+  },
+  {
+   "codigo": "0690",
+   "descricao": "Hemoglobina glicada (Fração A1c)"
+  },
+  {
+   "codigo": "0691",
+   "descricao": "Hemoglobina plasmática livre"
+  },
+  {
+   "codigo": "0692",
+   "descricao": "Hemoglobina, solubilidade (HbS e HbD)"
+  },
+  {
+   "codigo": "0693",
+   "descricao": "Hemograma com contagem de plaquetas ou frações (eritrograma, leucograma, plaquetas)"
+  },
+  {
+   "codigo": "0694",
+   "descricao": "Hemophilus (bordetella) pertussis (pesquisa)"
+  },
+  {
+   "codigo": "0695",
+   "descricao": "Hemossedimentação, (VHS)"
+  },
+  {
+   "codigo": "0696",
+   "descricao": "Hemossiderina (siderócitos), sangue"
+  },
+  {
+   "codigo": "0697",
+   "descricao": "Hemossiderina (siderócitos), urina"
+  },
+  {
+   "codigo": "0698",
+   "descricao": "Heparina"
+  },
+  {
+   "codigo": "0699",
+   "descricao": "Hepatite A - HAV - IgG"
+  },
+  {
+   "codigo": "0700",
+   "descricao": "Hepatite A - HAV - IgM"
+  },
+  {
+   "codigo": "0702",
+   "descricao": "Hepatite B - HBCAC - IgG"
+  },
+  {
+   "codigo": "0701",
+   "descricao": "Hepatite B - HBCAC - IgM"
+  },
+  {
+   "codigo": "0703",
+   "descricao": "Hepatite B - HBeAC (anti-HBE)"
+  },
+  {
+   "codigo": "1405",
+   "descricao": "Hepatite B - HBeAG"
+  },
+  {
+   "codigo": "0704",
+   "descricao": "Hepatite B - HBsAC (anti-HBs)"
+  },
+  {
+   "codigo": "0234",
+   "descricao": "Hepatite B - HBsAG"
+  },
+  {
+   "codigo": "0705",
+   "descricao": "Hepatite C - Anti-HCV - IgG"
+  },
+  {
+   "codigo": "0706",
+   "descricao": "Hepatite C - Anti-HCV - IgM"
+  },
+  {
+   "codigo": "0707",
+   "descricao": "Hepatite delta - IgG"
+  },
+  {
+   "codigo": "0708",
+   "descricao": "Hepatite delta - IgM"
+  },
+  {
+   "codigo": "0709",
+   "descricao": "Hepatite delta, antigeno"
+  },
+  {
+   "codigo": "0710",
+   "descricao": "Heptacloro-epóxido"
+  },
+  {
+   "codigo": "0711",
+   "descricao": "HER-2 - Dosagem do receptor"
+  },
+  {
+   "codigo": "0712",
+   "descricao": "Herpes simples - IgG"
+  },
+  {
+   "codigo": "0713",
+   "descricao": "Herpes simples - IgM"
+  },
+  {
+   "codigo": "0714",
+   "descricao": "Herpes zóster - IgG"
+  },
+  {
+   "codigo": "0715",
+   "descricao": "Herpes zóster - IgM"
+  },
+  {
+   "codigo": "0716",
+   "descricao": "Herpesvírus (pesquisa)"
+  },
+  {
+   "codigo": "0717",
+   "descricao": "Heterophyes (pesquisa)"
+  },
+  {
+   "codigo": "0718",
+   "descricao": "Hexaclorobenzeno"
+  },
+  {
+   "codigo": "0719",
+   "descricao": "Hexafluoroisopropanol (HFIP)"
+  },
+  {
+   "codigo": "0720",
+   "descricao": "Hexametilenodiamina (1,6-hexametilenodiamina)"
+  },
+  {
+   "codigo": "0721",
+   "descricao": "Hexona (metil isobutil cetona)"
+  },
+  {
+   "codigo": "0722",
+   "descricao": "Hexosaminidase A"
+  },
+  {
+   "codigo": "0723",
+   "descricao": "Hidrazina"
+  },
+  {
+   "codigo": "0724",
+   "descricao": "Hidroxiprogesterona"
+  },
+  {
+   "codigo": "0725",
+   "descricao": "Hidroxiprolina"
+  },
+  {
+   "codigo": "0726",
+   "descricao": "Hipersensibilidade retardada (intradermo reação IDeR)"
+  },
+  {
+   "codigo": "0727",
+   "descricao": "Histamina"
+  },
+  {
+   "codigo": "0728",
+   "descricao": "Histidina na urina"
+  },
+  {
+   "codigo": "0729",
+   "descricao": "Histona"
+  },
+  {
+   "codigo": "0730",
+   "descricao": "Histoplasma (pesquisa)"
+  },
+  {
+   "codigo": "0731",
+   "descricao": "Histoplasmose"
+  },
+  {
+   "codigo": "0732",
+   "descricao": "HIV - Antígeno P24"
+  },
+  {
+   "codigo": "0733",
+   "descricao": "HIV1 ou HIV2, pesquisa de anticorpos"
+  },
+  {
+   "codigo": "0734",
+   "descricao": "HLA-DR"
+  },
+  {
+   "codigo": "0735",
+   "descricao": "HLA-DR+DQ"
+  },
+  {
+   "codigo": "0736",
+   "descricao": "Homocisteína"
+  },
+  {
+   "codigo": "0737",
+   "descricao": "Hormônio antidiurético"
+  },
+  {
+   "codigo": "0738",
+   "descricao": "Hormônio do crescimento (HGH)"
+  },
+  {
+   "codigo": "0739",
+   "descricao": "Hormônio gonodotrofico corionico"
+  },
+  {
+   "codigo": "0740",
+   "descricao": "Hormônio luteinizante (LH)"
+  },
+  {
+   "codigo": "0741",
+   "descricao": "Hormônio tireoestimulante (TSH)"
+  },
+  {
+   "codigo": "0742",
+   "descricao": "HPV (vírus do papiloma humano)"
+  },
+  {
+   "codigo": "0743",
+   "descricao": "HTLV-I / II"
+  },
+  {
+   "codigo": "0744",
+   "descricao": "Hymenolepis (pesquisa)"
+  },
+  {
+   "codigo": "0745",
+   "descricao": "Identificação de helmintos"
+  },
+  {
+   "codigo": "0746",
+   "descricao": "Ifosfamida"
+  },
+  {
+   "codigo": "0747",
+   "descricao": "IgA"
+  },
+  {
+   "codigo": "0748",
+   "descricao": "IgA na saliva"
+  },
+  {
+   "codigo": "0749",
+   "descricao": "IgD"
+  },
+  {
+   "codigo": "0750",
+   "descricao": "IgE"
+  },
+  {
+   "codigo": "0751",
+   "descricao": "IGF BP3 (proteína ligadora dos fatores de crescimento \"insulinlike\")"
+  },
+  {
+   "codigo": "0752",
+   "descricao": "IgG"
+  },
+  {
+   "codigo": "0753",
+   "descricao": "IgM"
+  },
+  {
+   "codigo": "0754",
+   "descricao": "Imipramina"
+  },
+  {
+   "codigo": "0755",
+   "descricao": "Impedanciometria"
+  },
+  {
+   "codigo": "0756",
+   "descricao": "Imunocomplexos circulantes"
+  },
+  {
+   "codigo": "0757",
+   "descricao": "Imunocomplexos circulantes, com células Raji"
+  },
+  {
+   "codigo": "0758",
+   "descricao": "Imunoeletroforese (estudo da gamopatia)"
+  },
+  {
+   "codigo": "0759",
+   "descricao": "Imunofenotipagem para doença residual mínima"
+  },
+  {
+   "codigo": "0760",
+   "descricao": "Imunofenotipagem para hemoglobinúria paroxistica noturna"
+  },
+  {
+   "codigo": "0761",
+   "descricao": "Imunofenotipagem para leucemias agudas ou sindrome mielodisplásica"
+  },
+  {
+   "codigo": "0762",
+   "descricao": "Imunofenotipagem para linfoma não Hodgkin / sindrome linfoproliferativa crônica"
+  },
+  {
+   "codigo": "0763",
+   "descricao": "Imunofenotipagem para perfil imune"
+  },
+  {
+   "codigo": "0764",
+   "descricao": "Imunofixação"
+  },
+  {
+   "codigo": "0765",
+   "descricao": "Índice de tiroxina livre (ITL)"
+  },
+  {
+   "codigo": "0766",
+   "descricao": "Índio urinário"
+  },
+  {
+   "codigo": "0767",
+   "descricao": "Inibidor de C1 esterase"
+  },
+  {
+   "codigo": "0768",
+   "descricao": "Inibidor do fator IX"
+  },
+  {
+   "codigo": "0769",
+   "descricao": "Inibidor do TPA (PAI)"
+  },
+  {
+   "codigo": "0770",
+   "descricao": "Inibidor dos fatores da hemostasia"
+  },
+  {
+   "codigo": "0771",
+   "descricao": "Insulina"
+  },
+  {
+   "codigo": "0772",
+   "descricao": "Iodo"
+  },
+  {
+   "codigo": "0773",
+   "descricao": "Iodo proteico (PBI)"
+  },
+  {
+   "codigo": "0774",
+   "descricao": "Iontoforese para a coleta de suor, com dosagem de cloro"
+  },
+  {
+   "codigo": "0775",
+   "descricao": "Irídio urinário"
+  },
+  {
+   "codigo": "0776",
+   "descricao": "Isoaglutininas"
+  },
+  {
+   "codigo": "0777",
+   "descricao": "Isobutanol urinário"
+  },
+  {
+   "codigo": "0778",
+   "descricao": "Isoforonodiamina"
+  },
+  {
+   "codigo": "0779",
+   "descricao": "Isolamento de agentes específicos (vírus, bactérias, protozoários, fungos, outros parasitas)"
+  },
+  {
+   "codigo": "0780",
+   "descricao": "Isomerase fosfohexose"
+  },
+  {
+   "codigo": "0781",
+   "descricao": "Isoniazida"
+  },
+  {
+   "codigo": "0782",
+   "descricao": "Isopropanol urinário"
+  },
+  {
+   "codigo": "0783",
+   "descricao": "Isospora (pesquisa)"
+  },
+  {
+   "codigo": "0784",
+   "descricao": "Isospora (sorologia)"
+  },
+  {
+   "codigo": "0785",
+   "descricao": "Ito (cancro mole), IDeR"
+  },
+  {
+   "codigo": "0786",
+   "descricao": "Ítrio urinário"
+  },
+  {
+   "codigo": "0787",
+   "descricao": "Klebsiella (pesquisa)"
+  },
+  {
+   "codigo": "0788",
+   "descricao": "Kveim (sarcoidose), IDeR"
+  },
+  {
+   "codigo": "0789",
+   "descricao": "Lactogênico placentário-hormônio"
+  },
+  {
+   "codigo": "0790",
+   "descricao": "Lactose, teste de tolerância"
+  },
+  {
+   "codigo": "0791",
+   "descricao": "Lamotrigina"
+  },
+  {
+   "codigo": "0792",
+   "descricao": "Larvas (fezes), pesquisa"
+  },
+  {
+   "codigo": "0793",
+   "descricao": "Lassa vírus, pesquisa"
+  },
+  {
+   "codigo": "0794",
+   "descricao": "Legionella - IgG"
+  },
+  {
+   "codigo": "0795",
+   "descricao": "Legionella - IgM"
+  },
+  {
+   "codigo": "0796",
+   "descricao": "Leishmania (pesquisa)"
+  },
+  {
+   "codigo": "0797",
+   "descricao": "Leishmaniose - IgG"
+  },
+  {
+   "codigo": "0798",
+   "descricao": "Leishmaniose - IgM"
+  },
+  {
+   "codigo": "0799",
+   "descricao": "Leptina"
+  },
+  {
+   "codigo": "1406",
+   "descricao": "Leptospira (pesquisa)"
+  },
+  {
+   "codigo": "0800",
+   "descricao": "Leptospirose - IgG"
+  },
+  {
+   "codigo": "0801",
+   "descricao": "Leptospirose - IgM"
+  },
+  {
+   "codigo": "0802",
+   "descricao": "Leucino aminopeptidase"
+  },
+  {
+   "codigo": "0804",
+   "descricao": "Leucócitos e hemácias, pesquisa nas fezes"
+  },
+  {
+   "codigo": "0803",
+   "descricao": "Leucócitos, contagem (leucograma)"
+  },
+  {
+   "codigo": "0806",
+   "descricao": "Leveduras, pesquisa nas fezes"
+  },
+  {
+   "codigo": "0807",
+   "descricao": "Lichtheimia (pesquisa)"
+  },
+  {
+   "codigo": "0808",
+   "descricao": "Lidocaina"
+  },
+  {
+   "codigo": "0809",
+   "descricao": "Lindano (γ-HCH) gama-hexaclorociclo-hexano"
+  },
+  {
+   "codigo": "0810",
+   "descricao": "Linfócitos T \"helper\" contagem de (IF com OKT-4) (CD-4+)"
+  },
+  {
+   "codigo": "0811",
+   "descricao": "Linfócitos T supressores contagem de (IF com OKT-8)"
+  },
+  {
+   "codigo": "0812",
+   "descricao": "Lipase"
+  },
+  {
+   "codigo": "0813",
+   "descricao": "Lipase lipoproteica"
+  },
+  {
+   "codigo": "0814",
+   "descricao": "Lipídios totais"
+  },
+  {
+   "codigo": "0815",
+   "descricao": "Lipoides na urina"
+  },
+  {
+   "codigo": "0816",
+   "descricao": "Lipoproteína (a) - Lp (a)"
+  },
+  {
+   "codigo": "0817",
+   "descricao": "Listeria (pesquisa)"
+  },
+  {
+   "codigo": "0818",
+   "descricao": "Listeriose, reação sorológica"
+  },
+  {
+   "codigo": "0819",
+   "descricao": "Lítio sanguíneo"
+  },
+  {
+   "codigo": "0820",
+   "descricao": "Lítio urinário"
+  },
+  {
+   "codigo": "0821",
+   "descricao": "Loa (pesquisa)"
+  },
+  {
+   "codigo": "0822",
+   "descricao": "Lyme - IgG"
+  },
+  {
+   "codigo": "0823",
+   "descricao": "Lyme - IgM"
+  },
+  {
+   "codigo": "0824",
+   "descricao": "Lyssavírus (pesquisa)"
+  },
+  {
+   "codigo": "0825",
+   "descricao": "Lyssavírus do morcego Australiano (pesquisa)"
+  },
+  {
+   "codigo": "0826",
+   "descricao": "Lyssavírus do morcego europeu tipos 1 e 2 (pesquisa)"
+  },
+  {
+   "codigo": "0827",
+   "descricao": "Macroprolactina"
+  },
+  {
+   "codigo": "0828",
+   "descricao": "Madurella (pesquisa)"
+  },
+  {
+   "codigo": "1442",
+   "descricao": "Magnésio sanguíneo"
+  },
+  {
+   "codigo": "1443",
+   "descricao": "Magnésio urinário"
+  },
+  {
+   "codigo": "0830",
+   "descricao": "Malária - IgG"
+  },
+  {
+   "codigo": "0831",
+   "descricao": "Malária - IgM"
+  },
+  {
+   "codigo": "0832",
+   "descricao": "Malassezia (pesquisa)"
+  },
+  {
+   "codigo": "0833",
+   "descricao": "Malation urinário"
+  },
+  {
+   "codigo": "0834",
+   "descricao": "Maltose, teste de tolerância"
+  },
+  {
+   "codigo": "1444",
+   "descricao": "Mamografia"
+  },
+  {
+   "codigo": "0836",
+   "descricao": "Manganês sanguíneo"
+  },
+  {
+   "codigo": "0835",
+   "descricao": "Manganês urinário"
+  },
+  {
+   "codigo": "0837",
+   "descricao": "Mansonella (pesquisa)"
+  },
+  {
+   "codigo": "0838",
+   "descricao": "Mantoux, IDeR"
+  },
+  {
+   "codigo": "1445",
+   "descricao": "Mapeamento de retina (oftalmoscopia indireta)"
+  },
+  {
+   "codigo": "0839",
+   "descricao": "Marcador tumoral CA 125"
+  },
+  {
+   "codigo": "0840",
+   "descricao": "Marcador tumoral CA 15-3"
+  },
+  {
+   "codigo": "0841",
+   "descricao": "Marcador tumoral CA 19.9"
+  },
+  {
+   "codigo": "0842",
+   "descricao": "Marcador tumoral CA 72-4"
+  },
+  {
+   "codigo": "0843",
+   "descricao": "Marcadores tumorais"
+  },
+  {
+   "codigo": "0844",
+   "descricao": "MCA (antígeno cárcino-mamário)"
+  },
+  {
+   "codigo": "0845",
+   "descricao": "Medida de pico de fluxo expiratório"
+  },
+  {
+   "codigo": "0846",
+   "descricao": "Medida seriada por 3 semanas do pico de fluxo expiratório"
+  },
+  {
+   "codigo": "0847",
+   "descricao": "MEHP + 5-OH-MEHP+ 5-oxo-MEHP+ 5-cx-MEPP"
+  },
+  {
+   "codigo": "0848",
+   "descricao": "Melanina na urina"
+  },
+  {
+   "codigo": "0849",
+   "descricao": "Mercúrio sanguíneo"
+  },
+  {
+   "codigo": "0850",
+   "descricao": "Mercúrio urinário"
+  },
+  {
+   "codigo": "0851",
+   "descricao": "Metabólitos de atrazina urinários (atrazina dealquilada, deetilada, deisoprpilada)"
+  },
+  {
+   "codigo": "0852",
+   "descricao": "Metagonimus (pesquisa)"
+  },
+  {
+   "codigo": "0853",
+   "descricao": "Meta-hemoglobina"
+  },
+  {
+   "codigo": "0854",
+   "descricao": "Metais pesados, pesquisa em unhas, cabelos, outros tecidos"
+  },
+  {
+   "codigo": "0855",
+   "descricao": "Metalotioneína urinária"
+  },
+  {
+   "codigo": "0856",
+   "descricao": "Metanefrinas urinárias"
+  },
+  {
+   "codigo": "0857",
+   "descricao": "Metanol"
+  },
+  {
+   "codigo": "0858",
+   "descricao": "Metapneumovírus (pesquisa)"
+  },
+  {
+   "codigo": "0859",
+   "descricao": "Metaxililenodiamina"
+  },
+  {
+   "codigo": "0860",
+   "descricao": "Methotrexate (metotrexato)"
+  },
+  {
+   "codigo": "0861",
+   "descricao": "Metil (4-hidroxi-1H-benzimidazol-2-il)"
+  },
+  {
+   "codigo": "0862",
+   "descricao": "Metil (5-hidoxi-1H-benzimidazol-2-il)"
+  },
+  {
+   "codigo": "0863",
+   "descricao": "Metil etil cetona"
+  },
+  {
+   "codigo": "0864",
+   "descricao": "Metil isobutil cetona"
+  },
+  {
+   "codigo": "1426",
+   "descricao": "Metilclorofórmio no ar exalado"
+  },
+  {
+   "codigo": "0865",
+   "descricao": "Métodos diagnósticos por imagem antebraço"
+  },
+  {
+   "codigo": "0866",
+   "descricao": "Métodos diagnósticos por imagem antebraço articulação acromioclavicular"
+  },
+  {
+   "codigo": "0867",
+   "descricao": "Métodos diagnósticos por imagem articulação coxofemoral (quadril)"
+  },
+  {
+   "codigo": "0868",
+   "descricao": "Métodos diagnósticos por imagem articulação escapuloumeral (ombro)"
+  },
+  {
+   "codigo": "0869",
+   "descricao": "Métodos diagnósticos por imagem articulação esternoclavicular"
+  },
+  {
+   "codigo": "0870",
+   "descricao": "Métodos diagnósticos por imagem articulação tibiotársica (tornozelo)"
+  },
+  {
+   "codigo": "0871",
+   "descricao": "Métodos diagnósticos por imagem articulações sacro"
+  },
+  {
+   "codigo": "0872",
+   "descricao": "Métodos diagnósticos por imagem bacia"
+  },
+  {
+   "codigo": "0873",
+   "descricao": "Métodos diagnósticos por imagem braço"
+  },
+  {
+   "codigo": "0874",
+   "descricao": "Métodos diagnósticos por imagem calcâneo"
+  },
+  {
+   "codigo": "0875",
+   "descricao": "Métodos diagnósticos por imagem clavícula"
+  },
+  {
+   "codigo": "1407",
+   "descricao": "Métodos diagnósticos por imagem coluna"
+  },
+  {
+   "codigo": "1408",
+   "descricao": "Métodos diagnósticos por imagem coluna cervical"
+  },
+  {
+   "codigo": "1409",
+   "descricao": "Métodos diagnósticos por imagem coluna dorsal"
+  },
+  {
+   "codigo": "1410",
+   "descricao": "Métodos diagnósticos por imagem coluna lombar"
+  },
+  {
+   "codigo": "1411",
+   "descricao": "Métodos diagnósticos por imagem coluna sacro-cóccix"
+  },
+  {
+   "codigo": "0876",
+   "descricao": "Métodos diagnósticos por imagem coração e vasos da base"
+  },
+  {
+   "codigo": "0877",
+   "descricao": "Métodos diagnósticos por imagem cotovelo"
+  },
+  {
+   "codigo": "0878",
+   "descricao": "Métodos diagnósticos por imagem coxa"
+  },
+  {
+   "codigo": "0879",
+   "descricao": "Métodos diagnósticos por imagem escanometria"
+  },
+  {
+   "codigo": "0880",
+   "descricao": "Métodos diagnósticos por imagem escápula"
+  },
+  {
+   "codigo": "0881",
+   "descricao": "Métodos diagnósticos por imagem esterno"
+  },
+  {
+   "codigo": "0882",
+   "descricao": "Métodos diagnósticos por imagem joelho"
+  },
+  {
+   "codigo": "0883",
+   "descricao": "Métodos diagnósticos por imagem laringe ou hipofaringe ou pescoço (partes moles)"
+  },
+  {
+   "codigo": "0884",
+   "descricao": "Métodos diagnósticos por imagem mão ou quirodáctilo"
+  },
+  {
+   "codigo": "0886",
+   "descricao": "Métodos diagnósticos por imagem panorâmica dos membros inferiores"
+  },
+  {
+   "codigo": "0887",
+   "descricao": "Métodos diagnósticos por imagem patela"
+  },
+  {
+   "codigo": "0888",
+   "descricao": "Métodos diagnósticos por imagem pé ou pododáctilo"
+  },
+  {
+   "codigo": "0889",
+   "descricao": "Métodos diagnósticos por imagem perna"
+  },
+  {
+   "codigo": "0890",
+   "descricao": "Métodos diagnósticos por imagem punho"
+  },
+  {
+   "codigo": "1999",
+   "descricao": "Métodos diagnósticos por imagem - Não especificados anteriormente"
+  },
+  {
+   "codigo": "1412",
+   "descricao": "Metotrexato"
+  },
+  {
+   "codigo": "0893",
+   "descricao": "Microalbuminúria"
+  },
+  {
+   "codigo": "0894",
+   "descricao": "Micronúcleos cromossômicos (pesquisa)"
+  },
+  {
+   "codigo": "0895",
+   "descricao": "Microsporídia, pesquisa nas fezes"
+  },
+  {
+   "codigo": "0896",
+   "descricao": "Microsporum (pesquisa)"
+  },
+  {
+   "codigo": "0897",
+   "descricao": "Mielograma"
+  },
+  {
+   "codigo": "0898",
+   "descricao": "Mioglobina"
+  },
+  {
+   "codigo": "0899",
+   "descricao": "Mioglobina urinária"
+  },
+  {
+   "codigo": "0900",
+   "descricao": "Mitomicina"
+  },
+  {
+   "codigo": "0901",
+   "descricao": "Molibdênio plasmático"
+  },
+  {
+   "codigo": "0902",
+   "descricao": "Molibdênio urinário"
+  },
+  {
+   "codigo": "0903",
+   "descricao": "Monoclorometano"
+  },
+  {
+   "codigo": "0904",
+   "descricao": "Monometilfosfato urinário (MMP)"
+  },
+  {
+   "codigo": "0905",
+   "descricao": "Mononucleose - Epstein BARR - IgG"
+  },
+  {
+   "codigo": "0906",
+   "descricao": "Mononucleose, anti-VCA (EBV) - IgM"
+  },
+  {
+   "codigo": "0907",
+   "descricao": "Monóxido de carbono no ar expirado"
+  },
+  {
+   "codigo": "0908",
+   "descricao": "Montenegro, IDeR"
+  },
+  {
+   "codigo": "0909",
+   "descricao": "Moraxella (pesquisa)"
+  },
+  {
+   "codigo": "0910",
+   "descricao": "Morfoline urinário"
+  },
+  {
+   "codigo": "0911",
+   "descricao": "Morganella (pesquisa)"
+  },
+  {
+   "codigo": "0912",
+   "descricao": "Muco-nasal, pesquisa de eosinófilos e mastócitos"
+  },
+  {
+   "codigo": "0913",
+   "descricao": "Mucopolissacaridose, pesquisa"
+  },
+  {
+   "codigo": "0914",
+   "descricao": "Mucoproteínas"
+  },
+  {
+   "codigo": "0915",
+   "descricao": "Mycobacterium (pesquisa)"
+  },
+  {
+   "codigo": "0916",
+   "descricao": "Mycoplasma (pesquisa)"
+  },
+  {
+   "codigo": "0891",
+   "descricao": "Mycoplasma pneumoniae - IgG"
+  },
+  {
+   "codigo": "0892",
+   "descricao": "Mycoplasma pneumoniae - IgM"
+  },
+  {
+   "codigo": "0917",
+   "descricao": "N-(2-carbonamidaetil)-valina"
+  },
+  {
+   "codigo": "0918",
+   "descricao": "N-(2-cianoetil)-valina"
+  },
+  {
+   "codigo": "0919",
+   "descricao": "N-(2-hidroxietil)-valina"
+  },
+  {
+   "codigo": "0920",
+   "descricao": "N-(2-hidroxipropil)-valina"
+  },
+  {
+   "codigo": "0921",
+   "descricao": "N-1(hidroxibutenil) valina (adutos de hemoglobina)"
+  },
+  {
+   "codigo": "0922",
+   "descricao": "N-2(hidroxibutenil) valina (adutos de hemoglobina)"
+  },
+  {
+   "codigo": "0923",
+   "descricao": "N-acetil, 3,4-diidroxibutil-cisteína"
+  },
+  {
+   "codigo": "0924",
+   "descricao": "N-acetil-beta-glicosaminidase na urina"
+  },
+  {
+   "codigo": "0925",
+   "descricao": "N-acetil-S-(2-carbonamidaetil)-cisteína"
+  },
+  {
+   "codigo": "1425",
+   "descricao": "N-acetil-S-(N-metilcarbamoil) cisteína na urina"
+  },
+  {
+   "codigo": "0926",
+   "descricao": "N-acetil-S-2-hidroxietil-L-cisteína"
+  },
+  {
+   "codigo": "0927",
+   "descricao": "Naegleria (pesquisa)"
+  },
+  {
+   "codigo": "0928",
+   "descricao": "Naftóis urinários"
+  },
+  {
+   "codigo": "0929",
+   "descricao": "NBT estimulado"
+  },
+  {
+   "codigo": "0930",
+   "descricao": "N-butil álcool"
+  },
+  {
+   "codigo": "0931",
+   "descricao": "N-dimetil acetamida + N-hidroximetil-N-metil acetamida"
+  },
+  {
+   "codigo": "0932",
+   "descricao": "Necator (pesquisa)"
+  },
+  {
+   "codigo": "0933",
+   "descricao": "Neisseria (pesquisa)"
+  },
+  {
+   "codigo": "0934",
+   "descricao": "Neotestudina (pesquisa)"
+  },
+  {
+   "codigo": "0935",
+   "descricao": "N-heptano"
+  },
+  {
+   "codigo": "0936",
+   "descricao": "Nióbio urinário"
+  },
+  {
+   "codigo": "1446",
+   "descricao": "Níquel sanguíneo"
+  },
+  {
+   "codigo": "0937",
+   "descricao": "Níquel urinário"
+  },
+  {
+   "codigo": "0938",
+   "descricao": "Nitrogênio amoniacal"
+  },
+  {
+   "codigo": "0939",
+   "descricao": "Nitrogênio total"
+  },
+  {
+   "codigo": "0940",
+   "descricao": "Nitroglicóis totais urinários"
+  },
+  {
+   "codigo": "0941",
+   "descricao": "N-metil-2-pirrolidona"
+  },
+  {
+   "codigo": "0942",
+   "descricao": "N-metilacetamida"
+  },
+  {
+   "codigo": "0943",
+   "descricao": "N-metilformamida"
+  },
+  {
+   "codigo": "0944",
+   "descricao": "N-metilformamida + N-hidroximetil-N-metilformamida"
+  },
+  {
+   "codigo": "0945",
+   "descricao": "N-metilvalina"
+  },
+  {
+   "codigo": "0946",
+   "descricao": "Nocardia (pesquisa)"
+  },
+  {
+   "codigo": "0947",
+   "descricao": "Norovírus (pesquisa)"
+  },
+  {
+   "codigo": "0948",
+   "descricao": "Nortriptilina"
+  },
+  {
+   "codigo": "0949",
+   "descricao": "N-telopeptídeo"
+  },
+  {
+   "codigo": "0950",
+   "descricao": "Ocitocinase"
+  },
+  {
+   "codigo": "0951",
+   "descricao": "O-cresol urinário"
+  },
+  {
+   "codigo": "0952",
+   "descricao": "Onchocerca (pesquisa)"
+  },
+  {
+   "codigo": "0953",
+   "descricao": "Opisthorchis (pesquisa)"
+  },
+  {
+   "codigo": "0954",
+   "descricao": "Orbivírus (pesquisa)"
+  },
+  {
+   "codigo": "0955",
+   "descricao": "Orthopoxvírus (pesquisa)"
+  },
+  {
+   "codigo": "0956",
+   "descricao": "Ortoreovírus de mamíferos, tipos 1 a 3 (pesquisa)"
+  },
+  {
+   "codigo": "0957",
+   "descricao": "Ósmio urinário"
+  },
+  {
+   "codigo": "0958",
+   "descricao": "Osmolalidade"
+  },
+  {
+   "codigo": "0959",
+   "descricao": "Osmolalidade na urina"
+  },
+  {
+   "codigo": "0960",
+   "descricao": "Osteocalcina"
+  },
+  {
+   "codigo": "0961",
+   "descricao": "O-toluidina"
+  },
+  {
+   "codigo": "0962",
+   "descricao": "Oxcarbazepina"
+  },
+  {
+   "codigo": "0963",
+   "descricao": "Óxido nitroso na urina"
+  },
+  {
+   "codigo": "0964",
+   "descricao": "P,p-1-diclorobenzofenona"
+  },
+  {
+   "codigo": "0965",
+   "descricao": "Paládio urinário"
+  },
+  {
+   "codigo": "0966",
+   "descricao": "P-aminofenol"
+  },
+  {
+   "codigo": "0967",
+   "descricao": "Papilomavírus humano (HPV) (pesquisa)"
+  },
+  {
+   "codigo": "0968",
+   "descricao": "PAPP-A"
+  },
+  {
+   "codigo": "0969",
+   "descricao": "Paracoccidioides (pesquisa)"
+  },
+  {
+   "codigo": "0970",
+   "descricao": "Paracoccidioidomicose, anticorpos totais - IgG"
+  },
+  {
+   "codigo": "0971",
+   "descricao": "Paragonimus (pesquisa)"
+  },
+  {
+   "codigo": "0972",
+   "descricao": "Parapoxvírus (pesquisa)"
+  },
+  {
+   "codigo": "0973",
+   "descricao": "Paraquat urinário"
+  },
+  {
+   "codigo": "0974",
+   "descricao": "Parasitológico de fezes"
+  },
+  {
+   "codigo": "0975",
+   "descricao": "Paratormônio - PTH"
+  },
+  {
+   "codigo": "0976",
+   "descricao": "Parechovírus (pesquisa)"
+  },
+  {
+   "codigo": "0977",
+   "descricao": "Parvovírus - IgG"
+  },
+  {
+   "codigo": "1413",
+   "descricao": "Parvovírus - IgM"
+  },
+  {
+   "codigo": "0978",
+   "descricao": "Parvovírus (pesquisa)"
+  },
+  {
+   "codigo": "0979",
+   "descricao": "Parvovírus humano 4 e 5 (pesquisa)"
+  },
+  {
+   "codigo": "0980",
+   "descricao": "Parvovírus humano B19 (pesquisa)"
+  },
+  {
+   "codigo": "0981",
+   "descricao": "Pasteurella (pesquisa)"
+  },
+  {
+   "codigo": "0982",
+   "descricao": "PCB 101"
+  },
+  {
+   "codigo": "0983",
+   "descricao": "PCB 138"
+  },
+  {
+   "codigo": "0984",
+   "descricao": "PCB 153"
+  },
+  {
+   "codigo": "0985",
+   "descricao": "PCB 180"
+  },
+  {
+   "codigo": "0986",
+   "descricao": "PCB 28"
+  },
+  {
+   "codigo": "0987",
+   "descricao": "PCB 52"
+  },
+  {
+   "codigo": "1424",
+   "descricao": "p-clorocatecol (para-clorocatecol) urinário"
+  },
+  {
+   "codigo": "0988",
+   "descricao": "Pegivírus humano (pesquisa)"
+  },
+  {
+   "codigo": "0989",
+   "descricao": "Penicillium (pesquisa)"
+  },
+  {
+   "codigo": "0990",
+   "descricao": "Pentacloroetano"
+  },
+  {
+   "codigo": "0991",
+   "descricao": "Pentaclorofenol sanguíneo/plasmático"
+  },
+  {
+   "codigo": "0992",
+   "descricao": "Pentaclorofenol urinário"
+  },
+  {
+   "codigo": "0993",
+   "descricao": "Peptídeo C"
+  },
+  {
+   "codigo": "0994",
+   "descricao": "Peptídeo natriurético BNP/PROBNP"
+  },
+  {
+   "codigo": "0995",
+   "descricao": "Peptídio intestinal vasoativo"
+  },
+  {
+   "codigo": "0996",
+   "descricao": "Peptostreptococcus (pesquisa)"
+  },
+  {
+   "codigo": "0997",
+   "descricao": "Perfil lipídico/lipidograma"
+  },
+  {
+   "codigo": "0998",
+   "descricao": "Pesquisa de agente infeccioso específico por PCR"
+  },
+  {
+   "codigo": "0999",
+   "descricao": "Pesquisa de mutação de alelo específico por PCR"
+  },
+  {
+   "codigo": "1000",
+   "descricao": "pH - Tornassol"
+  },
+  {
+   "codigo": "1001",
+   "descricao": "Piridinolina"
+  },
+  {
+   "codigo": "1002",
+   "descricao": "Pirimidina-5-nucleotidase"
+  },
+  {
+   "codigo": "1003",
+   "descricao": "Piruvato quinase"
+  },
+  {
+   "codigo": "1004",
+   "descricao": "Planigrafia de tórax, mediastino ou laringe"
+  },
+  {
+   "codigo": "1005",
+   "descricao": "Plaquetas, teste de agregação"
+  },
+  {
+   "codigo": "1006",
+   "descricao": "Plasminogênio"
+  },
+  {
+   "codigo": "1007",
+   "descricao": "Plasmodium (pesquisa)"
+  },
+  {
+   "codigo": "1008",
+   "descricao": "Platina urinária"
+  },
+  {
+   "codigo": "1009",
+   "descricao": "Plesiomonas (pesquisa)"
+  },
+  {
+   "codigo": "1010",
+   "descricao": "Pneumocysti carinii (pesquisa)"
+  },
+  {
+   "codigo": "1011",
+   "descricao": "P-nitrocresol"
+  },
+  {
+   "codigo": "1012",
+   "descricao": "P-nitrofenol"
+  },
+  {
+   "codigo": "1013",
+   "descricao": "Poliomavírus BK (pesquisa)"
+  },
+  {
+   "codigo": "1014",
+   "descricao": "Poliomavírus JC (pesquisa)"
+  },
+  {
+   "codigo": "1015",
+   "descricao": "Poliomavírus KI (pesquisa)"
+  },
+  {
+   "codigo": "1016",
+   "descricao": "Poliomavírus WU (pesquisa)"
+  },
+  {
+   "codigo": "1017",
+   "descricao": "Poliomelite (sorologia)"
+  },
+  {
+   "codigo": "1018",
+   "descricao": "Poliovírus (pesquisa)"
+  },
+  {
+   "codigo": "1019",
+   "descricao": "Porfibilinogênio na urina"
+  },
+  {
+   "codigo": "1020",
+   "descricao": "Porfirinas quantitativas"
+  },
+  {
+   "codigo": "1021",
+   "descricao": "Porphyromonas (pesquisa)"
+  },
+  {
+   "codigo": "1022",
+   "descricao": "Potássio"
+  },
+  {
+   "codigo": "1023",
+   "descricao": "Poxvírus, pesquisa"
+  },
+  {
+   "codigo": "1024",
+   "descricao": "PPD (tuberculina), IDeR"
+  },
+  {
+   "codigo": "1025",
+   "descricao": "Prata sanguínea"
+  },
+  {
+   "codigo": "1026",
+   "descricao": "Pré-albumina"
+  },
+  {
+   "codigo": "1027",
+   "descricao": "Pregnandiol"
+  },
+  {
+   "codigo": "1028",
+   "descricao": "Pregnantriol"
+  },
+  {
+   "codigo": "1029",
+   "descricao": "Prevotella (pesquisa)"
+  },
+  {
+   "codigo": "1030",
+   "descricao": "Primidona"
+  },
+  {
+   "codigo": "1031",
+   "descricao": "Prions (pesquisa)"
+  },
+  {
+   "codigo": "1032",
+   "descricao": "Procainamida"
+  },
+  {
+   "codigo": "1033",
+   "descricao": "Procalcitonina"
+  },
+  {
+   "codigo": "1447",
+   "descricao": "Procedimento diagnóstico em citopatologia cérvico-vaginal oncótica"
+  },
+  {
+   "codigo": "1034",
+   "descricao": "Produtos de degradação da fibrina"
+  },
+  {
+   "codigo": "1035",
+   "descricao": "Progesterona"
+  },
+  {
+   "codigo": "1036",
+   "descricao": "Prolactina"
+  },
+  {
+   "codigo": "1037",
+   "descricao": "Propanolol"
+  },
+  {
+   "codigo": "1038",
+   "descricao": "Propilenoglicol"
+  },
+  {
+   "codigo": "1039",
+   "descricao": "Propilenotioureia (PTU)"
+  },
+  {
+   "codigo": "1040",
+   "descricao": "Proteína amiloide A"
+  },
+  {
+   "codigo": "1041",
+   "descricao": "Proteína C"
+  },
+  {
+   "codigo": "1042",
+   "descricao": "Proteína C reativa"
+  },
+  {
+   "codigo": "1043",
+   "descricao": "Proteína eosinofílica catiônica"
+  },
+  {
+   "codigo": "1044",
+   "descricao": "Proteína ligadora do retinol"
+  },
+  {
+   "codigo": "1045",
+   "descricao": "Proteína nuclear matriz 22 (NMP22)"
+  },
+  {
+   "codigo": "1046",
+   "descricao": "Proteína S livre"
+  },
+  {
+   "codigo": "1047",
+   "descricao": "Proteína S total + livre"
+  },
+  {
+   "codigo": "1048",
+   "descricao": "Proteína S, teste funcional"
+  },
+  {
+   "codigo": "1049",
+   "descricao": "Proteínas de Bence Jones"
+  },
+  {
+   "codigo": "1050",
+   "descricao": "Proteínas totais"
+  },
+  {
+   "codigo": "1051",
+   "descricao": "Proteus (pesquisa)"
+  },
+  {
+   "codigo": "1052",
+   "descricao": "Protoporfirina eritrocitária livre - Zinco"
+  },
+  {
+   "codigo": "1053",
+   "descricao": "Protoporfirinas livres"
+  },
+  {
+   "codigo": "1054",
+   "descricao": "Protoporfirinas Zn"
+  },
+  {
+   "codigo": "1055",
+   "descricao": "Prova de concentração da urina (Fishberg ou Volhard)"
+  },
+  {
+   "codigo": "1056",
+   "descricao": "Prova de diluição urinária"
+  },
+  {
+   "codigo": "1057",
+   "descricao": "Prova de função pulmonar completa (ou espirometria)"
+  },
+  {
+   "codigo": "1058",
+   "descricao": "Prova do laço"
+  },
+  {
+   "codigo": "1059",
+   "descricao": "Prova do LH-Rh"
+  },
+  {
+   "codigo": "1060",
+   "descricao": "Prova do TRH-HPR"
+  },
+  {
+   "codigo": "1414",
+   "descricao": "Prova do TRH-TSH"
+  },
+  {
+   "codigo": "1061",
+   "descricao": "Prova para diabete insípido"
+  },
+  {
+   "codigo": "1062",
+   "descricao": "Providencia (pesquisa)"
+  },
+  {
+   "codigo": "1063",
+   "descricao": "Pseudallescheria (pesquisa)"
+  },
+  {
+   "codigo": "1064",
+   "descricao": "Pseudomonas (pesquisa)"
+  },
+  {
+   "codigo": "1065",
+   "descricao": "Pseudoterranova (pesquisa)"
+  },
+  {
+   "codigo": "1066",
+   "descricao": "Psitacose - IgA"
+  },
+  {
+   "codigo": "1067",
+   "descricao": "Psitacose - IgG"
+  },
+  {
+   "codigo": "1068",
+   "descricao": "Psitacose - IgM"
+  },
+  {
+   "codigo": "1069",
+   "descricao": "P-ter-butilfenol"
+  },
+  {
+   "codigo": "1070",
+   "descricao": "P-toluidina"
+  },
+  {
+   "codigo": "1071",
+   "descricao": "Quebra das fitas de DNA (pesquisa)"
+  },
+  {
+   "codigo": "1072",
+   "descricao": "Quinidina"
+  },
+  {
+   "codigo": "1073",
+   "descricao": "Radiografia de coluna cervical"
+  },
+  {
+   "codigo": "1074",
+   "descricao": "Radiografia de coluna dorsal"
+  },
+  {
+   "codigo": "1075",
+   "descricao": "Radiografia de coluna lombo-sacra"
+  },
+  {
+   "codigo": "1076",
+   "descricao": "Radiografia de membros inferiores"
+  },
+  {
+   "codigo": "1077",
+   "descricao": "Radiografia de membros superiores"
+  },
+  {
+   "codigo": "1078",
+   "descricao": "Radiografia de tórax (PA) Padrão OIT (o mais recente), com dois leitores habilitados"
+  },
+  {
+   "codigo": "1415",
+   "descricao": "Radiografia de tórax (PA) Padrão OIT (o mais recente), com pelo menos um leitor habilitado"
+  },
+  {
+   "codigo": "1448",
+   "descricao": "Radiografia de tórax em duas incidências"
+  },
+  {
+   "codigo": "1430",
+   "descricao": "Radiografia de tórax em visão anteroposterior e de perfil"
+  },
+  {
+   "codigo": "1079",
+   "descricao": "Raiva (pesquisa)"
+  },
+  {
+   "codigo": "1080",
+   "descricao": "Reação de fixação de complemento"
+  },
+  {
+   "codigo": "1081",
+   "descricao": "Reação sorológica para Coxsackie, neutralização - IgG"
+  },
+  {
+   "codigo": "1082",
+   "descricao": "Renina"
+  },
+  {
+   "codigo": "1083",
+   "descricao": "Reovírus tipos 1 a 3 (pesquisa)"
+  },
+  {
+   "codigo": "1084",
+   "descricao": "Reserva alcalina (bicarbonato)"
+  },
+  {
+   "codigo": "1085",
+   "descricao": "Resistência globular, curva de"
+  },
+  {
+   "codigo": "1086",
+   "descricao": "Reticulócitos"
+  },
+  {
+   "codigo": "1087",
+   "descricao": "Retração do coágulo"
+  },
+  {
+   "codigo": "1088",
+   "descricao": "Rhinocladiella (pesquisa)"
+  },
+  {
+   "codigo": "1089",
+   "descricao": "Rhizomucor (pesquisa)"
+  },
+  {
+   "codigo": "1090",
+   "descricao": "Rhizopus (pesquisa)"
+  },
+  {
+   "codigo": "1091",
+   "descricao": "Rhodococcus (pesquisa)"
+  },
+  {
+   "codigo": "1092",
+   "descricao": "Rickettsia (pesquisa)"
+  },
+  {
+   "codigo": "1093",
+   "descricao": "Rinovírus humano (pesquisa)"
+  },
+  {
+   "codigo": "1094",
+   "descricao": "Ristocetina, co-fator"
+  },
+  {
+   "codigo": "1095",
+   "descricao": "Rochalimaea (pesquisa)"
+  },
+  {
+   "codigo": "1096",
+   "descricao": "Ródio urinário"
+  },
+  {
+   "codigo": "1097",
+   "descricao": "Rotavírus humano tipos A, B e C (pesquisa)"
+  },
+  {
+   "codigo": "1098",
+   "descricao": "Rotina (sumário) de urina"
+  },
+  {
+   "codigo": "1099",
+   "descricao": "Rubéola - IgG"
+  },
+  {
+   "codigo": "1100",
+   "descricao": "Rubéola - IgM"
+  },
+  {
+   "codigo": "1101",
+   "descricao": "Rubídio urinário"
+  },
+  {
+   "codigo": "1102",
+   "descricao": "Sacarose, teste de tolerância"
+  },
+  {
+   "codigo": "1103",
+   "descricao": "Saksenaea (pesquisa)"
+  },
+  {
+   "codigo": "1104",
+   "descricao": "Salicilatos"
+  },
+  {
+   "codigo": "1105",
+   "descricao": "Salmonela (pesquisa)"
+  },
+  {
+   "codigo": "1107",
+   "descricao": "Sangue oculto nas fezes"
+  },
+  {
+   "codigo": "1108",
+   "descricao": "Sarampo - IgG"
+  },
+  {
+   "codigo": "1109",
+   "descricao": "Sarampo - IgM"
+  },
+  {
+   "codigo": "1110",
+   "descricao": "Sarcocystis (pesquisa)"
+  },
+  {
+   "codigo": "1111",
+   "descricao": "Sarcoptes scabei (pesquisa)"
+  },
+  {
+   "codigo": "1112",
+   "descricao": "Scedosporium (pesquisa)"
+  },
+  {
+   "codigo": "1113",
+   "descricao": "Schistosoma (pesquisa)"
+  },
+  {
+   "codigo": "1114",
+   "descricao": "Schistosomose /Esquistossomose - IgG"
+  },
+  {
+   "codigo": "1115",
+   "descricao": "Schistosomose /Esquistossomose - IgM"
+  },
+  {
+   "codigo": "1116",
+   "descricao": "Scopulariopsis (pesquisa)"
+  },
+  {
+   "codigo": "1117",
+   "descricao": "Selênio plasmático"
+  },
+  {
+   "codigo": "1118",
+   "descricao": "Selênio urinário"
+  },
+  {
+   "codigo": "1119",
+   "descricao": "Serpulina (pesquisa)"
+  },
+  {
+   "codigo": "1120",
+   "descricao": "Shigella (pesquisa)"
+  },
+  {
+   "codigo": "1121",
+   "descricao": "Sífilis - FTA-ABS - IgG"
+  },
+  {
+   "codigo": "1122",
+   "descricao": "Sífilis - FTA-ABS - IgM"
+  },
+  {
+   "codigo": "1123",
+   "descricao": "Sífilis - VDRL"
+  },
+  {
+   "codigo": "1124",
+   "descricao": "Silício sangúineo"
+  },
+  {
+   "codigo": "1125",
+   "descricao": "S-metilcisteína"
+  },
+  {
+   "codigo": "1126",
+   "descricao": "Sobrecarga de água, prova"
+  },
+  {
+   "codigo": "1127",
+   "descricao": "Sódio"
+  },
+  {
+   "codigo": "1128",
+   "descricao": "Solventes, pesquisa no ar expirado"
+  },
+  {
+   "codigo": "1129",
+   "descricao": "Somatomedina C (IGF1)"
+  },
+  {
+   "codigo": "1431",
+   "descricao": "Somatório de ácidos mandélico e fenilglioxílico na urina"
+  },
+  {
+   "codigo": "1130",
+   "descricao": "Somatotrófico coriônico-hormônio (HCS ou PHL)"
+  },
+  {
+   "codigo": "1131",
+   "descricao": "Sporothrix (pesquisa)"
+  },
+  {
+   "codigo": "1132",
+   "descricao": "Staphylococcus (pesquisa)"
+  },
+  {
+   "codigo": "1133",
+   "descricao": "Streptococcus (pesquisa)"
+  },
+  {
+   "codigo": "1134",
+   "descricao": "Strongyloides (pesquisa)"
+  },
+  {
+   "codigo": "1135",
+   "descricao": "Substâncias redutoras nas fezes"
+  },
+  {
+   "codigo": "1136",
+   "descricao": "Succinil acetona"
+  },
+  {
+   "codigo": "1137",
+   "descricao": "Sulfato de dehidroepiandrosterona (S-DHEA)"
+  },
+  {
+   "codigo": "1138",
+   "descricao": "Sulfatos inorgânicos"
+  },
+  {
+   "codigo": "1139",
+   "descricao": "Sulfatos orgânicos"
+  },
+  {
+   "codigo": "1140",
+   "descricao": "Sulfo-hemoglobina"
+  },
+  {
+   "codigo": "1141",
+   "descricao": "Sulfonamidas livre e acetilada (% de acetilação)"
+  },
+  {
+   "codigo": "1142",
+   "descricao": "T3 livre"
+  },
+  {
+   "codigo": "1143",
+   "descricao": "T3 retenção"
+  },
+  {
+   "codigo": "1144",
+   "descricao": "T3 reverso"
+  },
+  {
+   "codigo": "1145",
+   "descricao": "T4 livre"
+  },
+  {
+   "codigo": "1146",
+   "descricao": "Tacrolimus"
+  },
+  {
+   "codigo": "1147",
+   "descricao": "Taenia saginata (pesquisa)"
+  },
+  {
+   "codigo": "1148",
+   "descricao": "Taenia solium (pesquisa)"
+  },
+  {
+   "codigo": "1149",
+   "descricao": "Tálio sanguíneo"
+  },
+  {
+   "codigo": "1150",
+   "descricao": "Tálio urinário"
+  },
+  {
+   "codigo": "1151",
+   "descricao": "Telúrio urinário"
+  },
+  {
+   "codigo": "1152",
+   "descricao": "Tempo de coagulação"
+  },
+  {
+   "codigo": "1153",
+   "descricao": "Tempo de protrombina"
+  },
+  {
+   "codigo": "1154",
+   "descricao": "Tempo de reptilase"
+  },
+  {
+   "codigo": "1155",
+   "descricao": "Tempo de sangramento (Duke)"
+  },
+  {
+   "codigo": "1156",
+   "descricao": "Tempo de sangramento de IVY"
+  },
+  {
+   "codigo": "1157",
+   "descricao": "Tempo de trombina"
+  },
+  {
+   "codigo": "1158",
+   "descricao": "Tempo de tromboplastina parcial ativada (TTPA)"
+  },
+  {
+   "codigo": "1159",
+   "descricao": "Teofilina"
+  },
+  {
+   "codigo": "1160",
+   "descricao": "Ter-butil-álcool sanguíneo"
+  },
+  {
+   "codigo": "1161",
+   "descricao": "Ter-butil-álcool urinário"
+  },
+  {
+   "codigo": "1162",
+   "descricao": "Ter-butil-metil-éter sanguíneo"
+  },
+  {
+   "codigo": "1163",
+   "descricao": "Ter-butil-metil-éter urinário"
+  },
+  {
+   "codigo": "1164",
+   "descricao": "Teste de inibição da migração dos linfócitos"
+  },
+  {
+   "codigo": "1165",
+   "descricao": "Teste de tolerância a insulina ou hipoglicemiantes orais"
+  },
+  {
+   "codigo": "1166",
+   "descricao": "Teste ergométrico (de esforço)"
+  },
+  {
+   "codigo": "1167",
+   "descricao": "Teste oral de tolerância à glicose"
+  },
+  {
+   "codigo": "1168",
+   "descricao": "Teste respiratório para H. Pylori"
+  },
+  {
+   "codigo": "1169",
+   "descricao": "Testes cutâneo-alérgicos para alérgenos da poeira"
+  },
+  {
+   "codigo": "1170",
+   "descricao": "Testes cutâneo-alérgicos para alimentos"
+  },
+  {
+   "codigo": "1171",
+   "descricao": "Testes cutâneo-alérgicos para fungos"
+  },
+  {
+   "codigo": "1172",
+   "descricao": "Testes cutâneo-alérgicos para insetos hematófagos"
+  },
+  {
+   "codigo": "1173",
+   "descricao": "Testes cutâneo-alérgicos para pólens"
+  },
+  {
+   "codigo": "1174",
+   "descricao": "Testes de contato - Até 30 substâncias"
+  },
+  {
+   "codigo": "1175",
+   "descricao": "Testosterona livre"
+  },
+  {
+   "codigo": "1176",
+   "descricao": "Testosterona total"
+  },
+  {
+   "codigo": "1177",
+   "descricao": "Tetracloreto de carbono (tetraclorometano)"
+  },
+  {
+   "codigo": "1178",
+   "descricao": "Tetracloroetano"
+  },
+  {
+   "codigo": "1179",
+   "descricao": "Tetracloroetileno"
+  },
+  {
+   "codigo": "1428",
+   "descricao": "Tetracloroetileno no ar exalado"
+  },
+  {
+   "codigo": "1180",
+   "descricao": "Tetrahidroftalimida urinária"
+  },
+  {
+   "codigo": "1181",
+   "descricao": "Tetra-hidrofurano"
+  },
+  {
+   "codigo": "1182",
+   "descricao": "Thiram sanguíneo"
+  },
+  {
+   "codigo": "1183",
+   "descricao": "Tiocianato plasmático"
+  },
+  {
+   "codigo": "1184",
+   "descricao": "Tiocianato urinário"
+  },
+  {
+   "codigo": "1185",
+   "descricao": "Tireoglobulina"
+  },
+  {
+   "codigo": "1186",
+   "descricao": "Tirosina"
+  },
+  {
+   "codigo": "1187",
+   "descricao": "Tirosinose na urina"
+  },
+  {
+   "codigo": "1188",
+   "descricao": "Tolueno sanguíneo"
+  },
+  {
+   "codigo": "1189",
+   "descricao": "Tolueno urinário"
+  },
+  {
+   "codigo": "1190",
+   "descricao": "Tolueno-2,4-diamina"
+  },
+  {
+   "codigo": "1191",
+   "descricao": "Tolueno-2,6-diamina"
+  },
+  {
+   "codigo": "1416",
+   "descricao": "Tomografia de tórax"
+  },
+  {
+   "codigo": "1192",
+   "descricao": "Torovírus bovino (pesquisa)"
+  },
+  {
+   "codigo": "1193",
+   "descricao": "Torovírus equino (pesquisa)"
+  },
+  {
+   "codigo": "1194",
+   "descricao": "Torovírus humano (pesquisa)"
+  },
+  {
+   "codigo": "1195",
+   "descricao": "Torovírus porcino (pesquisa)"
+  },
+  {
+   "codigo": "1196",
+   "descricao": "Toxocara (pesquisa)"
+  },
+  {
+   "codigo": "1197",
+   "descricao": "Toxocara canis - IgG"
+  },
+  {
+   "codigo": "1198",
+   "descricao": "Toxocara canis - IgM"
+  },
+  {
+   "codigo": "1199",
+   "descricao": "Toxoplasma (pesquisa)"
+  },
+  {
+   "codigo": "1200",
+   "descricao": "Toxoplasmina, IDeR"
+  },
+  {
+   "codigo": "1201",
+   "descricao": "Toxoplasmose - IgA"
+  },
+  {
+   "codigo": "1202",
+   "descricao": "Toxoplasmose - IgG"
+  },
+  {
+   "codigo": "1203",
+   "descricao": "Toxoplasmose - IgM"
+  },
+  {
+   "codigo": "1204",
+   "descricao": "Transaminase oxalacética (amino transferase aspartato)"
+  },
+  {
+   "codigo": "1205",
+   "descricao": "Transaminase pirúvica (amino transferase de alanina)"
+  },
+  {
+   "codigo": "1206",
+   "descricao": "Transferrina"
+  },
+  {
+   "codigo": "1207",
+   "descricao": "Treponema (pesquisa)"
+  },
+  {
+   "codigo": "1208",
+   "descricao": "Triazínicos dealquilados"
+  },
+  {
+   "codigo": "1209",
+   "descricao": "Triazolam"
+  },
+  {
+   "codigo": "1210",
+   "descricao": "Trichinella (pesquisa)"
+  },
+  {
+   "codigo": "1211",
+   "descricao": "Trichomonas (pesquisa)"
+  },
+  {
+   "codigo": "1212",
+   "descricao": "Trichosporon (pesquisa)"
+  },
+  {
+   "codigo": "1213",
+   "descricao": "Trichostrongylus (pesquisa)"
+  },
+  {
+   "codigo": "1214",
+   "descricao": "Trichuris (pesquisa)"
+  },
+  {
+   "codigo": "1215",
+   "descricao": "Triclorocompostos totais"
+  },
+  {
+   "codigo": "1216",
+   "descricao": "Tricloroetano (tricloroetanol) sanguíneo"
+  },
+  {
+   "codigo": "1217",
+   "descricao": "Tricloroetano (tricloroetanol) urinário"
+  },
+  {
+   "codigo": "1218",
+   "descricao": "Tricloroetileno"
+  },
+  {
+   "codigo": "1219",
+   "descricao": "Tricloropridinol"
+  },
+  {
+   "codigo": "1220",
+   "descricao": "Tricophyton (pesquisa)"
+  },
+  {
+   "codigo": "1221",
+   "descricao": "Trifenilcarbinol urinário"
+  },
+  {
+   "codigo": "1222",
+   "descricao": "Triglicerídeos"
+  },
+  {
+   "codigo": "1223",
+   "descricao": "Trimipramina"
+  },
+  {
+   "codigo": "1224",
+   "descricao": "Tripsina imuno reativa (IRT)"
+  },
+  {
+   "codigo": "1225",
+   "descricao": "Troca de cromátides irmãs (pesquisa)"
+  },
+  {
+   "codigo": "1226",
+   "descricao": "Tromboelastograma"
+  },
+  {
+   "codigo": "1227",
+   "descricao": "Troponina"
+  },
+  {
+   "codigo": "1228",
+   "descricao": "Trypanosoma (pesquisa)"
+  },
+  {
+   "codigo": "1229",
+   "descricao": "Tungstênio urinário"
+  },
+  {
+   "codigo": "1230",
+   "descricao": "Ultrassonografia"
+  },
+  {
+   "codigo": "1231",
+   "descricao": "Ultrassonografia abdome inferior feminino (bexiga, útero, ovário e anexos)"
+  },
+  {
+   "codigo": "1232",
+   "descricao": "Ultrassonografia abdome inferior masculino (bexiga, próstata e vesículas seminais)"
+  },
+  {
+   "codigo": "1233",
+   "descricao": "Ultrassonografia abdome superior (fígado, vias biliares, vesícula, pâncreas, baço)"
+  },
+  {
+   "codigo": "1234",
+   "descricao": "Ultrassonografia abdome total (inclui abdome inferior)"
+  },
+  {
+   "codigo": "1235",
+   "descricao": "Ultrassonografia aparelho urinário feminino (rins, ureteres e bexiga)"
+  },
+  {
+   "codigo": "1236",
+   "descricao": "Ultrassonografia aparelho urinário masculino (rins, ureteres, bexiga e próstata)"
+  },
+  {
+   "codigo": "1237",
+   "descricao": "Ultrassonografia articular"
+  },
+  {
+   "codigo": "1238",
+   "descricao": "Ultrassonografia dermatológica - Pele e subcutâneo"
+  },
+  {
+   "codigo": "1239",
+   "descricao": "Urânio"
+  },
+  {
+   "codigo": "1240",
+   "descricao": "Ureaplasma (pesquisa)"
+  },
+  {
+   "codigo": "1241",
+   "descricao": "Urease, teste rápido parahelicobacter pylori"
+  },
+  {
+   "codigo": "1242",
+   "descricao": "Ureia"
+  },
+  {
+   "codigo": "1243",
+   "descricao": "Urobilinogênio"
+  },
+  {
+   "codigo": "1244",
+   "descricao": "Uroporfirinas"
+  },
+  {
+   "codigo": "1245",
+   "descricao": "Vanádio sanguíneo/plasmático"
+  },
+  {
+   "codigo": "1246",
+   "descricao": "Vanádio urinário"
+  },
+  {
+   "codigo": "1247",
+   "descricao": "Varicela - IgG"
+  },
+  {
+   "codigo": "1248",
+   "descricao": "Varicela - IgM"
+  },
+  {
+   "codigo": "1249",
+   "descricao": "Vibrio (pesquisa)"
+  },
+  {
+   "codigo": "1449",
+   "descricao": "Videolaringoscopia"
+  },
+  {
+   "codigo": "1251",
+   "descricao": "Vírus Absettarov (pesquisa)"
+  },
+  {
+   "codigo": "1252",
+   "descricao": "Vírus Akabane (pesquisa)"
+  },
+  {
+   "codigo": "1253",
+   "descricao": "Vírus Amapari (pesquisa)"
+  },
+  {
+   "codigo": "1254",
+   "descricao": "Vírus Andes (pesquisa)"
+  },
+  {
+   "codigo": "1255",
+   "descricao": "Vírus Banna (pesquisa)"
+  },
+  {
+   "codigo": "1256",
+   "descricao": "Vírus Bebaru (pesquisa)"
+  },
+  {
+   "codigo": "1257",
+   "descricao": "Vírus Belgrade (Dobrava) (pesquisa)"
+  },
+  {
+   "codigo": "1258",
+   "descricao": "Vírus Bhanja (pesquisa)"
+  },
+  {
+   "codigo": "1250",
+   "descricao": "Vírus Buffalopox vaccinia (pesquisa)"
+  },
+  {
+   "codigo": "1259",
+   "descricao": "Vírus Bunyamwera (pesquisa)"
+  },
+  {
+   "codigo": "1260",
+   "descricao": "Vírus Chapare (pesquisa)"
+  },
+  {
+   "codigo": "1261",
+   "descricao": "Vírus chikungunya (pesquisa)"
+  },
+  {
+   "codigo": "1262",
+   "descricao": "Vírus Coxsackie (A e B) (pesquisa)"
+  },
+  {
+   "codigo": "1263",
+   "descricao": "Vírus da conjuntivite hemorrágica aguda (AHC) (pesquisa)"
+  },
+  {
+   "codigo": "1264",
+   "descricao": "Vírus da coriomeningite linfocítica (pesquisa)"
+  },
+  {
+   "codigo": "1265",
+   "descricao": "Vírus da dengue tipos 1-4 (pesquisa)"
+  },
+  {
+   "codigo": "1266",
+   "descricao": "Vírus da doença da floresta Kyasanur (pesquisa)"
+  },
+  {
+   "codigo": "1267",
+   "descricao": "Vírus da doença de carneiros do Nairóbi (pesquisa)"
+  },
+  {
+   "codigo": "1268",
+   "descricao": "Vírus da doença lupina (pesquisa)"
+  },
+  {
+   "codigo": "1269",
+   "descricao": "Vírus da encefalite da Califórnia (pesquisa)"
+  },
+  {
+   "codigo": "1270",
+   "descricao": "Vírus da encefalite de Murray Valley (pesquisa)"
+  },
+  {
+   "codigo": "1271",
+   "descricao": "Vírus da encefalite de St. Louis (pesquisa)"
+  },
+  {
+   "codigo": "1272",
+   "descricao": "Vírus da encefalite do carrapato (pesquisa)"
+  },
+  {
+   "codigo": "1273",
+   "descricao": "Vírus da encefalite do carrapato da Europa Central (pesquisa)"
+  },
+  {
+   "codigo": "1274",
+   "descricao": "Vírus da encefalite do carrapato do extremo Oriente (pesquisa)"
+  },
+  {
+   "codigo": "1275",
+   "descricao": "Vírus da encefalite do carrapato siberiano (pesquisa)"
+  },
+  {
+   "codigo": "1276",
+   "descricao": "Vírus da encefalite equina do oeste (pesquisa)"
+  },
+  {
+   "codigo": "1277",
+   "descricao": "Vírus da encefalite japonesa (pesquisa)"
+  },
+  {
+   "codigo": "1278",
+   "descricao": "Vírus da encefalite primavera-verão russa (pesquisa)"
+  },
+  {
+   "codigo": "1279",
+   "descricao": "Vírus da estomatite vesicular (pesquisa)"
+  },
+  {
+   "codigo": "1280",
+   "descricao": "Vírus da família Bunyaviridae (pesquisa)"
+  },
+  {
+   "codigo": "1281",
+   "descricao": "Vírus da família Caliciviridae (pesquisa)"
+  },
+  {
+   "codigo": "1282",
+   "descricao": "Vírus da febre amarela (pesquisa)"
+  },
+  {
+   "codigo": "1283",
+   "descricao": "Vírus da febre com trombocitopenia severa (pesquisa)"
+  },
+  {
+   "codigo": "1284",
+   "descricao": "Vírus da febre de Lassa (pesquisa)"
+  },
+  {
+   "codigo": "1285",
+   "descricao": "Vírus da febre de Rift Valley (pesquisa)"
+  },
+  {
+   "codigo": "1286",
+   "descricao": "Vírus da febre do carrapato do Colorado (pesquisa)"
+  },
+  {
+   "codigo": "1288",
+   "descricao": "Vírus da febre hemorrágica da Crimeia/Congo (pesquisa)"
+  },
+  {
+   "codigo": "1289",
+   "descricao": "Vírus da febre hemorrágica de Alkhurma (pesquisa)"
+  },
+  {
+   "codigo": "1287",
+   "descricao": "Vírus da febre hemorrágica de Omsk (pesquisa)"
+  },
+  {
+   "codigo": "1290",
+   "descricao": "Vírus da imudeficiência humana - HIV (pesquisa)"
+  },
+  {
+   "codigo": "1291",
+   "descricao": "Vírus da imudeficiência símia (pesquisa)"
+  },
+  {
+   "codigo": "1292",
+   "descricao": "Vírus da lebre Snoeshoe (pesquisa)"
+  },
+  {
+   "codigo": "1293",
+   "descricao": "Vírus da meningite de perus de Israel (pesquisa)"
+  },
+  {
+   "codigo": "1294",
+   "descricao": "Vírus da meningoencefalomielite (pesquisa)"
+  },
+  {
+   "codigo": "1295",
+   "descricao": "Vírus da mosca da areia de Naples (pesquisa)"
+  },
+  {
+   "codigo": "1296",
+   "descricao": "Vírus da varíola bovina (pesquisa)"
+  },
+  {
+   "codigo": "1297",
+   "descricao": "Vírus das águas brancas de Arroyo (pesquisa)"
+  },
+  {
+   "codigo": "1298",
+   "descricao": "Vírus Dhori (pesquisa)"
+  },
+  {
+   "codigo": "1299",
+   "descricao": "Vírus do molusco contagioso (pesquisa)"
+  },
+  {
+   "codigo": "1300",
+   "descricao": "Vírus do morcego de Lagos (pesquisa)"
+  },
+  {
+   "codigo": "1301",
+   "descricao": "Vírus Dugbe (pesquisa)"
+  },
+  {
+   "codigo": "1302",
+   "descricao": "Vírus Duvenhage (pesquisa)"
+  },
+  {
+   "codigo": "1303",
+   "descricao": "Vírus Everglades (pesquisa)"
+  },
+  {
+   "codigo": "1304",
+   "descricao": "Vírus Flexal (pesquisa)"
+  },
+  {
+   "codigo": "1305",
+   "descricao": "Vírus Ganjam (pesquisa)"
+  },
+  {
+   "codigo": "1306",
+   "descricao": "Vírus Germiston (pesquisa)"
+  },
+  {
+   "codigo": "1307",
+   "descricao": "Vírus Getah (pesquisa)"
+  },
+  {
+   "codigo": "1308",
+   "descricao": "Vírus Guanarito (pesquisa)"
+  },
+  {
+   "codigo": "1309",
+   "descricao": "Vírus Hantaan (pesquisa)"
+  },
+  {
+   "codigo": "1310",
+   "descricao": "Vírus Hanzalova (pesquisa)"
+  },
+  {
+   "codigo": "1311",
+   "descricao": "Vírus Hazara (pesquisa)"
+  },
+  {
+   "codigo": "1312",
+   "descricao": "Vírus Hendra (pesquisa)"
+  },
+  {
+   "codigo": "1313",
+   "descricao": "Vírus Herpes Simplex 1 e 2 (pesquisa)"
+  },
+  {
+   "codigo": "1314",
+   "descricao": "Vírus Hypr (pesquisa)"
+  },
+  {
+   "codigo": "1315",
+   "descricao": "Vírus Influenza A, B e C (pesquisa)"
+  },
+  {
+   "codigo": "1316",
+   "descricao": "Vírus Ippy (pesquisa)"
+  },
+  {
+   "codigo": "1317",
+   "descricao": "Vírus Junin (pesquisa)"
+  },
+  {
+   "codigo": "1318",
+   "descricao": "Vírus Kodoko (pesquisa)"
+  },
+  {
+   "codigo": "1319",
+   "descricao": "Vírus Kumlinge (pesquisa)"
+  },
+  {
+   "codigo": "1320",
+   "descricao": "Vírus La Crosse (pesquisa)"
+  },
+  {
+   "codigo": "1321",
+   "descricao": "Vírus Latino (pesquisa)"
+  },
+  {
+   "codigo": "1322",
+   "descricao": "Vírus linfotrópico de células T de primatas, tipos 1 e 2 (pesquisa)"
+  },
+  {
+   "codigo": "1323",
+   "descricao": "Vírus Lujo (pesquisa)"
+  },
+  {
+   "codigo": "1324",
+   "descricao": "Vírus Machupo (pesquisa)"
+  },
+  {
+   "codigo": "1325",
+   "descricao": "Vírus Mayaro (pesquisa)"
+  },
+  {
+   "codigo": "1326",
+   "descricao": "Vírus Merino Walk (pesquisa)"
+  },
+  {
+   "codigo": "1327",
+   "descricao": "Vírus Middelburg (pesquisa)"
+  },
+  {
+   "codigo": "1328",
+   "descricao": "Vírus Mobala (pesquisa)"
+  },
+  {
+   "codigo": "1329",
+   "descricao": "Vírus Mokola (pesquisa)"
+  },
+  {
+   "codigo": "1330",
+   "descricao": "Vírus Monkeypox (varíola símia) (pesquisa)"
+  },
+  {
+   "codigo": "1331",
+   "descricao": "Vírus Mopeia (pesquisa)"
+  },
+  {
+   "codigo": "1332",
+   "descricao": "Vírus Morogoro (pesquisa)"
+  },
+  {
+   "codigo": "1333",
+   "descricao": "Vírus Mucambo (pesquisa)"
+  },
+  {
+   "codigo": "1334",
+   "descricao": "Vírus Ndumu (pesquisa)"
+  },
+  {
+   "codigo": "1335",
+   "descricao": "Vírus Negishi (pesquisa)"
+  },
+  {
+   "codigo": "1336",
+   "descricao": "Vírus Ngari (pesquisa)"
+  },
+  {
+   "codigo": "1337",
+   "descricao": "Vírus Nipah (pesquisa)"
+  },
+  {
+   "codigo": "1338",
+   "descricao": "Vírus Norwalk-like (pesquisa)"
+  },
+  {
+   "codigo": "1339",
+   "descricao": "Vírus O'nyong-nyong (pesquisa)"
+  },
+  {
+   "codigo": "1340",
+   "descricao": "Vírus Orf (pesquisa)"
+  },
+  {
+   "codigo": "1341",
+   "descricao": "Vírus Oropouche (pesquisa)"
+  },
+  {
+   "codigo": "1342",
+   "descricao": "Vírus Parainfluenza (pesquisa)"
+  },
+  {
+   "codigo": "1343",
+   "descricao": "Vírus Parana (pesquisa)"
+  },
+  {
+   "codigo": "1344",
+   "descricao": "Vírus Pichinde (pesquisa)"
+  },
+  {
+   "codigo": "1345",
+   "descricao": "Vírus Piry (pesquisa)"
+  },
+  {
+   "codigo": "1346",
+   "descricao": "Vírus Powassan (pesquisa)"
+  },
+  {
+   "codigo": "1347",
+   "descricao": "Vírus Prospect Hill (pesquisa)"
+  },
+  {
+   "codigo": "1348",
+   "descricao": "Vírus Pseudocowpox (pseudo varíola bovina) (pesquisa)"
+  },
+  {
+   "codigo": "1349",
+   "descricao": "Vírus Punta Toro (pesquisa)"
+  },
+  {
+   "codigo": "1350",
+   "descricao": "Vírus Puumala (pesquisa)"
+  },
+  {
+   "codigo": "1351",
+   "descricao": "Vírus relacionado à leucemia murina xenotrópico (pesquisa)"
+  },
+  {
+   "codigo": "1352",
+   "descricao": "Vírus Rocio (pesquisa)"
+  },
+  {
+   "codigo": "1353",
+   "descricao": "Vírus Ross River (pesquisa)"
+  },
+  {
+   "codigo": "1354",
+   "descricao": "Vírus Sabia (pesquisa)"
+  },
+  {
+   "codigo": "1355",
+   "descricao": "Vírus Sal Vieja (pesquisa)"
+  },
+  {
+   "codigo": "1356",
+   "descricao": "Vírus San Perlita (pesquisa)"
+  },
+  {
+   "codigo": "1357",
+   "descricao": "Vírus sem nome ou de Muerto Canyon (pesquisa)"
+  },
+  {
+   "codigo": "1358",
+   "descricao": "Vírus Seoul (pesquisa)"
+  },
+  {
+   "codigo": "1359",
+   "descricao": "Vírus Símio 40 (SV40) (pesquisa)"
+  },
+  {
+   "codigo": "1360",
+   "descricao": "Vírus sincicial respiratório - Elisa - IgG"
+  },
+  {
+   "codigo": "1368",
+   "descricao": "Vírus sincicial respiratório (pesquisa)"
+  },
+  {
+   "codigo": "1417",
+   "descricao": "Vírus sincicial respiratório (sorologia)"
+  },
+  {
+   "codigo": "1361",
+   "descricao": "Vírus sincicial respiratório humano (pesquisa)"
+  },
+  {
+   "codigo": "1369",
+   "descricao": "Vírus Tamiami (pesquisa)"
+  },
+  {
+   "codigo": "1362",
+   "descricao": "Vírus Thogoto (pesquisa)"
+  },
+  {
+   "codigo": "1363",
+   "descricao": "Vírus Torque teno (TTV) (pesquisa)"
+  },
+  {
+   "codigo": "1364",
+   "descricao": "Vírus Toscana (pesquisa)"
+  },
+  {
+   "codigo": "1365",
+   "descricao": "Vírus tumorais do macaco Yaba (pesquisa)"
+  },
+  {
+   "codigo": "1366",
+   "descricao": "Vírus varíola (maior e menor) (pesquisa)"
+  },
+  {
+   "codigo": "1367",
+   "descricao": "Vírus Wesselsbron (pesquisa)"
+  },
+  {
+   "codigo": "1370",
+   "descricao": "Vitamina A"
+  },
+  {
+   "codigo": "1371",
+   "descricao": "Vitamina B1"
+  },
+  {
+   "codigo": "1372",
+   "descricao": "Vitamina B12"
+  },
+  {
+   "codigo": "1373",
+   "descricao": "Vitamina B2"
+  },
+  {
+   "codigo": "1374",
+   "descricao": "Vitamina B3"
+  },
+  {
+   "codigo": "1375",
+   "descricao": "Vitamina B6"
+  },
+  {
+   "codigo": "1376",
+   "descricao": "Vitamina D2"
+  },
+  {
+   "codigo": "1418",
+   "descricao": "Vitamina D3"
+  },
+  {
+   "codigo": "1377",
+   "descricao": "Vitamina E"
+  },
+  {
+   "codigo": "1378",
+   "descricao": "Vitamina K"
+  },
+  {
+   "codigo": "1379",
+   "descricao": "Waaler-Rose (fator reumatoide)"
+  },
+  {
+   "codigo": "1380",
+   "descricao": "Weil Felix (Ricketsiose)"
+  },
+  {
+   "codigo": "1381",
+   "descricao": "Western blot (anticorpos anti-HIV)"
+  },
+  {
+   "codigo": "1382",
+   "descricao": "Western blot (anticorpos anti-HTV-I ou HTLV-II)"
+  },
+  {
+   "codigo": "1383",
+   "descricao": "Widal, reação de"
+  },
+  {
+   "codigo": "1384",
+   "descricao": "Wuchereria (pesquisa)"
+  },
+  {
+   "codigo": "1385",
+   "descricao": "X frágil (pesquisa)"
+  },
+  {
+   "codigo": "1386",
+   "descricao": "Xileno sanguíneo"
+  },
+  {
+   "codigo": "1387",
+   "descricao": "Xilose, teste de absorção à"
+  },
+  {
+   "codigo": "1388",
+   "descricao": "Xylohypha (pesquisa)"
+  },
+  {
+   "codigo": "1389",
+   "descricao": "Yersinia (pesquisa)"
+  },
+  {
+   "codigo": "1390",
+   "descricao": "Yersinia pestis (pesquisa)"
+  },
+  {
+   "codigo": "1391",
+   "descricao": "Zika vírus (pesquisa)"
+  },
+  {
+   "codigo": "1392",
+   "descricao": "Zika vírus (sorologia)"
+  },
+  {
+   "codigo": "1393",
+   "descricao": "Zinco sanguíneo"
+  },
+  {
+   "codigo": "1394",
+   "descricao": "Zinco urinário"
+  },
+  {
+   "codigo": "1395",
+   "descricao": "Zircônio urinário"
+  },
+  {
+   "codigo": "1396",
+   "descricao": "α-fluoro-β-alanine (FBAL)"
+  },
+  {
+   "codigo": "1397",
+   "descricao": "α-naftol"
+  },
+  {
+   "codigo": "1992",
+   "descricao": "Detecção de agente químico não especificado anteriormente"
+  },
+  {
+   "codigo": "1993",
+   "descricao": "Detecção de agentes infecciosos não especificados anteriormente por ELISA"
+  },
+  {
+   "codigo": "1994",
+   "descricao": "Detecção de agentes infecciosos não especificados anteriormente por imunofluorescência"
+  },
+  {
+   "codigo": "1995",
+   "descricao": "Detecção de agentes infecciosos não especificados anteriormente por métodos sorológicos"
+  },
+  {
+   "codigo": "1996",
+   "descricao": "Detecção de agentes infecciosos não especificados anteriormente por PCR"
+  },
+  {
+   "codigo": "1997",
+   "descricao": "Detecção de agentes infecciosos não especificados anteriormente por western blot"
+  },
+  {
+   "codigo": "1998",
+   "descricao": "Detecção de medicamento não especificado anteriormente"
+  },
+  {
+   "codigo": "9999",
+   "descricao": "Outros procedimentos diagnósticos não descritos anteriormente"
+  }
+ ]
 }

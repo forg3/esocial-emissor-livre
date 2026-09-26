@@ -66,7 +66,7 @@ func gerarPFXTeste(t *testing.T, senha string, cn string, razaoSocial string) ([
 		t.Fatalf("erro ao analisar certificado x509: %v", err)
 	}
 
-	pfxData, err := gopkcs12.Encode(rand.Reader, privKey, parsedCert, nil, senha)
+	pfxData, err := gopkcs12.Modern.Encode(privKey, parsedCert, nil, senha)
 	if err != nil {
 		t.Fatalf("erro ao codificar PKCS#12: %v", err)
 	}
